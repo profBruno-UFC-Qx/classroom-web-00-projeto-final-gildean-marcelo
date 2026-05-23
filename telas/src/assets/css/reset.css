@@ -1,0 +1,90 @@
+/* ==========================================================================
+   Modern CSS Reset & Baseline
+   ========================================================================== */
+
+/* 1. Use a more intuitive box-sizing model across the board */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* 2. Remove default margins and paddings so you have full control */
+body,
+h1, h2, h3, h4, h5, h6,
+p,
+ol, ul,
+li,
+figure,
+figcaption,
+blockquote,
+dl, dd {
+    margin: 0;
+    padding: 0;
+}
+
+/* 3. Set up smooth scrolling and accessible line height */
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%; /* Prevents font-size changes after orientation changes in iOS */
+}
+
+/* 4. Core body defaults */
+body {
+    min-height: 100vh;
+    text-rendering: optimizeSpeed;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased; /* Makes fonts look crisper on Mac/iOS */
+}
+
+/* 5. Remove list styles if you plan to style navigation/lists manually */
+ul,
+ol {
+    list-style: none;
+}
+
+/* 6. Make media elements easier to work with (responsive by default) */
+img,
+picture,
+video,
+canvas,
+svg {
+    max-width: 100%;
+    display: block; /* Removes the annoying bottom white-space gap */
+}
+
+/* 7. Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+/* 8. Make sure tables look clean */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* 9. Text decoration & links reset */
+a {
+    text-decoration: none;
+    color: inherit; /* Links will inherit the text color of their parent by default */
+}
+
+/* 10. Remove animations for people who prefer reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    html:focus-within {
+        scroll-behavior: auto;
+    }
+    
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
