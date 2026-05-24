@@ -119,3 +119,163 @@ main section#head button p,span {
     font-weight: var(--fw-medium);
 }
 
+
+article#quadro-pedidos {
+    display: flex;    
+    gap: 1.5rem;
+
+}
+
+main section#novos-pedidos,#em-preparo,#prontos  {
+    width: 22.5rem;
+    height: 49.25rem;
+
+    padding: 1rem;
+
+    background-color: #F4F4EE;
+    border: 1px solid green;
+    border-radius: 2%;    
+}
+
+main section .title  {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 0.5em;
+}
+
+main section .title div {
+    display: flex;
+    align-items: center;    
+    gap: 0.75em;
+}
+
+span.point {
+
+    display: block;
+
+    width: 0.75em;
+    height: 0.75em;
+        
+    border-radius: 100%;
+}
+
+main section#novos-pedidos span.point {
+    background-color: var(--primary-color);  
+}
+
+main section#em-preparo span.point {
+    background-color: var(--tertiary-color);  
+}
+
+main section#prontos span.point {
+    background-color: #A1D494;  
+}
+
+main section#novos-pedidos h3, section#em-preparo h3, section#prontos h3 {
+    color: var(--neutral-color);
+
+    font-size: 1.5em;
+    font-weight: var(--fw-medium);
+}
+
+p#qtd-itens-novos-pedidos {
+    width: 1.5em;
+    height: 1.5em;
+
+    color: #42493E;
+
+    font-size: 1em;
+    font-weight: var(--fw-medium);
+
+    background-color: #E3E3DE;
+
+    text-align: center;
+}
+
+
+.card-novo-pedido {    
+    height: 13.40em;
+    width: 20.25em;
+
+    background-color: white;
+
+    padding: 1em;
+    
+    border-left: 4px solid var(--primary-color);
+    border-radius: 2%;
+}
+
+.card-identification {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.card-identification .order-id span {
+    color: #42493E;
+    font-size: 0.75em;
+    font-weight: var(--fw-medium);
+}
+
+.card-identification .order-id p {
+    color: var(--neutral-color);
+    font-size: 0.875em;
+    font-weight: var(--fw-bold);
+}
+
+.card-identification .time {
+    width: 3.9em;
+    height: 1.5em;
+
+    background-color: var(--primary-color); 
+    
+    border-radius: 8%;
+
+    display: flex;   
+    justify-content: center; 
+    align-items: center;
+    gap: 0.25em;
+}
+
+.card-identification .time > span,p {
+
+    color: var(--neutral-color);
+    font-size: 0.75em;
+    font-weight: var(--fw-medium);
+}
+
+.card-orders ul {
+    padding-left: 1.4em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+
+    margin-top: 0.5em;   
+    margin-bottom: 0.5em;
+
+    border-top: 1px solid #C2C9BB;
+    border-bottom: 1px solid #C2C9BB;
+}
+
+.card-orders ul > li {
+    color: var(--neutral-color);
+    font-size: 1em;
+    font-weight: var(--fw-regular);
+}
+
+
+button.start-preparation{
+    width: 18em;
+    height: 3em;    
+    
+    background-color: var(--primary-color);
+
+    border: 0;
+    border-radius: 2%;
+}
+
+button.start-preparation span {
+    color: white;
+    font-size: 0.875em;
+}
