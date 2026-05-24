@@ -1,0 +1,178 @@
+
+
+
+header {
+    width: 600px;
+    height: 52px;
+
+    margin-top: 24px;
+
+    color: var(--primary-color);
+
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+}
+
+header a {
+    display: flex;
+}
+
+header a span {
+    font-size: 16px;
+}
+
+header a p {
+    font-size: 14px;
+}
+
+header h1 {
+    font-size: 24px;
+    margin-left: 26%;
+}
+
+main {
+    width: 600px;
+    height: 722px;
+
+    margin: auto;    
+
+    border: 1px solid #888888;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.circle-molde {
+    height: 64px;
+    width: 64px;
+
+    margin-top: 10px;
+    
+
+    background-color: var(--primary-color);
+    border-radius: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon-dining {
+    height: 27px;
+    width: 27px;
+    color: #9DD090;
+}
+
+
+form {
+    width: 550px;    
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+}
+
+label {
+    font-weight: var(--fw-bold);
+    color: #42493E;
+    font-size: 14px;
+}
+
+.input-field, button[type="submit"] {
+    border: 1px solid #C2C9BB;      
+
+    width: 100%;
+    height: 48px;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.input-field input {
+    border: none;     
+    outline: none;       
+    background: transparent; 
+    font-size: 16px;
+    width: 100%;        
+}
+
+.input-field:focus-within {
+    border-color: var(--primary-color);
+}
+
+.icon{
+    color: #C2C9BB;    
+    font-size: 22px;    
+    margin-left: 6px;
+    margin-right: 6px;
+}
+
+input::placeholder {
+    font-size: 14px;
+    font-weight: var(--fw-regular);
+
+    color: #C2C9BB;
+}
+
+button[type="submit"] {
+    color: white;
+    background-color: var(--primary-color);
+
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+.icon-submit {
+    font-variation-settings: 'FILL' 1;    
+    font-size: 24px;    
+    margin-left: 6px;
+    margin-right: 6px;
+}
+
+
+.text-divider span {
+    font-weight: var(--fw-regular);
+    font-size: 12px;
+}
+
+.text-divider {
+    display: flex;
+    align-items: center;   
+    text-align: center;
+    color: #888888;       
+    font-size: 14px;
+    margin: 24px 0;         
+}
+
+
+.text-divider::before {
+    content: "";
+    width: 250px;          
+    height: 1px;
+    background-color: #e0e0e0; 
+}
+
+
+.text-divider::after {
+    content: "";
+    width: 250px;           
+    height: 1px;
+    background-color: #e0e0e0; 
+}
+
+
+.text-divider span {
+    padding: 0 16px;
+}
+
+a {
+    color: var(--primary-color);
+    font-size: 14px;
+}

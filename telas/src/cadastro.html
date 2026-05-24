@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <link rel="stylesheet" href="assets/css/reset.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/cadastro.css">
+    <title>Sign On</title>
+</head>
+<body>
+    
+    <header>
+        <a href="">
+            <span class="material-symbols-outlined">
+                arrow_back
+            </span>
+            <p>Voltar</p>
+        </a>
+        <h1>Crie sua conta</h1>
+    </header>
+
+    <main>
+        <div class="circle-molde">
+            <span class="material-symbols-outlined icon-dining">local_dining</span>
+        </div>
+        <form action="">
+    
+            <div>
+                <label for="nome">Nome Completo</label>
+                <div class="input-field">
+                    <span class="material-symbols-outlined icon">person</span>
+                    <input type="text" id="nome" name="nome" placeholder="Ex. João da Silva">
+                </div>
+            </div>
+            <div>
+                <label for="email">E-mail</label>
+                <div class="input-field">
+                    <span class="material-symbols-outlined icon">mail</span>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com">
+                </div>
+            </div>
+            <div>
+                <label for="telefone">Telefone / WhatsApp</label>
+                <div class="input-field">
+                    <span class="material-symbols-outlined icon">call</span>
+                    <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000">
+                </div>
+            </div>
+            <div>
+                <label for="senha">Senha</label>
+                <div class="input-field">
+                    <span class="material-symbols-outlined icon">lock</span>
+                    <input type="password" id="senha" name="senha" minlength="8" placeholder="Mínimo de 8 caracteres">
+                    <span class="material-symbols-outlined icon">visibility</span>
+                </div>
+            </div>
+            <div>
+                <label for="confirm-senha">Confirmar Senha</label>
+                <div class="input-field">
+                    <span class="material-symbols-outlined icon">lock_reset</span>
+                    <input type="password" id="confirm-senha" name="confirm-senha" minlength="8" placeholder="Repita sua senha">
+                    <span class="material-symbols-outlined icon">visibility</span>
+                </div>
+            </div>
+            
+            <button type="submit">
+                Cadastrar
+                <span class="material-symbols-outlined icon-submit">person_check</span>
+            </button>        
+    
+        </form>
+        <div class="text-divider">
+            <span>ou</span>
+        </div>
+        <p>Já tem uma conta?<a href="">Faça Login</a></p>
+    </main>
+
+</body>
+</html>
