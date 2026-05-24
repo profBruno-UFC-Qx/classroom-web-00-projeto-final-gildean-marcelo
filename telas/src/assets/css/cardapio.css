@@ -1,3 +1,6 @@
+/*------------ Cabeçario----------*/
+
+/*------------ Menu----------*/
 .menu {
   height: 60px;
   display: flex;
@@ -6,7 +9,7 @@
   padding: 20px;
   background-color: var(--primary-color);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-  margin-bottom: 40px;
+  margin-bottom: 15px;
 }
 
 .logo-empresa img {
@@ -15,23 +18,68 @@
 }
 
 .menu ul {
-   display: flex;
-   gap: 25px;
-   list-style: none;
-   align-items: center;
+  display: flex;
+  gap: 25px;
+  list-style: none;
+  align-items: center;
 }
 
 .menu ul li img {
-   width: 20px;
-   height: 20px;
-   cursor: pointer;
-   transition: transform 0.2s;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 
 .menu ul li:last-child img {
-   border-radius: 50%;
-   width: 30px;
-   height: 30px;
-   object-fit: cover;
-   border: 2px solid #ffffff;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+}
+
+/*------------ Saudações----------*/
+
+.saudacoes {
+  padding-inline: 20px;
+}
+
+.saudacoes h1 {
+  font-size: 20px;
+  color: #1A1C19;
+}
+
+.saudacoes p {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+/*------------ Nav filtros----------*/
+
+.categorias {
+  display: flex;
+  gap: 12px;
+  list-style: none;
+  overflow-x: auto;
+  padding: 20px;
+}
+
+.cat {
+  padding: 5px 20px;
+  border-radius: 20px;
+  border: 1px solid #EACAC0;
+  background-color: transparent;
+  color: #555;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.cat.ativo {
+  background-color: #F5B000;
+  color: #1A1C19;
+  border-color: #F5B000;
 }
