@@ -1,23 +1,19 @@
-
+@import url(login.css);
 :root {
-    --primary-color: #2D5A27;
-    --secondary-color: #F8F9F8;
-    --tertiary-color: #FFB800;
-    --neutral-color: #1A1C19;
+  --primary-color: #2d5a27;
+  --secondary-color: #f8f9f8;
+  --tertiary-color: #ffb800;
+  --neutral-color: #1a1c19;
 
-    --font-main: "Inter", sans-serif;
-    --fw-regular: 400;
-    --fw-medium: 500;
-    --fw-bold: 700;
+  --font-main: "Inter", sans-serif;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
 }
-
 
 body {
-    font-family: var(--font-main);
-    font-optical-sizing: auto;
-    font-style: normal;
-    background-color: #fafaf4;
+  font-family: var(--font-main);
+  font-optical-sizing: auto;
+  font-style: normal;
+  background-color: #fafaf4;
 }
-
-
-
