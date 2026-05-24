@@ -93,3 +93,37 @@ form {
 .link-esqueceu:hover {
  text-decoration: underline;
 }
+
+/* --- Botão --- */
+.btn-submit {
+ width: 100%;
+ padding: 12px;
+ background-color: var(--primary-color);
+ color: white;
+ border: none;
+ border-radius: 5px;
+ font-size: 16px;
+ font-weight: var(--fw-bold);
+ cursor: pointer;
+ transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+ background-color: #246b43;
+}
+
+/* --- Rodapé --- */
+.footer-card {
+ margin-top: 20px;
+ font-size: 13px;
+ color: #666;
+}
+
+.footer-card a {
+ color: #0066cc;
+ font-weight: var(--fw-bold);
+}
+
+.footer-card a:hover {
+ text-decoration: underline;
+}
