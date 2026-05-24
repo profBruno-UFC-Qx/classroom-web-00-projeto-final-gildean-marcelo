@@ -1,0 +1,74 @@
+
+
+header {
+
+    width: 100vw;
+    height: 3.25rem;
+
+    padding: 0 2.625rem;
+
+    background-color: #EEEEE9;
+    border-bottom: 1px solid #C2C9BB;
+
+    display: flex;        
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+header div {
+    display: flex;        
+    align-items: center;    
+    gap: 2em;
+}
+
+h1 {
+    color: var(--primary-color);
+
+    font-size: 1.5em;
+    font-weight: var(--fw-bold);
+}
+
+header nav {
+    display: flex;
+    gap: 1.5em;
+}
+
+header a {
+    color: #42493E;
+
+    font-size: 1em;
+    font-weight: var(--fw-medium);
+}
+
+header a#nav-selected {
+    color: var(--primary-color);
+    font-weight: var(--fw-bold);
+
+    text-decoration: underline;
+    text-decoration-color: var(--primary-color);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+
+}
+
+header nav#profile {
+    background-color: #E3E3DE;
+    border: 1px solid #E3E3DE;
+    border-radius: 10%;
+
+    padding: 0.25em;
+
+    display: flex;
+    gap: 0.75em;
+}
+
+header nav#profile a {    
+    padding: 0.25em 0.75em;
+}
+
+header nav#profile #profile-selected {
+    background-color: #FAFAF4;
+    border: 1px solid #FAFAF4;
+    border-radius: 12%;
+}
