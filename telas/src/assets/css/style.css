@@ -1,5 +1,6 @@
 @import url('reset.css');
 @import url('login.css');
+@import url(cardapio.css);
 
 :root {
   --primary-color: #2d5a27;
