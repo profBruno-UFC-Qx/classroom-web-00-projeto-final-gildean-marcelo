@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <link rel="stylesheet" href="assets/css/style.css">    
+    <title>Gestão de Pedidos</title>
+</head>
+<body>
+    
+    <header>
+        <div>
+            <h1>Gestão de Pedidos</h1>
+            <nav>
+                <a href="">Dashboard</a>
+                <a href="" id="nav-selected">Pedidos</a>
+                <a href="">Estoque</a>
+            </nav>
+        </div>
+        <nav id="profile">
+            <a href="" id="profile-selected">Admin</a>
+            <a href="">Employee</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <section id="head">
+            <div>
+                <h2>Fila de Produção</h2>
+                <p>Acompanhamento em tempo real</p>
+            </div>
+            <button>
+                <span class="material-symbols-outlined">
+                    filter_list
+                </span>
+                <p>Filtrar</p>
+            </button>
+        </section>
+
+        <article id="quadro-pedidos">
+            <section id="novos-pedidos">   
+                <div class="title">
+                    <div>
+                        <span class="point"></span>
+                        <h3>Novos Pedidos</h3>
+                    </div>
+                    <p id="qtd-itens-novos-pedidos">1</p>            
+                </div> 
+                            
+                <div class="card-novo-pedido">
+                    <div class="card-identification">
+                        <div class="order-id">
+                            <span>#1045</span>
+                            <p>João Silva</p>
+                        </div>
+                        <div class="time">
+                            <span class="material-symbols-outlined">schedule</span>
+                            <p>2 min</p>
+                        </div>
+                    </div>
+                    <div class="card-orders">
+                        <ul>
+                            <li>1x X-Tudo Completo</li>
+                            <li>2x Suco de Laranja (500ml)</li>
+                        </ul>
+                    </div>                
+                    <button class="start-preparation">
+                        <span>Iniciar Preparo</span>
+                    </button>            
+                </div>            
+            </section>
+    
+            <section id="em-preparo">   
+                <div class="title">
+                    <div>
+                        <span class="point"></span>
+                        <h3>Em preparo</h3>
+                    </div>
+                    <p id="qtd-itens-novos-pedidos">1</p>            
+                </div> 
+                            
+                <div class="card-novo-pedido">
+                    <div class="card-identification">
+                        <div class="order-id">
+                            <span>#1045</span>
+                            <p>João Silva</p>
+                        </div>
+                        <div class="time">
+                            <span class="material-symbols-outlined">schedule</span>
+                            <p>2 min</p>
+                        </div>
+                    </div>
+                    <div class="card-orders">
+                        <ul>
+                            <li>1x X-Tudo Completo</li>
+                            <li>2x Suco de Laranja (500ml)</li>
+                        </ul>
+                    </div>                
+                    <button class="start-preparation">
+                        <span>Marcar como Pronto</span>
+                    </button>            
+                </div>            
+            </section>
+
+            <section id="prontos">   
+                <div class="title">
+                    <div>
+                        <span class="point"></span>
+                        <h3>Prontos</h3>
+                    </div>
+                    <p id="qtd-itens-novos-pedidos">1</p>            
+                </div> 
+                            
+                <div class="card-novo-pedido">
+                    <div class="card-identification">
+                        <div class="order-id">
+                            <span>#1045</span>
+                            <p>João Silva</p>
+                        </div>
+                        <div class="time">
+                            <span class="material-symbols-outlined">schedule</span>
+                            <p>2 min</p>
+                        </div>
+                    </div>
+                    <div class="card-orders">
+                        <ul>
+                            <li>1x X-Tudo Completo</li>
+                            <li>2x Suco de Laranja (500ml)</li>
+                        </ul>
+                    </div>                
+                    <button class="start-preparation">
+                        <span>Finalizar</span>
+                    </button>            
+                </div>            
+            </section>
+        </article>
+
+    </main>
+
+</body>
+</html>

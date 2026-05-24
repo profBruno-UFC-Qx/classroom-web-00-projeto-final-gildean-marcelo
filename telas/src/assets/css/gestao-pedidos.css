@@ -1,0 +1,281 @@
+
+
+header {
+
+    width: 100vw;
+    height: 3.25rem;
+
+    padding: 0 2.625rem;
+
+    background-color: #EEEEE9;
+    border-bottom: 1px solid #C2C9BB;
+
+    display: flex;        
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+header div {
+    display: flex;        
+    align-items: center;    
+    gap: 2em;
+}
+
+h1 {
+    color: var(--primary-color);
+
+    font-size: 1.5rem;
+    font-weight: var(--fw-bold);
+}
+
+header nav {
+    display: flex;
+    gap: 1.5em;
+}
+
+header a {
+    color: #42493E;
+
+    font-size: 1em;
+    font-weight: var(--fw-medium);
+}
+
+header a#nav-selected {
+    color: var(--primary-color);
+    font-weight: var(--fw-bold);
+
+    text-decoration: underline;
+    text-decoration-color: var(--primary-color);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+
+}
+
+header nav#profile {
+    background-color: #E3E3DE;
+    border: 1px solid #E3E3DE;
+    border-radius: 10%;
+
+    padding: 0.25em;
+
+    display: flex;
+    gap: 0.75em;
+}
+
+header nav#profile a {    
+    padding: 0.25em 0.75em;
+}
+
+header nav#profile #profile-selected {
+    background-color: #FAFAF4;
+    border: 1px solid #FAFAF4;
+    border-radius: 12%;
+}
+
+
+main {
+    margin: 3rem;
+}
+
+main section#head {    
+    height: 5.75rem;
+
+    margin-bottom: 1.5rem;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+main section#head h2 {
+    color: var(--neutral-color);
+    font-size: 2rem;
+    font-weight: var(--fw-bold);
+}
+
+main section#head p {
+    color: #42493E;
+    font-size: 1rem;
+    font-weight: var(--fw-regular);
+}
+
+main section#head button {
+    width: 5.875rem;
+    height: 3rem;
+
+    background-color: var(--primary-color);    
+
+    border: 1px solid var(--primary-color);  
+    border-radius: 8%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main section#head button p,span {
+    color: var(--neutral-color);
+    font-weight: var(--fw-medium);
+}
+
+
+article#quadro-pedidos {
+    display: flex;    
+    gap: 1.5rem;
+
+}
+
+main section#novos-pedidos,#em-preparo,#prontos  {
+    width: 22.5rem;
+    height: 49.25rem;
+
+    padding: 1rem;
+
+    background-color: #F4F4EE;
+    border: 1px solid green;
+    border-radius: 2%;    
+}
+
+main section .title  {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 0.5em;
+}
+
+main section .title div {
+    display: flex;
+    align-items: center;    
+    gap: 0.75em;
+}
+
+span.point {
+
+    display: block;
+
+    width: 0.75em;
+    height: 0.75em;
+        
+    border-radius: 100%;
+}
+
+main section#novos-pedidos span.point {
+    background-color: var(--primary-color);  
+}
+
+main section#em-preparo span.point {
+    background-color: var(--tertiary-color);  
+}
+
+main section#prontos span.point {
+    background-color: #A1D494;  
+}
+
+main section#novos-pedidos h3, section#em-preparo h3, section#prontos h3 {
+    color: var(--neutral-color);
+
+    font-size: 1.5em;
+    font-weight: var(--fw-medium);
+}
+
+p#qtd-itens-novos-pedidos {
+    width: 1.5em;
+    height: 1.5em;
+
+    color: #42493E;
+
+    font-size: 1em;
+    font-weight: var(--fw-medium);
+
+    background-color: #E3E3DE;
+
+    text-align: center;
+}
+
+
+.card-novo-pedido {    
+    height: 13.40em;
+    width: 20.25em;
+
+    background-color: white;
+
+    padding: 1em;
+    
+    border-left: 4px solid var(--primary-color);
+    border-radius: 2%;
+}
+
+.card-identification {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.card-identification .order-id span {
+    color: #42493E;
+    font-size: 0.75em;
+    font-weight: var(--fw-medium);
+}
+
+.card-identification .order-id p {
+    color: var(--neutral-color);
+    font-size: 0.875em;
+    font-weight: var(--fw-bold);
+}
+
+.card-identification .time {
+    width: 3.9em;
+    height: 1.5em;
+
+    background-color: var(--primary-color); 
+    
+    border-radius: 8%;
+
+    display: flex;   
+    justify-content: center; 
+    align-items: center;
+    gap: 0.25em;
+}
+
+.card-identification .time > span,p {
+
+    color: var(--neutral-color);
+    font-size: 0.75em;
+    font-weight: var(--fw-medium);
+}
+
+.card-orders ul {
+    padding-left: 1.4em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+
+    margin-top: 0.5em;   
+    margin-bottom: 0.5em;
+
+    border-top: 1px solid #C2C9BB;
+    border-bottom: 1px solid #C2C9BB;
+}
+
+.card-orders ul > li {
+    color: var(--neutral-color);
+    font-size: 1em;
+    font-weight: var(--fw-regular);
+}
+
+
+button.start-preparation{
+    width: 18em;
+    height: 3em;    
+    
+    background-color: var(--primary-color);
+
+    border: 0;
+    border-radius: 2%;
+}
+
+button.start-preparation span {
+    color: white;
+    font-size: 0.875em;
+}
