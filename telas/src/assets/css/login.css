@@ -10,5 +10,36 @@
  border-radius: 8px;
  width: 90%;
  max-width: 350px;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ flex-direction: column;
+ padding: 30px 20px;
  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* --- Cabeçalho --- */
+.header-card {
+ text-align: center;
+ margin-bottom: 25px;
+}
+
+.header-card img {
+ width: 140px;
+ height: 140px;
+ border-radius: 50%;
+ object-fit: cover;
+ background-color: #e9f8e9;
+ margin-bottom: 10px;
+}
+
+.header-card h1 {
+ font-size: 24px;
+ color: var(--neutral-color);
+}
+
+.header-card p {
+ font-size: 14px;
+ color: #666;
+ margin-top: 5px;
 }
