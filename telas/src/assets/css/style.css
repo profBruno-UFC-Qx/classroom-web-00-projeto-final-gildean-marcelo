@@ -1,4 +1,6 @@
-@import url(login.css);
+@import url('reset.css');
+@import url('login.css');
+
 :root {
   --primary-color: #2d5a27;
   --secondary-color: #f8f9f8;
