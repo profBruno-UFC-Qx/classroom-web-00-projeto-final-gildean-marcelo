@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",                          /* Compiles to modern JavaScript */
+    "module": "ESNext",                          /* Uses modern ES Modules (import/export) */
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],    /* Enables DOM/browser APIs typing */
+    "outDir": "./dist",                          /* Directs compiled JS files to a build folder */
+    "rootDir": "./src",                          /* Tells TS where your source code lives */
+    
+    /* Type Checking Rules */
+    "strict": true,                              /* Enables all strict type-checking options */
+    "skipLibCheck": true,                        /* Skips type checking of declaration files */
+    "noUnusedLocals": true,                      /* Reports errors on unused variables */
+    "noUnusedParameters": true,                  /* Reports errors on unused parameters */
+    "noFallthroughCasesInSwitch": true           /* Ensures switch statements don't accidentally fall through */
+  },
+  "include": ["src/**/*"]                        /* Tells TS to only compile files inside 'src' */
+}
