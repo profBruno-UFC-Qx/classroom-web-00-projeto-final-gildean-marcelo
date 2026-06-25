@@ -4,7 +4,11 @@
     "module": "ESNext",                          /* Uses modern ES Modules (import/export) */
     "lib": ["ESNext", "DOM", "DOM.Iterable"],    /* Enables DOM/browser APIs typing */
     "outDir": "./dist",                          /* Directs compiled JS files to a build folder */
-    "rootDir": "./src",                          /* Tells TS where your source code lives */
+    "rootDir": "./src",                          /* Tells TS where your source code lives */    
+    "paths": {
+      "@/*": ["./src/*"]                              /* Allows for absolute imports from 'src' */
+    },
+    "types": ["node"],
     
     /* Type Checking Rules */
     "strict": true,                              /* Enables all strict type-checking options */

@@ -1,1 +1,12 @@
 node_modules
+
+
+vitest.config.ts
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+**/coverage/
+**/tests/
+
