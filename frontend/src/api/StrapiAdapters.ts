@@ -41,9 +41,9 @@ export interface PaginatedResult<T> {
     }
 }
 
-export interface StrapiCrudAdapters<T, TCreate = Partial<T>> {
+export interface StrapiCrudAdapters<T, TCreate = Partial<T>, TUpdate = Partial<TCreate>> {
     create(payload: TCreate): Promise<StrapiEntity<T>>
-    update(id: number, payload: Partial<T>): Promise<StrapiEntity<T>>
+    update(id: number, payload: TUpdate): Promise<StrapiEntity<T>>
     delete(id: number): Promise<void>
     list(params?: StrapiQueryParams<T>): Promise<PaginatedResult<T>>
     getById(id: number, params?: Pick<StrapiQueryParams<T>, 'populate' | 'fields'>): Promise<StrapiEntity<T>>
