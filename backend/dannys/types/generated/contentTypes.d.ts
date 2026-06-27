@@ -477,6 +477,153 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiCategoriaCategoria extends Struct.CollectionTypeSchema {
+  collectionName: 'categorias';
+  info: {
+    displayName: 'Categoria';
+    pluralName: 'categorias';
+    singularName: 'categoria';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::categoria.categoria'
+    > &
+      Schema.Attribute.Private;
+    nome: Schema.Attribute.String & Schema.Attribute.Required;
+    ordem_exibicao: Schema.Attribute.Integer & Schema.Attribute.Required;
+    produtos: Schema.Attribute.Relation<'oneToMany', 'api::produto.produto'>;
+    publishedAt: Schema.Attribute.DateTime;
+    situacao: Schema.Attribute.Enumeration<['ativo', 'pausado']> &
+      Schema.Attribute.DefaultTo<'ativo'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiGrupoCustomizacaoGrupoCustomizacao
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'grupo_customizacaos';
+  info: {
+    displayName: 'GrupoCustomizacao';
+    pluralName: 'grupo-customizacaos';
+    singularName: 'grupo-customizacao';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::grupo-customizacao.grupo-customizacao'
+    > &
+      Schema.Attribute.Private;
+    max_escolhas: Schema.Attribute.Integer & Schema.Attribute.Required;
+    min_escolhas: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<1>;
+    nome: Schema.Attribute.String & Schema.Attribute.Required;
+    opcao_customizacaos: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::opcao-customizacao.opcao-customizacao'
+    >;
+    produto: Schema.Attribute.Relation<'manyToOne', 'api::produto.produto'>;
+    publishedAt: Schema.Attribute.DateTime;
+    tipo_escolha: Schema.Attribute.Enumeration<['radio', 'checkbox']> &
+      Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiOpcaoCustomizacaoOpcaoCustomizacao
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'opcao_customizacaos';
+  info: {
+    displayName: 'OpcaoCustomizacao';
+    pluralName: 'opcao-customizacaos';
+    singularName: 'opcao-customizacao';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    grupo_customizacao: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::grupo-customizacao.grupo-customizacao'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::opcao-customizacao.opcao-customizacao'
+    > &
+      Schema.Attribute.Private;
+    nome: Schema.Attribute.String & Schema.Attribute.Required;
+    preco_extra: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    situacao: Schema.Attribute.Enumeration<['ativo', 'pausado']> &
+      Schema.Attribute.DefaultTo<'ativo'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiProdutoProduto extends Struct.CollectionTypeSchema {
+  collectionName: 'produtos';
+  info: {
+    displayName: 'Produto';
+    pluralName: 'produtos';
+    singularName: 'produto';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    categoria: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::categoria.categoria'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    descricao: Schema.Attribute.Text;
+    grupo_customizacaos: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::grupo-customizacao.grupo-customizacao'
+    >;
+    imagem_url: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::produto.produto'
+    > &
+      Schema.Attribute.Private;
+    nome: Schema.Attribute.String & Schema.Attribute.Required;
+    preco_base: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    situacao: Schema.Attribute.Enumeration<['ativo', 'pausado']> &
+      Schema.Attribute.DefaultTo<'ativo'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases';
@@ -997,6 +1144,10 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::categoria.categoria': ApiCategoriaCategoria;
+      'api::grupo-customizacao.grupo-customizacao': ApiGrupoCustomizacaoGrupoCustomizacao;
+      'api::opcao-customizacao.opcao-customizacao': ApiOpcaoCustomizacaoOpcaoCustomizacao;
+      'api::produto.produto': ApiProdutoProduto;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

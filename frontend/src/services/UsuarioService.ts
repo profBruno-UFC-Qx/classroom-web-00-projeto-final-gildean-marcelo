@@ -53,7 +53,7 @@ export type UsuarioEntity = StrapiEntity<UsuarioAttributes>
 
 type UsuarioRaw = { id: number } & UsuarioAttributes
 
-export class UsuarioService extends StrapiCrudService<UsuarioAttributes, CreateUsuarioDto> {
+export class UsuarioService extends StrapiCrudService<UsuarioAttributes, CreateUsuarioDto, UpdateUsuarioDto> {
 
     constructor() {
         super('/api/users')

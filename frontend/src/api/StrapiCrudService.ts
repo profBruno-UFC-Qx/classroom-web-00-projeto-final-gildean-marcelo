@@ -8,7 +8,7 @@ import type {
 } from './StrapiAdapters'
 import httpClient from './HttpClient'
 
-export class StrapiCrudService<T, TCreate = Partial<T>> implements StrapiCrudAdapters<T, TCreate> {
+export class StrapiCrudService<T, TCreate = Partial<T>, TUpdate = Partial<TCreate>> implements StrapiCrudAdapters<T, TCreate, TUpdate> {
 
     protected readonly url: string
 
@@ -26,7 +26,7 @@ export class StrapiCrudService<T, TCreate = Partial<T>> implements StrapiCrudAda
 
     }
 
-    async update(id: number, payload: Partial<T>): Promise<StrapiEntity<T>> {
+    async update(id: number, payload: TUpdate): Promise<StrapiEntity<T>> {
 
         const { data } = await httpClient.put<StrapiSingle<T>>(
             `${this.url}/${id}`, 
