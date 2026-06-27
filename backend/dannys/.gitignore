@@ -129,3 +129,10 @@ dist
 build
 .strapi-updater.json
 .strapi-cloud.json
+
+
+# Ignorar o banco de dados local do SQLite
+*.db
+*.db-shm
+*.db-wal
+.tmp/
