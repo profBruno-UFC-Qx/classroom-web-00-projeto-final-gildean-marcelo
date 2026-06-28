@@ -2,7 +2,7 @@ import { carrinhoService, type ItemCarrinho } from '@/services/CarrinhoService'
 import { pedidoService, type TipoEntrega, type FormaPagamento } from '@/services/PedidoService'
 import { itemPedidoService } from '@/services/ItemPedidoService'
 import { getUsuarioLogado, isAutenticado } from '@/utils/auth'
-import { setLoading, showFeedback, formatarMoeda } from '@/utils/ui'
+import { setLoading, showFeedback, formatarMoeda, sanitizeImageUrl } from '@/utils/ui'
 
 const TAXA_ENTREGA = 6.00
 
@@ -74,7 +74,7 @@ function renderizarItens() {
 }
 
 function criarElementoItem(item: ItemCarrinho): HTMLElement {
-  const imgUrl = item.imagem_url || 'https://placehold.co/80x80/e2e8f0/64748b?text=Img'
+  const imgUrl = sanitizeImageUrl(item.imagem_url)
   const article = document.createElement('article')
   article.className = 'carrinho-item'
   article.dataset['produtoId'] = String(item.produtoId)

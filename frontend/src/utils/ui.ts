@@ -88,3 +88,13 @@ export function formatarMoeda(valor: number): string {
     currency: 'BRL',
   }).format(valor)
 }
+
+export function sanitizeImageUrl(url: string | null): string {
+  if (!url) return 'https://placehold.co/400x300/e2e8f0/64748b?text=Sem+Imagem'
+  // Fix absolute paths mistakenly saved in DB
+  const pathPart = url.split('/frontend')[1]
+  if (pathPart) {
+    return pathPart
+  }
+  return url
+}

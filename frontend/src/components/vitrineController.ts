@@ -1,7 +1,7 @@
 import { categoriaService } from '@/services/CategoriaService'
 import { produtoService, type ProdutoAttributes } from '@/services/ProdutoService'
 import { carrinhoService } from '@/services/CarrinhoService'
-import { formatarMoeda } from '@/utils/ui'
+import { formatarMoeda, sanitizeImageUrl } from '@/utils/ui'
 import type { StrapiEntity } from '@/api/StrapiAdapters'
 
 const categoriasList = document.querySelector<HTMLUListElement>('.categorias_list')
@@ -28,7 +28,9 @@ async function init() {
 
 async function carregarCategorias() {
   try {
-    const response = await categoriaService.listAtivas()
+    const response = await categoriaService.listAtivas({
+      filters: { produtos: { situacao: { $eq: 'ativo' } } }
+    })
     const categorias = response.data
 
     categoriasList!.innerHTML = ''
@@ -49,7 +51,7 @@ async function carregarCategorias() {
     categorias.forEach(cat => {
       const btn = document.createElement('button')
       btn.className = 'categorias_btn'
-      btn.textContent = cat.attributes.nome
+      btn.textContent = cat.nome
       btn.addEventListener('click', () => {
         atualizarCategoriaAtiva(cat.id, btn)
       })
@@ -119,16 +121,16 @@ function renderizarCatalogo(produtos: StrapiEntity<ProdutoAttributes>[]) {
     const article = document.createElement('article')
     article.className = 'produto-card'
 
-    const imgUrl = produto.attributes.imagem_url || 'https://placehold.co/400x300/e2e8f0/64748b?text=Sem+Imagem'
+    const imgUrl = sanitizeImageUrl(produto.imagem_url)
 
     article.innerHTML = `
-      <img src="${imgUrl}" alt="${produto.attributes.nome}" class="produto-card_img">
+      <img src="${imgUrl}" alt="${produto.nome}" class="produto-card_img">
       <div class="produto-card_content">
-          <h3 class="produto-card_titulo">${produto.attributes.nome}</h3>
-          <p class="produto-card_descricao">${produto.attributes.descricao || ''}</p>
+          <h3 class="produto-card_titulo">${produto.nome}</h3>
+          <p class="produto-card_descricao">${produto.descricao || ''}</p>
           <div class="produto-card_footer">
-              <span class="produto-card_preco">${formatarMoeda(produto.attributes.preco)}</span>
-              <button class="produto-card_add-btn" aria-label="Adicionar ${produto.attributes.nome}" data-id="${produto.id}">
+              <span class="produto-card_preco">${formatarMoeda(produto.preco)}</span>
+              <button class="produto-card_add-btn" aria-label="Adicionar ${produto.nome}" data-id="${produto.id}">
                   <i class="ph ph-plus"></i>
               </button>
           </div>
@@ -147,21 +149,21 @@ function renderizarCatalogo(produtos: StrapiEntity<ProdutoAttributes>[]) {
 function renderizarDestaque(produto: StrapiEntity<ProdutoAttributes>) {
   if (!destaqueCard) return
 
-  const imgUrl = produto.attributes.imagem_url || 'https://placehold.co/600x400/e2e8f0/64748b?text=Sem+Imagem'
+  const imgUrl = sanitizeImageUrl(produto.imagem_url)
 
   destaqueCard.innerHTML = `
     <div class="destaque-card_img-container">
         <span class="destaque-card_tag">
             <i class="ph-fill ph-star"></i> Mais Pedido
         </span>
-        <img src="${imgUrl}" alt="${produto.attributes.nome}" class="destaque-card_img">
+        <img src="${imgUrl}" alt="${produto.nome}" class="destaque-card_img">
     </div>
     <div class="destaque-card_content">
-        <h3 class="destaque-card_titulo">${produto.attributes.nome}</h3>
-        <p class="destaque-card_descricao">${produto.attributes.descricao || ''}</p>
+        <h3 class="destaque-card_titulo">${produto.nome}</h3>
+        <p class="destaque-card_descricao">${produto.descricao || ''}</p>
         <div class="destaque-card_footer">
-            <span class="destaque-card_preco">${formatarMoeda(produto.attributes.preco)}</span>
-            <button class="btn btn--primary" id="btn-add-destaque" data-id="${produto.id}">
+            <span class="destaque-card_preco">${formatarMoeda(produto.preco)}</span>
+            <button class="btn btn--primary" aria-label="Adicionar ${produto.nome}" id="btn-add-destaque" data-id="${produto.id}">
                 <i class="ph ph-shopping-cart"></i> Adicionar ao Pedido
             </button>
         </div>
@@ -178,9 +180,9 @@ function renderizarDestaque(produto: StrapiEntity<ProdutoAttributes>) {
 function adicionarAoCarrinho(btn: HTMLButtonElement, produto: StrapiEntity<ProdutoAttributes>) {
   carrinhoService.adicionarItem({
     produtoId: produto.id,
-    nome: produto.attributes.nome,
-    preco: produto.attributes.preco,
-    imagem_url: produto.attributes.imagem_url,
+    nome: produto.nome,
+    preco: produto.preco,
+    imagem_url: produto.imagem_url,
   })
 
   // Feedback visual no botão

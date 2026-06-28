@@ -200,8 +200,7 @@ export class UsuarioService extends StrapiCrudService<UsuarioAttributes, CreateU
   }
 
   private toEntity(raw: UsuarioRaw): UsuarioEntity {
-    const { id, ...attributes } = raw
-    return { id, attributes: attributes as UsuarioAttributes }
+    return raw as unknown as UsuarioEntity
   }
 }
 
