@@ -22,13 +22,18 @@ export interface HttpResponse<T> {
 }
 
 export class HttpError extends Error {
+  readonly status: number
+  readonly body: unknown
+
   constructor(
-    public readonly status: number,
-    public readonly body: unknown,
+    status: number,
+    body: unknown,
     message?: string
   ) {
     super(message ?? `HTTP error ${status}`)
     this.name = 'HttpError'
+    this.status = status
+    this.body = body
   }
 }
 

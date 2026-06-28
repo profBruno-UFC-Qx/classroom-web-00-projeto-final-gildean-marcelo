@@ -4,11 +4,12 @@ import httpClient from '@/api/HttpClient'
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
-export enum PerfilUsuario {
-  Cliente = 'cliente',
-  Admin   = 'admin',
-  Cozinha = 'cozinha',   // Caixa removido — MVP foca em pedidos digitais
-}
+export const PerfilUsuario = {
+  Cliente: 'cliente',
+  Admin:   'admin',
+  Cozinha: 'cozinha',
+} as const
+export type PerfilUsuario = typeof PerfilUsuario[keyof typeof PerfilUsuario]
 
 // ─── Attributes ───────────────────────────────────────────────────────────────
 

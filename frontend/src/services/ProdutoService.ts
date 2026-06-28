@@ -3,10 +3,11 @@ import type { StrapiEntity, StrapiQueryParams } from '@/api/StrapiAdapters'
 import type { CategoriaAttributes } from './CategoriaService'
 
 
-export enum StatusProduto {
-  Ativo   = 'ativo',
-  Pausado = 'pausado',
-}
+export const StatusProduto = {
+  Ativo:   'ativo',
+  Pausado: 'pausado',
+} as const
+export type StatusProduto = typeof StatusProduto[keyof typeof StatusProduto]
 
 export interface ProdutoAttributes {
   nome:       string
