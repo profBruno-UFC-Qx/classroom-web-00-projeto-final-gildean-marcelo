@@ -12,6 +12,16 @@ dist
 dist-ssr
 *.local
 
+tests
+vitest.config.ts
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+**/coverage/
+**/tests/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

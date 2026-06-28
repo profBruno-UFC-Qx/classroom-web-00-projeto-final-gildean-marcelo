@@ -68,7 +68,7 @@
     },
     "whatsapp": {
       "type": "string",
-      "required": true,
+      "required": false,
       "unique": true
     },
     "perfil": {
@@ -77,16 +77,26 @@
       "enum": [
         "cliente",
         "admin",
-        "caixa",
         "cozinha"
       ]
     },
-    "endereco_padrao": {
+    "endereco": {
       "type": "text"
     },
     "ativo": {
       "type": "boolean",
       "default": true
+    },
+    "cpf": {
+      "type": "string",
+      "required": false,
+      "unique": true
+    },
+    "pedidos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::pedido.pedido",
+      "mappedBy": "users_permissions_user"
     }
   }
 }
