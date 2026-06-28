@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danny's - Criar Conta</title>
+    
+    <link rel="stylesheet" href="src/styles/reset.css">
+    <link rel="stylesheet" href="src/styles/style.css">
+    <link rel="stylesheet" href="src/styles/cadastro.css">
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="cadastro-page">
+
+    <div class="cadastro-layout">
+        <!-- Header Mobile -->
+        <header class="cadastro-header">
+            <button type="button" class="cadastro-header_voltar" aria-label="Voltar para a página anterior">
+                <i class="ph ph-arrow-left"></i>
+            </button>
+        </header>
+
+        <main class="cadastro-main">
+            <form id="form-cadastro" class="cadastro-card">
+                
+                <div class="cadastro-card_cabecalho">
+                    <img src="src/assets/images/logo-dannis.png" alt="Danny's Logo" class="cadastro-card_logo">
+                    <h1 class="cadastro-card_titulo">Crie sua conta</h1>
+                    <p class="cadastro-card_subtitulo">Junte-se ao Danny's para produtos frescos e de qualidade</p>
+                </div>
+
+                <div class="cadastro-form_grid">
+                    <div class="cadastro-form_group cadastro-form_group--full">
+                        <label for="nome" class="cadastro-form_label">Nome Completo</label>
+                        <div class="input-container">
+                            <i class="ph ph-user input-icon"></i>
+                            <input type="text" name="nome" id="nome" class="cadastro-form_input" required placeholder="Ex: João da Silva">
+                        </div>
+                    </div>
+
+                    <div class="cadastro-form_group">
+                        <label for="email" class="cadastro-form_label">E-mail</label>
+                        <div class="input-container">
+                            <i class="ph ph-envelope input-icon"></i>
+                            <input type="email" name="email" id="email" class="cadastro-form_input" required placeholder="seu@email.com">
+                        </div>
+                    </div>
+                    
+                    <div class="cadastro-form_group">
+                        <label for="cpf" class="cadastro-form_label">CPF</label>
+                        <div class="input-container">
+                            <i class="ph ph-identification-card input-icon"></i>
+                            <input type="text" name="cpf" id="cpf" class="cadastro-form_input" required placeholder="000.000.000-00">
+                        </div>
+                    </div>
+
+                    <div class="cadastro-form_group cadastro-form_group--full">
+                        <label for="whatsapp" class="cadastro-form_label">WhatsApp</label>
+                        <div class="input-container">
+                            <i class="ph ph-phone input-icon"></i>
+                            <input type="tel" name="whatsapp" id="whatsapp" class="cadastro-form_input" required placeholder="(11) 90000-0000">
+                        </div>
+                    </div>
+
+                    <div class="cadastro-form_group cadastro-form_group--full">
+                        <label for="endereco" class="cadastro-form_label">Endereço Completo</label>
+                        <div class="input-container">
+                            <i class="ph ph-map-pin input-icon"></i>
+                            <input type="text" name="endereco" id="endereco" class="cadastro-form_input" required placeholder="Rua, Número, Bairro, Cidade - UF">
+                        </div>
+                    </div>
+
+                    <div class="cadastro-form_group">
+                        <label for="senha" class="cadastro-form_label">Criar Senha</label>
+                        <div class="input-container">
+                            <i class="ph ph-lock input-icon"></i>
+                            <input type="password" name="senha" id="senha" class="cadastro-form_input" required placeholder="Digite sua senha">
+                            <button type="button" class="input-acao-btn" aria-label="Mostrar senha">
+                                <i class="ph ph-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="cadastro-form_group">
+                        <label for="confirmar-senha" class="cadastro-form_label">Confirmar Senha</label>
+                        <div class="input-container">
+                            <i class="ph ph-lock input-icon"></i>
+                            <input type="password" name="confirmar_senha" id="confirmar-senha" class="cadastro-form_input" required placeholder="Confirme sua senha">
+                            <button type="button" class="input-acao-btn" aria-label="Mostrar senha">
+                                <i class="ph ph-eye-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn--submit">
+                    Criar Conta e Pedir <i class="ph-bold ph-arrow-right"></i>
+                </button>
+
+                <div class="cadastro-footer">
+                    Já tem uma conta? <a href="login.html" class="cadastro-footer_link">Faça Login</a>
+                </div>
+            </form>
+        </main>
+    </div>
+
+</body>
+</html>
