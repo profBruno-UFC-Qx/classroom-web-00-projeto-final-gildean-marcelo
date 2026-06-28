@@ -22,16 +22,16 @@
 }
 
 .header_cart-btn {
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--tertiary-color);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s ease;
-}
+        display: flex;
+        align-items: center;
+        border: none;
+        color: var(--tertiary-color);
+        font-size: 2rem;
+        padding: 10px;
+        border-radius: 50%;
+        cursor: pointer;
+        position: relative;
+    }
 
 .header_cart-btn:active {
     transform: scale(0.95);
@@ -390,7 +390,7 @@
         text-decoration: none;
         color: var(--neutral-color);
         font-weight: var(--fw-medium);
-        font-size: 1rem;
+        font-size: 1.5rem;
         transition: color 0.2s ease;
     }
 
