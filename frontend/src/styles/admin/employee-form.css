@@ -1,0 +1,474 @@
+@import './admin-template.css';
+
+:root {
+  /* Bridge layout variables to template variables */
+  --color-cta-yellow: var(--color-secondary-container);
+  --color-deep-forest: var(--color-sidebar-bg);
+  --color-canvas: var(--color-surface);
+  --shadow-ambient: var(--shadow-sm);
+  --shadow-ambient-hover: var(--shadow-md);
+
+  /* Typography scale from admin-template */
+  --text-headline-lg: var(--fs-headline-lg);
+  --lh-headline-lg: var(--lh-headline-lg);
+  --text-headline-md: var(--fs-headline-md);
+  --lh-headline-md: var(--lh-headline-md);
+  --text-headline-sm: var(--fs-headline-sm);
+  --lh-headline-sm: var(--lh-headline-sm);
+  --text-body-md: var(--fs-body-md);
+  --lh-body-md: var(--lh-body-md);
+  --text-label-lg: var(--fs-label-lg);
+  --lh-label-lg: var(--lh-label-lg);
+  --text-label-sm: var(--fs-label-sm);
+  --lh-label-sm: var(--lh-label-sm);
+}
+
+/* Override page-content for employee form (scrollable canvas) */
+.page-content {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-dim) transparent;
+}
+
+.page-content::-webkit-scrollbar { width: 8px; }
+.page-content::-webkit-scrollbar-track { background: transparent; }
+.page-content::-webkit-scrollbar-thumb { background: var(--color-surface-dim); border-radius: 4px; }
+.page-content::-webkit-scrollbar-thumb:hover { background: var(--color-outline-variant); }
+
+.page-content__inner { max-width: 1280px; margin: 0 auto; width: 100%; }
+
+/* Botões específicos da página */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  height: 44px;
+  padding: 0 var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-label-lg);
+  font-weight: 600;
+  line-height: var(--lh-label-lg);
+  letter-spacing: 0.02em;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.btn--ghost {
+  background-color: var(--color-surface-container-lowest);
+  color: var(--color-on-surface);
+  border: 1px solid var(--color-outline-variant);
+  box-shadow: var(--shadow-sm);
+}
+.btn--ghost:hover { background-color: var(--color-surface-container-low); }
+
+/* Salvar – verde sólido */
+.btn--save {
+  background-color: var(--color-primary-container);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(20, 48, 34, 0.15);
+}
+.btn--save:hover { filter: brightness(1.1); box-shadow: var(--shadow-md); }
+.btn--save:disabled { opacity: 0.6; cursor: not-allowed; filter: none; }
+
+/* ======================================================================
+   BACK LINK
+   ====================================================================== */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-on-surface-variant);
+  font-size: var(--text-label-lg);
+  font-weight: 500;
+  line-height: var(--lh-label-lg);
+  margin-bottom: var(--space-md);
+  transition: color 0.15s ease;
+}
+
+.back-link:hover { color: var(--color-primary); }
+
+.back-link .material-symbols-outlined {
+  font-size: 20px;
+  transition: transform 0.15s ease;
+}
+
+.back-link:hover .material-symbols-outlined { transform: translateX(-3px); }
+
+/* ======================================================================
+   PAGE HEADER
+   ====================================================================== */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+}
+
+.page-title {
+  font-size: var(--text-headline-lg);
+  font-weight: 700;
+  line-height: var(--lh-headline-lg);
+  color: var(--color-on-surface);
+  letter-spacing: -0.01em;
+}
+
+.page-header__actions { display: flex; align-items: center; gap: 12px; }
+
+/* ======================================================================
+   FORM CARD
+   ====================================================================== */
+.form-card {
+  background-color: var(--color-surface-lowest);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-outline-variant);
+  box-shadow: var(--shadow-ambient);
+  overflow: hidden;
+  margin-bottom: var(--space-lg);
+}
+
+/* ======================================================================
+   FORM SECTIONS
+   ====================================================================== */
+.form-section { padding: var(--space-lg); }
+
+.form-section--divided {
+  border-top: 1px solid var(--color-surface-high);
+}
+
+.form-section__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 28px;
+  color: var(--color-on-surface);
+  margin-bottom: var(--space-md);
+}
+
+.form-section__icon {
+  color: var(--color-primary-container);
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+/* ======================================================================
+   FORM GRID
+   ====================================================================== */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.field--full { grid-column: 1 / -1; }
+
+@media (max-width: 640px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .field--full { grid-column: 1; }
+}
+
+/* ======================================================================
+   FIELDS
+   ====================================================================== */
+.field { display: flex; flex-direction: column; }
+
+.field__label {
+  display: block;
+  font-size: var(--text-label-lg);
+  font-weight: 600;
+  line-height: var(--lh-label-lg);
+  letter-spacing: 0.01em;
+  color: var(--color-on-surface);
+  margin-bottom: var(--space-xs);
+}
+
+.field__label-optional {
+  font-weight: 400;
+  color: var(--color-on-surface-variant);
+}
+
+/* --- Input wrapper (borda + foco) --- */
+.field__input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 12px;
+  background-color: var(--color-surface-lowest);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-ambient);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, border-width 0.1s ease;
+}
+
+.field__input-wrap:focus-within {
+  border-color: var(--color-primary-container);
+  border-width: 2px;
+  box-shadow: 0 0 0 1px rgba(49, 112, 57, 0.15), var(--shadow-ambient);
+}
+
+/* Estado de erro */
+.field__input-wrap--error {
+  border-color: var(--color-error) !important;
+  border-width: 1px !important;
+  box-shadow: 0 0 0 1px rgba(186, 26, 26, 0.12) !important;
+}
+
+.field__input-wrap--error:focus-within {
+  border-width: 2px !important;
+}
+
+/* --- Input --- */
+.field__input {
+  background: none;
+  border: none;
+  outline: none;
+  width: 100%;
+  height: 100%;
+  font-size: var(--text-body-md);
+  font-weight: 400;
+  color: var(--color-on-surface);
+  caret-color: var(--color-primary-container);
+}
+
+.field__input::placeholder { color: var(--color-outline-variant); }
+
+/* --- Select --- */
+.field__input-wrap--select { padding-right: 40px; }
+
+.field__select {
+  background: none;
+  border: none;
+  outline: none;
+  width: 100%;
+  height: 100%;
+  font-size: var(--text-body-md);
+  font-weight: 400;
+  color: var(--color-on-surface);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+/* Placeholder do select (option desabilitada) */
+.field__select:invalid,
+.field__select option[value=""][disabled] {
+  color: var(--color-outline-variant);
+}
+
+.field__select-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-outline);
+  font-size: 20px;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+/* --- Password --- */
+.field__input-wrap--password { padding-right: 44px; }
+
+.field__password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--color-outline);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.field__password-toggle:hover {
+  color: var(--color-primary);
+  background-color: var(--color-surface-container);
+}
+
+.field__password-toggle .material-symbols-outlined { font-size: 20px; }
+
+/* --- Feedback --- */
+.field__error {
+  display: block;
+  font-size: var(--text-label-sm);
+  font-weight: 500;
+  color: var(--color-error);
+  margin-top: 4px;
+  min-height: 16px;
+  line-height: var(--lh-label-sm);
+}
+
+.field__hint {
+  font-size: var(--text-label-sm);
+  font-weight: 400;
+  color: var(--color-on-surface-variant);
+  line-height: var(--lh-label-sm);
+  margin-top: 4px;
+}
+
+/* ======================================================================
+   STATUS CARD + TOGGLE SWITCH
+   ====================================================================== */
+.status-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background-color: var(--color-canvas);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-outline-variant);
+  box-shadow: var(--shadow-ambient);
+}
+
+.status-card__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin-bottom: 4px;
+}
+
+.status-card__desc {
+  font-size: var(--text-label-lg);
+  font-weight: 400;
+  color: var(--color-on-surface-variant);
+  line-height: var(--lh-label-lg);
+}
+
+/* Toggle */
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* Input escondido mas acessível */
+.toggle__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Track */
+.toggle__track {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background-color: var(--color-surface-highest);
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  transition: background-color 0.2s ease;
+}
+
+/* Thumb via pseudo-elemento */
+.toggle__track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  border-radius: var(--radius-full);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+/* Estado ativo — apenas CSS, sem JS */
+.toggle__input:checked + .toggle__track {
+  background-color: var(--color-primary-container);
+}
+
+.toggle__input:checked + .toggle__track::after {
+  transform: translateX(20px);
+}
+
+/* Label "Ativo" / "Inativo" */
+.toggle__label {
+  font-size: var(--text-label-lg);
+  font-weight: 500;
+  color: var(--color-on-surface-variant);
+  transition: color 0.2s ease;
+}
+
+.toggle__input:checked + .toggle__track + .toggle__label {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Anel de foco acessível */
+.toggle__input:focus-visible + .toggle__track {
+  outline: 2px solid var(--color-primary-container);
+  outline-offset: 3px;
+}
+
+/* ======================================================================
+   TOAST DE FEEDBACK
+   ====================================================================== */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-radius: var(--radius-lg);
+  font-size: var(--text-label-lg);
+  font-weight: 500;
+  line-height: var(--lh-label-lg);
+  z-index: 200;
+  box-shadow: var(--shadow-ambient-hover);
+  max-width: 400px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+
+.toast--visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.toast--success {
+  background-color: var(--color-primary-container);
+  color: #ffffff;
+}
+
+.toast--error {
+  background-color: var(--color-error);
+  color: #ffffff;
+}
+
+.toast__icon { font-size: 20px; flex-shrink: 0; }
+
+/* ======================================================================
+   SPINNER DO BOTÃO DE SALVAR
+   ====================================================================== */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.btn__spinner { animation: spin 0.7s linear infinite; }
