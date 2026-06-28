@@ -1,5 +1,6 @@
 import { categoriaService } from '@/services/CategoriaService'
 import { produtoService, type ProdutoAttributes } from '@/services/ProdutoService'
+import { carrinhoService } from '@/services/CarrinhoService'
 import { formatarMoeda } from '@/utils/ui'
 import type { StrapiEntity } from '@/api/StrapiAdapters'
 
@@ -134,9 +135,9 @@ function renderizarCatalogo(produtos: StrapiEntity<ProdutoAttributes>[]) {
       </div>
     `
 
-    const btnAdd = article.querySelector('.produto-card_add-btn')
+    const btnAdd = article.querySelector<HTMLButtonElement>('.produto-card_add-btn')
     btnAdd?.addEventListener('click', () => {
-      adicionarAoCarrinho(produto.id, produto.attributes.nome)
+      adicionarAoCarrinho(btnAdd, produto)
     })
 
     catalogoGrid!.appendChild(article)
@@ -167,16 +168,29 @@ function renderizarDestaque(produto: StrapiEntity<ProdutoAttributes>) {
     </div>
   `
 
-  const btnAdd = destaqueCard.querySelector('#btn-add-destaque')
+  const btnAdd = destaqueCard.querySelector<HTMLButtonElement>('#btn-add-destaque')
   btnAdd?.addEventListener('click', () => {
-    adicionarAoCarrinho(produto.id, produto.attributes.nome)
+    if (btnAdd) adicionarAoCarrinho(btnAdd, produto)
   })
 }
 
 
-function adicionarAoCarrinho(produtoId: number, nome: string) {
-  console.log(`[Carrinho] Produto ${produtoId} - ${nome} adicionado!`)
-  alert(`${nome} adicionado ao pedido!`)
+function adicionarAoCarrinho(btn: HTMLButtonElement, produto: StrapiEntity<ProdutoAttributes>) {
+  carrinhoService.adicionarItem({
+    produtoId: produto.id,
+    nome: produto.attributes.nome,
+    preco: produto.attributes.preco,
+    imagem_url: produto.attributes.imagem_url,
+  })
+
+  // Feedback visual no botão
+  const iconeOriginal = btn.innerHTML
+  btn.innerHTML = '<i class="ph ph-check"></i>'
+  btn.disabled = true
+  setTimeout(() => {
+    btn.innerHTML = iconeOriginal
+    btn.disabled = false
+  }, 1200)
 }
 
 init()
