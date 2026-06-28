@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danny's - Home</title>
+    
+    <link rel="stylesheet" href="src/styles/reset.css">
+    <link rel="stylesheet" href="src/styles/style.css">
+    <link rel="stylesheet" href="src/styles/vitrine.css">
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+    <header class="header">
+      <div class="header_top">
+          <!-- Navegação Desktop -->
+            <div class="header_brand">
+              <img src="src/assets/images/logo-dannis.png" alt="Danny's Logo" class="header_logo">
+              <h1 class="header_titulo_desktop">Bem-vindo ao Danny's!</h1>
+            </div>
+            
+            <nav class="header_nav">
+                <a href="#" class="header_nav-link header_nav-link--active">Home</a>
+                <a href="#" class="header_nav-link">Pedidos</a>
+                <a href="#" class="header_nav-link">Perfil</a>
+            </nav>
+
+            <button class="header_cart-btn" aria-label="Carrinho de compras">
+                <i class="ph ph-shopping-cart"></i>
+            </button>
+        </div>
+        <div class="header_saudacao">
+            <h1 class="header_titulo">Bem-vindo ao Danny's!</h1>
+            <p class="header_subtitulo">O que vamos pedir hoje?</p>
+        </div>
+    </header>
+    <main class="main-content">
+        
+        <!-- Filtros/Categorias -->
+        <nav class="categorias">
+            <ul class="categorias_list">
+                <li class="categorias_item">
+                    <button class="categorias_btn categorias_btn--active">Sanduíches</button>
+                </li>
+                <li class="categorias_item">
+                    <button class="categorias_btn">Sucos Naturais</button>
+                </li>
+                <li class="categorias_item">
+                    <button class="categorias_btn">Sobremesas</button>
+                </li>
+                <li class="categorias_item">
+                    <button class="categorias_btn">Combos</button>
+                </li>
+            </ul>
+        </nav>
+
+
+        <section class="destaque">
+            <h2 class="section-titulo">Destaque do Dia</h2>
+            <article class="destaque-card">
+                <div class="destaque-card_img-container">
+                    <span class="destaque-card_tag">
+                        <i class="ph-fill ph-star"></i> Mais Pedido
+                    </span>
+                    <img src="src/assets/images/cupim.png" alt="Locura de Cupim" class="destaque-card_img">
+                </div>
+                <div class="destaque-card_content">
+                    <h3 class="destaque-card_titulo">Locura de Cupim</h3>
+                    <p class="destaque-card_descricao">O nosso corte especial de cupim assado lentamente até desmanchar, servido no pão rústico artesanal com molho secreto da casa, queijo derretido e cebola crispy. Uma verdadeira explosão de sabor.</p>
+                    <div class="destaque-card_footer">
+                        <span class="destaque-card_preco">R$ 42,90</span>
+                        <button class="btn btn--primary">
+                            <i class="ph ph-shopping-cart"></i> Adicionar ao Pedido
+                        </button>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+      
+        <section class="catalogo">
+            <div class="catalogo_header">
+                <h2 class="section-titulo">Clássicos Danny's</h2>
+            </div>
+            
+            <div class="catalogo_grid">
+                <article class="produto-card">
+                    <img src="src/assets/images/x-salada.png" alt="X-Salada Clássico" class="produto-card_img">
+                    <div class="produto-card_content">
+                        <h3 class="produto-card_titulo">X-Salada Clássico</h3>
+                        <p class="produto-card_descricao">Hambúrguer artesanal 180g, queijo prato, alface americana crocante e tomate fresco.</p>
+                        <div class="produto-card_footer">
+                            <span class="produto-card_preco">R$ 28,00</span>
+                            <button class="produto-card_add-btn" aria-label="Adicionar X-Salada">
+                                <i class="ph ph-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="produto-card">
+                    <img src="src/assets/images/duplo-b.png" alt="Duplo Bacon" class="produto-card_img">
+                    <div class="produto-card_content">
+                        <h3 class="produto-card_titulo">Duplo Bacon</h3>
+                        <p class="produto-card_descricao">Dois hambúrgueres artesanais, muito queijo cheddar derretido e fatias generosas de bacon crocante.</p>
+                        <div class="produto-card_footer">
+                            <span class="produto-card_preco">R$ 38,50</span>
+                            <button class="produto-card_add-btn" aria-label="Adicionar Duplo Bacon">
+                                <i class="ph ph-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="produto-card">
+                    <img src="src/assets/images/batatas.png" alt="Fritas Rústicas" class="produto-card_img">
+                    <div class="produto-card_content">
+                        <h3 class="produto-card_titulo">Fritas Rústicas</h3>
+                        <p class="produto-card_descricao">Porção de batatas rústicas temperadas com alecrim e sal grosso, acompanha maionese verde da casa.</p>
+                        <div class="produto-card_footer">
+                            <span class="produto-card_preco">R$ 18,90</span>
+                            <button class="produto-card_add-btn" aria-label="Adicionar Fritas Rústicas">
+                                <i class="ph ph-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="produto-card">
+                    <img src="src/assets/images/suco.png" alt="Suco de Laranja Natural" class="produto-card_img">
+                    <div class="produto-card_content">
+                        <h3 class="produto-card_titulo">Suco de Laranja Natural</h3>
+                        <p class="produto-card_descricao">Feito na hora com laranjas selecionadas, sem adição de açúcar ou conservantes. 400ml.</p>
+                        <div class="produto-card_footer">
+                            <span class="produto-card_preco">R$ 12,00</span>
+                            <button class="produto-card_add-btn" aria-label="Adicionar Suco de Laranja">
+                                <i class="ph ph-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <!-- Navegação Inferior -->
+    <footer class="butao-nav">
+        <nav class="butao-nav_menu">
+            <a href="#" class="butao-nav_item butao-nav_item--active">
+                <i class="ph-fill ph-house"></i>
+                <span class="butao-nav_label">Home</span>
+            </a>
+            <a href="#" class="butao-nav_item">
+                <i class="ph ph-receipt"></i>
+                <span class="butao-nav_label">Pedidos</span>
+            </a>
+            <a href="#" class="butao-nav_item">
+                <i class="ph ph-user"></i>
+                <span class="butao-nav_label">Perfil</span>
+            </a>
+        </nav>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,20 @@
+@import url('reset.css');
+
+:root {
+  --primary-color: #317039;
+  --secondary-color: #F1BE49;
+  --tertiary-color: #143022;
+  --neutral-color: #747872;
+
+  --font-main: "Inter", sans-serif;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
+}
+
+body {
+  font-family: var(--font-main);
+  font-optical-sizing: auto;
+  font-style: normal;
+  background-color: #fafaf4;
+}
