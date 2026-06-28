@@ -15,10 +15,6 @@
       "type": "string",
       "required": true
     },
-    "ordem_exibicao": {
-      "type": "integer",
-      "required": true
-    },
     "situacao": {
       "type": "enumeration",
       "default": "ativo",
