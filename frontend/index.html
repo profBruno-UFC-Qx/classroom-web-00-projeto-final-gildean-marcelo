@@ -15,28 +15,24 @@
     <header class="header">
       <div class="header_top">
           <!-- Navegação Desktop -->
-            <div class="header_brand">
-              <img src="src/assets/images/logo-dannis.png" alt="Danny's Logo" class="header_logo">
-              <h1 class="header_titulo_desktop">Bem-vindo ao Danny's!</h1>
-            </div>
-            
+            <img src="src/assets/images/logo_simples.png" alt="Danny's Logo" class="header_logo">
             <nav class="header_nav">
-                <a href="#" class="header_nav-link header_nav-link--active">Home</a>
-                <a href="#" class="header_nav-link">Pedidos</a>
-                <a href="#" class="header_nav-link">Perfil</a>
+                <a href="#" class="header_nav-link header_nav-link--ativo">Home</a>
+                <a href="status.html" class="header_nav-link">Pedidos</a>
+                <a href="perfil.html" class="header_nav-link">Perfil</a>
             </nav>
 
             <button class="header_cart-btn" aria-label="Carrinho de compras">
                 <i class="ph ph-shopping-cart"></i>
             </button>
         </div>
-        <div class="header_saudacao">
-            <h1 class="header_titulo">Bem-vindo ao Danny's!</h1>
-            <p class="header_subtitulo">O que vamos pedir hoje?</p>
-        </div>
     </header>
     <main class="main-content">
-        
+        <section class="header_saudacao">
+            <h1 class="header_titulo">Bem-vindo ao Danny's!</h1>
+            <p class="header_subtitulo">O que vamos pedir hoje?</p>
+        </section>
+
         <!-- Filtros/Categorias -->
         <nav class="categorias">
             <ul class="categorias_list">
@@ -151,11 +147,11 @@
                 <i class="ph-fill ph-house"></i>
                 <span class="butao-nav_label">Home</span>
             </a>
-            <a href="#" class="butao-nav_item">
+            <a href="status.html" class="butao-nav_item">
                 <i class="ph ph-receipt"></i>
                 <span class="butao-nav_label">Pedidos</span>
             </a>
-            <a href="#" class="butao-nav_item">
+            <a href="perfil.html" class="butao-nav_item">
                 <i class="ph ph-user"></i>
                 <span class="butao-nav_label">Perfil</span>
             </a>

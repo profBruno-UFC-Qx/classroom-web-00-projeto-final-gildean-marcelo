@@ -6,13 +6,16 @@
 
 .header_interno {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.header_logo {
+.header_logo{
+    width: 150px;
     height: 50px;
-    width: auto;
+    object-fit: cover;
 }
 
 .header_nav {
@@ -20,15 +23,14 @@
 }
 
 .header_cart-btn {
+    background: none;
+    border: none;
+    font-size: 1.7rem;
+    color: var(--tertiary-color);
+    cursor: pointer;
     display: flex;
     align-items: center;
-    border: none;
-    color: var(--tertiary-color);
-    font-size: 2rem;
-    padding: 10px;
-    border-radius: 50%;
-    cursor: pointer;
-    position: relative;
+    justify-content: center;
 }
 
 
@@ -419,31 +421,30 @@ color: var(--primary-color);
 @media (min-width: 768px) {
     /* Header Desktop */
     .header {
-        padding: 2rem 4rem;
-    }
-
-    .header_logo {
-        height: 100px;
-        width: auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid color-mix(in srgb, var(--neutral-color) 20%, white);
+        box-shadow: 0 8px 32px color-mix(in srgb, var(--tertiary-color) 5%, transparent);
     }
     
     .header_nav {
         display: flex;
-        gap: 2rem;
-        margin-left: auto;
-        margin-right: 3rem;
+        gap: 2.5rem;
     }
     
     .header_nav-link {
         color: var(--neutral-color);
         text-decoration: none;
-        font-weight: var(--fw-medium);
-        font-size: 1.5rem;
+        font-weight: var(--fw-bold);
+        font-size: 1.25rem;
     }
     
     .header_nav-link--ativo {
         color: var(--primary-color);
-        font-weight: var(--fw-bold);
+        border-bottom: 2px solid var(--primary-color);
     }
     
     /* Layout Main */
@@ -460,7 +461,7 @@ color: var(--primary-color);
 
     .status-pedido_titulo {
         color: var(--primary-color);
-        font-size: 2.5rem;
+        font-size: 1.75rem;
         font-weight: var(--fw-bold);
         margin-bottom: 0.5rem;
     }

@@ -187,7 +187,7 @@ input[type="password"].cadastro-form_input {
     font-size: 0.875rem;
     margin-top: 1rem;
     padding-top: 1.5rem;
-    border-top: 1px solid color-mix(in srgb, var(--neutral-color) 15%, transparent);
+
 }
 
 .cadastro-footer_link {
