@@ -81,3 +81,10 @@ export function formatarWhatsApp(valor: string): string {
 export function apenasDigitos(valor: string): string {
   return valor.replace(/\D/g, '')
 }
+
+export function formatarMoeda(valor: number): string {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  }).format(valor)
+}
