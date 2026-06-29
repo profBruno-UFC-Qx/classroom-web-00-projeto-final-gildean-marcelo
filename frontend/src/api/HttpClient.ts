@@ -180,14 +180,8 @@ class HttpClient {
 
 
 const httpClient = new HttpClient(
-  //   Vite    → import.meta.env.VITE_API_URL
-<<<<<<< HEAD
   import.meta.env.VITE_API_URL ?? 'http://localhost:1337',
-=======
-  //   import.meta.env.VITE_API_URL ?? 'http://localhost:1337',
-  'http://localhost:1337',
 
->>>>>>> ca7dfc9 (add ts em pedido e perfil, e alguns ajustes)
   () => localStorage.getItem('strapi_token')
 )
 
