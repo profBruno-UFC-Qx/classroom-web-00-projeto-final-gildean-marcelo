@@ -56,6 +56,9 @@
       "relation": "oneToMany",
       "target": "api::item-pedido.item-pedido",
       "mappedBy": "pedido"
+    },
+    "endereco_entrega": {
+      "type": "text"
     }
   }
 }

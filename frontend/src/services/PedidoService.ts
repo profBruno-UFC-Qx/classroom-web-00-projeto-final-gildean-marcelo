@@ -28,6 +28,7 @@ export interface PedidoAttributes {
     forma_pagamento: FormaPagamento
     total: number
     observacao_geral: string | null
+    endereco_entrega: string | null
     usuario: { data: StrapiEntity<UsuarioAttributes> | null }
     itens: { data: StrapiEntity<ItemPedidoAttributes>[] }
     createdAt: string
@@ -40,6 +41,7 @@ export interface CreatePedidoDto {
     forma_pagamento: FormaPagamento
     total: number
     observacao_geral?: string
+    endereco_entrega?: string
     situacao?: SituacaoPedido    
 }
 
