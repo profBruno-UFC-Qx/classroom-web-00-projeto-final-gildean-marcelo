@@ -516,7 +516,7 @@ export interface ApiItemPedidoItemPedido extends Struct.CollectionTypeSchema {
     singularName: 'item-pedido';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -549,7 +549,7 @@ export interface ApiPedidoPedido extends Struct.CollectionTypeSchema {
     singularName: 'pedido';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -1102,6 +1102,7 @@ export interface PluginUsersPermissionsUser
         minLength: 6;
       }>;
     endereco: Schema.Attribute.Text;
+    foto: Schema.Attribute.Text;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',

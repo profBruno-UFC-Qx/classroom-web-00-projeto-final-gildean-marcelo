@@ -12,13 +12,13 @@
     margin: 0 auto;
 }
 
-.header_logo{
+.header_logo {
     width: 150px;
     height: 50px;
     object-fit: cover;
 }
 
-.header_nav{
+.header_nav {
     display: none;
 }
 
@@ -48,13 +48,13 @@
 .header_titulo {
     color: var(--primary-color);
     font-weight: var(--fw-bold);
-    font-size: 1.75rem;
+    font-size: 1.5rem;
 }
 
 .header_subtitulo {
     color: var(--neutral-color);
     font-weight: var(--fw-regular);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 /* CATEGORIAS */
@@ -68,11 +68,13 @@
     gap: 0.75rem;
     overflow-x: auto;
     padding-bottom: 0.5rem;
-    scrollbar-width: none; /* Oculta scrollbar no Firefox */
+    scrollbar-width: none;
+    /* Oculta scrollbar no Firefox */
 }
 
 .categorias_list::-webkit-scrollbar {
-    display: none; /* Oculta scrollbar no Chrome/Safari */
+    display: none;
+    /* Oculta scrollbar no Chrome/Safari */
 }
 
 .categorias_item {
@@ -139,7 +141,7 @@
     background-color: var(--secondary-color);
     color: var(--tertiary-color);
     font-weight: var(--fw-bold);
-    font-size: 0.75rem;
+    font-size: 0.6rem;
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     display: flex;
@@ -177,6 +179,8 @@
     justify-content: space-between;
     align-items: center;
     margin-top: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .destaque-card_preco {
@@ -196,6 +200,7 @@
     font-weight: var(--fw-bold);
     cursor: pointer;
     transition: filter 0.2s ease;
+    white-space: nowrap;
 }
 
 .btn:hover {
@@ -209,7 +214,7 @@
 
 /* CATÁLOGO DE PRODUTOS */
 .catalogo {
-    padding: 0 1.5rem 6rem 1.5rem; 
+    padding: 0 1.5rem 6rem 1.5rem;
 }
 
 .catalogo_header {
@@ -349,6 +354,7 @@
 /* ADAPTAÇÃO PARA DESKTOP */
 
 @media (min-width: 768px) {
+
     /* Header Desktop */
     .header {
         flex-direction: row;
@@ -359,7 +365,7 @@
         border-bottom: 2px solid color-mix(in srgb, var(--neutral-color) 20%, white);
         box-shadow: 0 8px 32px color-mix(in srgb, var(--tertiary-color) 5%, transparent);
     }
-    
+
     .header_top {
         display: flex;
         gap: 3rem;
@@ -370,7 +376,7 @@
         display: flex;
         gap: 2.5rem;
     }
-    
+
     .header_nav-link {
         color: var(--neutral-color);
         text-decoration: none;
@@ -381,13 +387,17 @@
     .header_nav-link:hover {
         color: var(--tertiary-color);
     }
-    
+
     .header_nav-link--ativo {
         color: var(--primary-color);
         border-bottom: 2px solid var(--primary-color);
     }
+
     /* Restrição de largura de página Desktop */
-    .categorias, .destaque, .catalogo, .header_saudacao{
+    .categorias,
+    .destaque,
+    .catalogo,
+    .header_saudacao {
         padding: 0 4rem;
         max-width: 1200px;
         margin-left: auto;
@@ -404,9 +414,9 @@
         flex: 1.2;
         aspect-ratio: 16/9;
     }
-    
+
     .destaque-card_tag {
-        display: none; 
+        display: none;
     }
 
     .destaque-card_content {
@@ -419,12 +429,12 @@
     .destaque-card_titulo {
         font-size: 2.5rem;
     }
-    
+
     .destaque-card_descricao {
         font-size: 1rem;
         -webkit-line-clamp: 4;
     }
-    
+
     .destaque-card_preco {
         font-size: 1.75rem;
         color: var(--secondary-color);
@@ -440,9 +450,9 @@
     .catalogo {
         padding-bottom: 4rem;
     }
-    
+
     .catalogo_grid {
-        grid-template-columns: repeat(4, 1fr); 
+        grid-template-columns: repeat(4, 1fr);
         gap: 1.5rem;
     }
 

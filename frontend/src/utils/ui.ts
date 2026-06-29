@@ -98,3 +98,14 @@ export function sanitizeImageUrl(url: string | null): string {
   }
   return url
 }
+
+export function formatarData(isoString: string): string {
+  const data = new Date(isoString)
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(data)
+}

@@ -31,9 +31,9 @@
                 <a href="perfil.html" class="header_nav-link">Perfil</a>
             </nav>
 
-            <button class="header_cart-btn" aria-label="Carrinho de compras">
+            <a href="carrinho.html" class="header_cart-btn" aria-label="Carrinho de compras">
                 <i class="ph ph-shopping-cart"></i>
-            </button>
+            </a>
         </div>
     </header>
 
@@ -42,122 +42,157 @@
 
         <form id="form-pedido" class="carrinho_container">
 
-            <!-- Coluna Esquerda: Pedidos -->
-            <div class="carrinho_coluna-principal">
-                <div class="tipo-entrega">
-                    <input type="radio" name="delivery_tipo" id="tipo_delivery" value="delivery"
-                        class="tipo-entrega_input" checked>
-                    <label for="tipo_delivery" class="tipo-entrega_label">Delivery</label>
-
-                    <input type="radio" name="delivery_tipo" id="tipo_retirada" value="retirada"
-                        class="tipo-entrega_input">
-                    <label for="tipo_retirada" class="tipo-entrega_label">Retirada</label>
-                </div>
-
-
-                <section class="endereco-card">
-                    <div class="endereco-card_icone">
-                        <i class="ph-fill ph-map-pin"></i>
-                    </div>
-
-                    <div class="endereco-card_info">
-                        <h2 class="endereco-card_titulo">Endereço de Entrega</h2>
-
-                        <input type="hidden" name="endereco_completo" id="input_endereco_completo" value="">
-
-                        <p class="endereco-card_texto"><strong id="display_endereco_titulo">Endereço</strong></p>
-                        <p class="endereco-card_texto" id="display_endereco_completo">Carregando endereço...</p>
-                        <p class="endereco-card_texto">Previsão: 35-45 min</p>
-                    </div>
-
-                    <button type="button" class="endereco-card_editar-btn" aria-label="Editar endereço de entrega">
-                        Editar
-                    </button>
-                </section>
-
-                <!-- Lista de Produtos -->
-                <section class="lista-pedido">
-                    <div class="lista-pedido_header">
-                        <i class="ph ph-shopping-bag"></i>
-                        <h2 class="lista-pedido_titulo">Seu Pedido</h2>
-                    </div>
-
-                    <div class="lista-pedido_itens">
-                    </div>
-                </section>
-
-
-                <section class="observacoes">
-                    <div class="observacoes_header">
-                        <i class="ph ph-text-align-left"></i>
-                        <h2 class="observacoes_titulo">Observações</h2>
-                    </div>
-                    <textarea class="observacoes_input" placeholder="Ex: Tirar cebola, ponto da carne, etc."></textarea>
-                </section>
-
-
-                <section class="forma-pagamento">
-                    <div class="forma-pagamento_header">
-                        <i class="ph ph-credit-card"></i>
-                        <h2 class="forma-pagamento_titulo">Pagamento na Entrega</h2>
-                    </div>
-                    <div class="forma-pagamento_opcoes">
-                        <input type="radio" name="payment_tipo" id="pay_pix" value="pix" class="forma-pagamento_input"
-                            checked>
-                        <label for="pay_pix" class="forma-pagamento_label">
-                            <i class="ph ph-qr-code"></i> PIX
-                        </label>
-
-                        <input type="radio" name="payment_tipo" id="pay_credit" value="credito"
-                            class="forma-pagamento_input">
-                        <label for="pay_credit" class="forma-pagamento_label">
-                            <i class="ph ph-credit-card"></i> Crédito
-                        </label>
-
-                        <input type="radio" name="payment_tipo" id="pay_debit" value="debito"
-                            class="forma-pagamento_input">
-                        <label for="pay_debit" class="forma-pagamento_label">
-                            <i class="ph ph-credit-card"></i> Débito
-                        </label>
-
-                        <input type="radio" name="payment_tipo" id="pay_cash" value="dinheiro"
-                            class="forma-pagamento_input">
-                        <label for="pay_cash" class="forma-pagamento_label">
-                            <i class="ph ph-money"></i> Dinheiro
-                        </label>
-                    </div>
-                </section>
-
+            <div id="carrinho-empty-state" class="empty-state"
+                style="display: none; text-align: center; padding: 4rem 1.5rem; flex-direction: column; align-items: center; justify-content: center; height: 60vh; width: 100%;">
+                <i class="ph ph-shopping-cart"
+                    style="font-size: 4rem; color: var(--neutral-color); margin-bottom: 1rem;"></i>
+                <h2 style="font-size: 1.5rem; color: var(--tertiary-color); margin-bottom: 0.5rem; font-weight: bold;">
+                    Seu carrinho está vazio</h2>
+                <p style="color: var(--neutral-color); margin-bottom: 2rem;">Adicione alguns itens deliciosos para fazer
+                    seu pedido.</p>
+                <a href="index.html" class="btn btn--primary"
+                    style="display: inline-flex; justify-content: center; text-decoration: none;">Ver Cardápio</a>
             </div>
 
-            <!-- Coluna Direita (Desktop) / Rodape (Mobile), Resumo -->
-            <aside class="carrinho_resumo">
-                <div class="resumo-card">
-                    <h2 class="resumo-card_titulo">Resumo do Pedido</h2>
+            <div id="carrinho-content" style="display: contents;">
 
-                    <div class="resumo-card_linhas">
-                        <div class="resumo-card_linha">
-                            <span>Subtotal</span>
-                            <span class="resumo-subtotal">R$ 0,00</span>
-                        </div>
-                        <div class="resumo-card_linha">
-                            <span>Taxa de Entrega</span>
-                            <span class="resumo-taxa">R$ 6,00</span>
-                        </div>
+                <!-- Coluna Esquerda: Pedidos -->
+                <div class="carrinho_coluna-principal">
+                    <div class="tipo-entrega">
+                        <input type="radio" name="delivery_tipo" id="tipo_delivery" value="delivery"
+                            class="tipo-entrega_input" checked>
+                        <label for="tipo_delivery" class="tipo-entrega_label">Delivery</label>
+
+                        <input type="radio" name="delivery_tipo" id="tipo_retirada" value="retirada"
+                            class="tipo-entrega_input">
+                        <label for="tipo_retirada" class="tipo-entrega_label">Retirada</label>
                     </div>
 
-                    <div class="resumo-card_total">
-                        <span>Total</span>
-                        <span class="resumo-card_preco-total resumo-total">R$ 0,00</span>
-                    </div>
 
-                    <button type="submit" class="btn--confirmar">
-                        Confirmar Pedido <i class="ph ph-arrow-right"></i>
-                    </button>
-                    <p class="resumo-card_aviso">Nenhum valor será cobrado agora. Você paga apenas no recebimento.</p>
+                    <section class="endereco-card">
+                        <div class="endereco-card_icone">
+                            <i class="ph-fill ph-map-pin"></i>
+                        </div>
+
+                        <div class="endereco-card_info">
+                            <h2 class="endereco-card_titulo">Endereço de Entrega</h2>
+
+                            <input type="hidden" name="endereco_completo" id="input_endereco_completo" value="">
+
+                            <p class="endereco-card_texto"><strong id="display_endereco_titulo">Endereço</strong></p>
+
+                            <!-- Modo de Visualização -->
+                            <div id="endereco_view_mode">
+                                <p class="endereco-card_texto" id="display_endereco_completo">Carregando endereço...</p>
+                            </div>
+
+                            <!-- Modo de Edição -->
+                            <div id="endereco_edit_mode" style="display: none; margin-top: 0.5rem; width: 100%;">
+                                <input type="text" id="input_endereco_edit" class="perfil-form_input"
+                                    style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem;"
+                                    placeholder="Digite o endereço completo">
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <button type="button" id="btn_salvar_endereco" class="btn btn--primary"
+                                        style="padding: 0.5rem 1rem; font-size: 0.8rem; width: auto;">Salvar</button>
+                                    <button type="button" id="btn_cancelar_endereco" class="btn btn--outline"
+                                        style="padding: 0.5rem 1rem; font-size: 0.8rem; width: auto;">Cancelar</button>
+                                </div>
+                            </div>
+
+                            <p class="endereco-card_texto" id="display_endereco_previsao">Previsão: 35-45 min</p>
+                        </div>
+
+                        <button type="button" class="endereco-card_editar-btn" aria-label="Editar endereço de entrega">
+                            Editar
+                        </button>
+                    </section>
+
+                    <!-- Lista de Produtos -->
+                    <section class="lista-pedido">
+                        <div class="lista-pedido_header">
+                            <i class="ph ph-shopping-bag"></i>
+                            <h2 class="lista-pedido_titulo">Seu Pedido</h2>
+                        </div>
+
+                        <div class="lista-pedido_itens">
+                        </div>
+                    </section>
+
+
+                    <section class="observacoes">
+                        <div class="observacoes_header">
+                            <i class="ph ph-text-align-left"></i>
+                            <h2 class="observacoes_titulo">Observações</h2>
+                        </div>
+                        <textarea class="observacoes_input"
+                            placeholder="Ex: Tirar cebola, ponto da carne, etc."></textarea>
+                    </section>
+
+
+                    <section class="forma-pagamento">
+                        <div class="forma-pagamento_header">
+                            <i class="ph ph-credit-card"></i>
+                            <h2 class="forma-pagamento_titulo">Pagamento na Entrega</h2>
+                        </div>
+                        <div class="forma-pagamento_opcoes">
+                            <input type="radio" name="payment_tipo" id="pay_pix" value="pix"
+                                class="forma-pagamento_input" checked>
+                            <label for="pay_pix" class="forma-pagamento_label">
+                                <i class="ph ph-qr-code"></i> PIX
+                            </label>
+
+                            <input type="radio" name="payment_tipo" id="pay_credit" value="credito"
+                                class="forma-pagamento_input">
+                            <label for="pay_credit" class="forma-pagamento_label">
+                                <i class="ph ph-credit-card"></i> Crédito
+                            </label>
+
+                            <input type="radio" name="payment_tipo" id="pay_debit" value="debito"
+                                class="forma-pagamento_input">
+                            <label for="pay_debit" class="forma-pagamento_label">
+                                <i class="ph ph-credit-card"></i> Débito
+                            </label>
+
+                            <input type="radio" name="payment_tipo" id="pay_cash" value="dinheiro"
+                                class="forma-pagamento_input">
+                            <label for="pay_cash" class="forma-pagamento_label">
+                                <i class="ph ph-money"></i> Dinheiro
+                            </label>
+                        </div>
+                    </section>
+
                 </div>
-            </aside>
 
+                <!-- Coluna Direita (Desktop) / Rodape (Mobile), Resumo -->
+                <aside class="carrinho_resumo">
+                    <div class="resumo-card">
+                        <h2 class="resumo-card_titulo">Resumo do Pedido</h2>
+
+                        <div class="resumo-card_linhas">
+                            <div class="resumo-card_linha">
+                                <span>Subtotal</span>
+                                <span class="resumo-subtotal">R$ 0,00</span>
+                            </div>
+                            <div class="resumo-card_linha">
+                                <span>Taxa de Entrega</span>
+                                <span class="resumo-taxa">R$ 6,00</span>
+                            </div>
+                        </div>
+
+                        <div class="resumo-card_total">
+                            <span>Total</span>
+                            <span class="resumo-card_preco-total resumo-total">R$ 0,00</span>
+                        </div>
+
+                        <button type="submit" class="btn--confirmar">
+                            Confirmar Pedido <i class="ph ph-arrow-right"></i>
+                        </button>
+                        <p class="resumo-card_aviso">Nenhum valor será cobrado agora. Você paga apenas no recebimento.
+                        </p>
+                    </div>
+                </aside>
+
+            </div>
         </form>
     </main>
 

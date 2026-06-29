@@ -7,7 +7,7 @@
     "displayName": "Pedido"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
@@ -44,6 +44,9 @@
     },
     "observacao_geral": {
       "type": "text"
+    },
+    "endereco_entrega": {
+      "type": "string"
     },
     "users_permissions_user": {
       "type": "relation",

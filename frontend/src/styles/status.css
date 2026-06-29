@@ -33,7 +33,6 @@
     justify-content: center;
 }
 
-
 /* MAIN LAYOUT */
 .status-pedido {
     padding: 0 1.5rem;
@@ -47,7 +46,7 @@
 .status-pedido_container {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .status-pedido_principal {
@@ -56,286 +55,318 @@
     gap: 1.5rem;
 }
 
-/* COLUNA ESQUERA */
-
-/* Card Previsão */
-.previsao-card {
+/* COLUNA ESQUERDA: Live Tracker */
+.live-tracker {
     background-color: white;
-    border-radius: 1rem;
+    border-radius: 1.5rem;
     padding: 2rem 1.5rem;
+    box-shadow: 0 10px 40px color-mix(in srgb, var(--tertiary-color) 4%, transparent);
     display: flex;
     flex-direction: column;
+    gap: 2rem;
+}
+
+.live-tracker_header {
+    display: flex;
     align-items: center;
-    text-align: center;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--tertiary-color) 6%, transparent);
+    gap: 1rem;
 }
 
-.previsao-card_titulo {
-    color: var(--primary-color);
-    font-weight: var(--fw-medium);
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.5rem;
+.live-tracker_pulse {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--secondary-color);
+    box-shadow: 0 0 0 0 rgba(241, 190, 73, 0.7);
+    animation: pulse-animation 2s infinite;
 }
 
-.previsao-card_horario {
-    color: var(--primary-color);
+.live-tracker_pulse.green {
+    background-color: var(--primary-color);
+    box-shadow: 0 0 0 0 rgba(49, 112, 57, 0.7);
+    animation: pulse-animation-green 2s infinite;
+}
+
+.live-tracker_pulse.gray {
+    background-color: var(--neutral-color);
+    animation: none;
+    box-shadow: none;
+}
+
+@keyframes pulse-animation {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(241, 190, 73, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(241, 190, 73, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(241, 190, 73, 0);
+    }
+}
+
+@keyframes pulse-animation-green {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(49, 112, 57, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(49, 112, 57, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(49, 112, 57, 0);
+    }
+}
+
+.live-tracker_titulo {
+    font-size: 1.25rem;
     font-weight: var(--fw-bold);
-    font-size: 3rem;
-    line-height: 1;
-    margin-bottom: 1rem;
+    color: var(--tertiary-color);
 }
 
-.previsao-card_badge {
-    display: inline-flex;
+.live-tracker_estimativa {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fafaf4;
+    padding: 1rem 1.25rem;
+    border-radius: 1rem;
+}
+
+.estimativa-label {
+    font-size: 0.875rem;
+    color: var(--neutral-color);
+    font-weight: var(--fw-medium);
+}
+
+.estimativa-tempo {
+    display: flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: color-mix(in srgb, var(--secondary-color) 30%, transparent);
-    color: var(--tertiary-color);
-    padding: 0.5rem 1rem;
-    border-radius: 2rem;
-    font-size: 0.875rem;
-    font-weight: var(--fw-bold);
-}
-
-/* Card rastreio */
-.rastreio-card {
-    background-color: white;
-    border-radius: 1rem;
-    padding: 1.5rem;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--tertiary-color) 6%, transparent);
-}
-
-.rastreio-card_titulo {
-    color: var(--tertiary-color);
-    font-weight: var(--fw-bold);
     font-size: 1.25rem;
-    margin-bottom: 1.5rem;
+    font-weight: var(--fw-bold);
+    color: var(--primary-color);
+}
+.estimativa-tempo i {
+    font-size: 1.5rem;
 }
 
-/* Linha do Tempo Customizada */
-.rastreio-timeline {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    position: relative;
-}
-
-.rastreio-item {
-    position: relative;
+/* Stepper */
+.stepper {
     display: flex;
+    flex-direction: column;
+}
+
+.stepper-item {
+    display: flex;
+    align-items: flex-start;
     gap: 1rem;
-    padding-bottom: 2rem;
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
 }
 
-.rastreio-item:last-child {
-    padding-bottom: 0;
+.stepper-item.active, .stepper-item.completed {
+    opacity: 1;
 }
 
-/* A linha vertical conectando os itens */
-.rastreio-item:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 15px; 
-    top: 30px; 
-    bottom: 0;
-    width: 2px;
-    background-color: color-mix(in srgb, var(--neutral-color) 20%, transparent);
-    z-index: 1;
-}
-
-.rastreio-item_icone {
-    width: 32px;
-    height: 32px;
+.stepper-icon {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
+    background-color: color-mix(in srgb, var(--neutral-color) 15%, transparent);
+    color: var(--neutral-color);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.25rem;
     flex-shrink: 0;
-    z-index: 2;
+    transition: all 0.3s ease;
 }
 
-.rastreio-item_conteudo {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding-top: 0.25rem;
+.stepper-item.active .stepper-icon {
+    background-color: var(--secondary-color);
+    color: var(--tertiary-color);
+    box-shadow: 0 4px 10px rgba(241, 190, 73, 0.4);
 }
 
-.rastreio-item_titulo {
-    font-weight: var(--fw-bold);
-    font-size: 1rem;
-}
-
-.rastreio-item_horario, 
-.rastreio-item_descricao {
-    font-size: 0.875rem;
-    line-height: 1.4;
-}
-
-/* Estado (Concluído, Ativo, Pendente) */
-.rastreio-item--concluido .rastreio-item_icone {
+.stepper-item.completed .stepper-icon {
     background-color: var(--primary-color);
     color: white;
 }
 
-.rastreio-item--concluido .rastreio-item_titulo {
-color: var(--primary-color);
+.stepper-content {
+    display: flex;
+    flex-direction: column;
+    padding-top: 0.5rem;
 }
 
-.rastreio-item--concluido .rastreio-item_horario {
+.stepper-content h3 {
+    font-size: 1rem;
+    font-weight: var(--fw-bold);
+    color: var(--tertiary-color);
+    margin-bottom: 0.25rem;
+}
+
+.stepper-content p {
+    font-size: 0.75rem;
     color: var(--neutral-color);
 }
 
-.rastreio-item--ativo .rastreio-item_icone {
-    background-color: var(--secondary-color);
-    color: var(--tertiary-color);
-}
-
-.rastreio-item--ativo .rastreio-item_titulo {
-    color: var(--tertiary-color);
-}
-
-.rastreio-item--ativo .rastreio-item_descricao {
-    color: var(--neutral-color);
-}
-
-.rastreio-item--pendente .rastreio-item_icone {
+.stepper-linha {
+    margin-left: 19px; 
+    width: 2px;
+    height: 35px;
     background-color: color-mix(in srgb, var(--neutral-color) 15%, transparent);
-    color: color-mix(in srgb, var(--neutral-color) 60%, transparent);
+    margin-top: -0.5rem;
+    margin-bottom: -0.5rem;
+    position: relative;
+    overflow: hidden;
 }
 
-.rastreio-item--pendente .rastreio-item_titulo,
-.rastreio-item--pendente .rastreio-item_descricao {
-    color: color-mix(in srgb, var(--neutral-color) 60%, transparent);
+.stepper-progresso {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background-color: var(--primary-color);
+    transition: height 0.5s ease;
 }
 
-/* Pintar a linha caso o próximo item esteja ativo ou concluído */
-.rastreio-item--concluido::after {
-    background-color: var(--secondary-color) !important;
-}
-
-/* COLUNA DIREITA */
-.resumo-card {
-    background-color: white;
+/* COLUNA DIREITA: Recibo */
+.recibo-card {
+    background: linear-gradient(145deg, #ffffff, #fdfdfd);
     border-radius: 1rem;
-    padding: 1.5rem;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--tertiary-color) 6%, transparent);
+    padding: 2rem 1.5rem;
+    box-shadow: 0 10px 40px color-mix(in srgb, var(--tertiary-color) 6%, transparent);
+    position: relative;
 }
 
-.resumo-card_cabecalho {
+/* Efeito serrilhado (recibo) - simplificado com radial-gradient */
+.recibo-card::before, .recibo-card::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background-size: 20px 20px;
+}
+.recibo-card::before {
+    top: -5px;
+    background-image: radial-gradient(circle at 10px 0, transparent 10px, white 11px);
+}
+.recibo-card::after {
+    bottom: -5px;
+    background-image: radial-gradient(circle at 10px 20px, transparent 10px, white 11px);
+}
+
+.recibo-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
 }
 
-.resumo-card_titulo {
-    color: var(--tertiary-color);
-    font-weight: var(--fw-bold);
-    font-size: 1.25rem;
+.recibo-logo {
+    height: 30px;
+    object-fit: contain;
 }
 
-.resumo-card_id-badge {
-    background-color: color-mix(in srgb, var(--primary-color) 10%, transparent);
-    color: var(--primary-color);
-    font-size: 0.75rem;
-    font-weight: var(--fw-bold);
+.recibo-id {
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: var(--neutral-color);
+    background-color: #f3f4f6;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
 }
 
-.resumo-card_itens {
+.recibo-itens {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--neutral-color) 15%, transparent);
-    padding-bottom: 1.5rem;
+    gap: 1rem;
 }
 
-.resumo-item {
+.recibo-item {
     display: flex;
-    gap: 1rem;
+    justify-content: space-between;
     align-items: flex-start;
 }
 
-.resumo-item_quantidade {
-    background-color: color-mix(in srgb, var(--primary-color) 10%, transparent);
-    color: var(--primary-color);
-    font-weight: var(--fw-bold);
-    font-size: 0.875rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    min-width: 32px;
-    text-align: center;
-}
-
-.resumo-item_detalhes {
-    flex: 1;
+.recibo-item-left {
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+    align-items: flex-start;
+    gap: 0.75rem;
 }
 
-.resumo-item_nome {
+.recibo-item-qtd {
+    font-weight: var(--fw-bold);
+    color: var(--primary-color);
+    font-size: 0.875rem;
+    background-color: color-mix(in srgb, var(--primary-color) 10%, transparent);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+}
+
+.recibo-item-nome {
+    font-size: 0.875rem;
     color: var(--tertiary-color);
     font-weight: var(--fw-bold);
-    font-size: 1rem;
+    margin-bottom: 0.25rem;
 }
 
-.resumo-item_descricao {
-    color: var(--neutral-color);
+.recibo-item-desc {
     font-size: 0.75rem;
+    color: var(--neutral-color);
+    line-height: 1.3;
 }
 
-.resumo-item_preco {
+.recibo-item-preco {
+    font-size: 0.875rem;
     color: var(--tertiary-color);
     font-weight: var(--fw-bold);
-    font-size: 1rem;
 }
 
-.resumo-card_linhas {
+.recibo-divisor {
+    border-top: 2px dashed color-mix(in srgb, var(--neutral-color) 20%, transparent);
+    margin: 1.5rem 0;
+}
+
+.recibo-valores {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--neutral-color) 15%, transparent);
-    padding-bottom: 1.5rem;
 }
 
-.resumo-card_linha {
+.recibo-linha {
     display: flex;
     justify-content: space-between;
     color: var(--neutral-color);
     font-size: 0.875rem;
 }
 
-.resumo-card_total {
+.recibo-total {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: var(--tertiary-color);
-    font-weight: var(--fw-bold);
     font-size: 1.25rem;
-    margin-bottom: 1.5rem;
+    font-weight: var(--fw-bold);
+    color: var(--tertiary-color);
+    margin-bottom: 2rem;
 }
 
-.resumo-card_preco-total {
-    font-size: 1.5rem;
-}
-
-/* Botões Customizados */
-.resumo-card_acoes {
+.recibo-acoes {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.btn {
+.btn-recibo {
     width: 100%;
     padding: 1rem;
     border-radius: 0.5rem;
@@ -347,25 +378,25 @@ color: var(--primary-color);
     gap: 0.5rem;
     cursor: pointer;
     transition: all 0.2s ease;
-}
-
-.btn--suporte {
-    background-color: var(--secondary-color);
-    color: var(--tertiary-color);
     border: none;
 }
 
-.btn--suporte:hover {
-    filter: brightness(0.95);
+.btn-recibo--suporte {
+    background-color: var(--primary-color);
+    color: white;
 }
 
-.btn--cancelar {
+.btn-recibo--suporte:hover {
+    background-color: color-mix(in srgb, var(--primary-color) 80%, black);
+}
+
+.btn-recibo--cancelar {
     background-color: transparent;
     color: #dc2626;
-    border: 1px solid #dc2626;
+    border: 1px solid color-mix(in srgb, #dc2626 30%, transparent);
 }
 
-.btn--cancelar:hover {
+.btn-recibo--cancelar:hover {
     background-color: color-mix(in srgb, #dc2626 5%, transparent);
 }
 
@@ -417,9 +448,7 @@ color: var(--primary-color);
 
 
 /* ADAPTAÇÃO PARA DESKTOP */
-
 @media (min-width: 768px) {
-    /* Header Desktop */
     .header {
         flex-direction: row;
         flex-wrap: wrap;
@@ -447,7 +476,6 @@ color: var(--primary-color);
         border-bottom: 2px solid var(--primary-color);
     }
     
-    /* Layout Main */
     .status-pedido {
         padding: 0 4rem 4rem 4rem;
         max-width: 1200px;
@@ -461,7 +489,7 @@ color: var(--primary-color);
 
     .status-pedido_titulo {
         color: var(--primary-color);
-        font-size: 1.75rem;
+        font-size: 2rem;
         font-weight: var(--fw-bold);
         margin-bottom: 0.5rem;
     }
@@ -475,7 +503,7 @@ color: var(--primary-color);
     .status-pedido_container {
         flex-direction: row;
         align-items: flex-start;
-        gap: 2rem;
+        gap: 3rem;
     }
     
     .status-pedido_principal {
@@ -483,16 +511,11 @@ color: var(--primary-color);
     }
     
     .status-pedido_lateral {
-        flex: 0 0 calc(40% - 2rem);
+        flex: 0 0 calc(40% - 3rem);
         position: sticky;
         top: 2rem;
     }
     
-    .resumo-card_id-badge {
-        display: none; 
-    }
-
-   
     .butao-nav {
         display: none;
     }

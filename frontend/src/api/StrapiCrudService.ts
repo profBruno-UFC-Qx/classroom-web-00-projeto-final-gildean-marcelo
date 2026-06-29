@@ -26,7 +26,7 @@ export class StrapiCrudService<T, TCreate = Partial<T>, TUpdate = Partial<TCreat
 
     }
 
-    async update(id: number, payload: TUpdate): Promise<StrapiEntity<T>> {
+    async update(id: number | string, payload: TUpdate): Promise<StrapiEntity<T>> {
 
         const { data } = await httpClient.put<StrapiSingle<T>>(
             `${this.url}/${id}`, 
@@ -36,7 +36,7 @@ export class StrapiCrudService<T, TCreate = Partial<T>, TUpdate = Partial<TCreat
         return data.data
     }
 
-    async delete(id: number): Promise<void> {
+    async delete(id: number | string): Promise<void> {
         await httpClient.delete(`${this.url}/${id}`)
     }
 
@@ -52,9 +52,19 @@ export class StrapiCrudService<T, TCreate = Partial<T>, TUpdate = Partial<TCreat
     }
 
     async getById(
-        id:number,
+        id: number | string,
         params?: Pick<StrapiQueryParams<T>, 'populate' | 'fields'>
     ): Promise<StrapiEntity<T>> {
+        if (typeof id === 'number') {
+            // Strapi 5 does not support numeric IDs in the REST URL by default.
+            // We use a filter query to find the document by its internal numeric ID.
+            const queryParams: StrapiQueryParams<T> = { ...params };
+            queryParams.filters = { ...queryParams.filters, id: { $eq: id } } as any;
+            const listRes = await this.list(queryParams);
+            if (listRes.data.length === 0) throw new Error(`Entity with id ${id} not found`);
+            return listRes.data[0];
+        }
+
         const { data } = await httpClient.get<StrapiSingle<T>>(`${this.url}/${id}`, 
             { params: this.buildQueryParams(params) }
         )

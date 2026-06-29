@@ -31,6 +31,10 @@ export function getUsuarioLogado(): LoginResponse['user'] | null {
 }
 
 
+export function setUsuarioLogado(user: LoginResponse['user']): void {
+  localStorage.setItem(CHAVE_USER, JSON.stringify(user))
+}
+
 export function isAutenticado(): boolean {
   return getToken() !== null && getUsuarioLogado() !== null
 }

@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danny's - Minha Conta</title>
-    
+
     <link rel="stylesheet" href="src/styles/reset.css">
     <link rel="stylesheet" href="src/styles/style.css">
     <link rel="stylesheet" href="src/styles/perfil.css">
-    
+
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
+
 <body class="perfil-page">
 
     <header class="header">
         <div class="header_interno">
             <img src="src/assets/images/logo_simples.png" alt="Danny's Logo" class="header_logo">
-            
+
             <!-- Navegação Desktop -->
             <nav class="header_nav">
                 <a href="index.html" class="header_nav-link">Home</a>
@@ -24,9 +26,9 @@
                 <a href="#" class="header_nav-link header_nav-link--ativo">Perfil</a>
             </nav>
 
-            <button type="button" class="header_cart-btn" aria-label="Carrinho de compras">
+            <a href="carrinho.html" class="header_cart-btn" aria-label="Carrinho de compras">
                 <i class="ph ph-shopping-cart"></i>
-            </button>
+            </a>
         </div>
     </header>
 
@@ -38,17 +40,20 @@
         </div>
 
         <div class="perfil-grid">
-            
+
             <form id="form-perfil" class="perfil-card">
-                
+
                 <div class="perfil-card_header-usuario">
                     <div class="avatar-container">
-                        <img src="src/assets/images/perfil.jpeg" alt="Sua Foto de Perfil" class="avatar-imagem">
-                        <button type="button" class="avatar-edit-btn" aria-label="Editar Foto">
+                        <img src="src/assets/images/perfil.jpeg" alt="Sua Foto de Perfil" class="avatar-imagem"
+                            id="avatar-imagem">
+                        <input type="file" id="perfil-foto-input" accept="image/*" style="display: none;">
+                        <button type="button" class="avatar-edit-btn" aria-label="Editar Foto" id="btn-edit-foto"
+                            disabled>
                             <i class="ph-fill ph-pencil-simple"></i>
                         </button>
                     </div>
-                    
+
                     <!-- Informacoes (Desktop) -->
                     <div class="perfil-card_textos-desktop">
                         <h2 class="perfil-card_titulo">Informações do Usuário</h2>
@@ -56,102 +61,79 @@
                     </div>
                 </div>
 
-                
+
                 <div class="perfil-form_group">
                     <label class="perfil-form_label">Nome Completo</label>
-                    <input type="text" class="perfil-form_input" value="Maria Silva" readonly>
+                    <input type="text" id="perfil-nome" class="perfil-form_input" value="" readonly>
                 </div>
 
                 <div class="perfil-form_group">
                     <label class="perfil-form_label">E-mail</label>
-                    <input type="email" class="perfil-form_input" value="maria.silva@email.com" readonly>
+                    <input type="email" id="perfil-email" class="perfil-form_input" value="" readonly>
                 </div>
 
                 <div class="perfil-form_group">
                     <label class="perfil-form_label">Telefone</label>
-                    <input type="tel" class="perfil-form_input" value="(11) 98765-4321" readonly>
+                    <input type="tel" id="perfil-telefone" class="perfil-form_input" value="" readonly>
                 </div>
 
                 <div class="perfil-form_group">
                     <label class="perfil-form_label">Endereço de Entrega</label>
-                    <input type="text" class="perfil-form_input" value="Rua das Flores, 123 - São Paulo, SP" readonly>
+                    <input type="text" id="perfil-endereco" class="perfil-form_input" value="" readonly>
                 </div>
 
-                <button type="button" class="btn btn-edit">
-                    Editar
-                </button>
+                <!-- Campos de Senha (Visíveis apenas ao editar) -->
+                <div id="password-fields" style="display: none;">
+                    <div class="perfil-form_group">
+                        <label class="perfil-form_label">Nova Senha</label>
+                        <input type="password" id="perfil-senha" class="perfil-form_input"
+                            placeholder="Deixe em branco para não alterar">
+                    </div>
+                    <div class="perfil-form_group">
+                        <label class="perfil-form_label">Confirmar Senha</label>
+                        <input type="password" id="perfil-senha-confirm" class="perfil-form_input"
+                            placeholder="Confirme a nova senha">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; width: 100%;">
+                    <button type="button" class="btn btn-edit" style="flex: 1;">
+                        Editar
+                    </button>
+                    <button type="button" id="btn-cancel-edit" class="btn btn--outline" style="flex: 1; display: none;">
+                        Cancelar
+                    </button>
+                </div>
             </form>
 
 
 
             <section class="perfil-card historico-card">
-                
+
                 <div class="historico-card_cabecalho">
                     <div class="historico-card_titulos">
                         <h2 class="perfil-card_titulo">Histórico de Pedidos</h2>
                         <p class="perfil-card_subtitulo">Seus pedidos recentes.</p>
                     </div>
 
-                    <!-- Link Mobile -->
-                    <a href="#" class="historico-card_link-mobile">Ver todos</a>
+
+                </div>
+
+                <div id="historico-empty-state" class="empty-state"
+                    style="display: none; text-align: center; padding: 2rem 1rem; flex-direction: column; align-items: center; justify-content: center;">
+                    <i class="ph ph-receipt"
+                        style="font-size: 3rem; color: var(--neutral-color); margin-bottom: 0.5rem;"></i>
+                    <p style="color: var(--neutral-color); font-weight: bold; margin-bottom: 1rem;">Nenhum pedido ainda
+                    </p>
+                    <a href="index.html" class="btn btn--primary"
+                        style="display: inline-flex; justify-content: center; text-decoration: none; padding: 0.5rem 1rem; font-size: 0.875rem;">Fazer
+                        meu primeiro pedido</a>
                 </div>
 
                 <ul class="historico-lista">
-                   
-                    <li class="historico-item">
-                        <div class="historico-item_info">
-                            <h3 class="historico-item_titulo">Pedido #8432</h3>
-                            <div class="historico-item_data">
-                                <i class="ph ph-calendar-blank"></i> 15 de Outubro, 2023
-                            </div>
-                        </div>
-                        <div class="historico-item_detalhes">
-                            <div class="historico-item_valores">
-                                <span class="historico-item_badge">Concluído</span>
-                                <span class="historico-item_preco">R$ 145,90</span>
-                            </div>
-                        </div>
-                    </li>
-
-                    
-                    <li class="historico-item">
-                        <div class="historico-item_info">
-                            <h3 class="historico-item_titulo">Pedido #8391</h3>
-                            <div class="historico-item_data">
-                                <i class="ph ph-calendar-blank"></i> 28 de Setembro, 2023
-                            </div>
-                        </div>
-                        <div class="historico-item_detalhes">
-                            <div class="historico-item_valores">
-                                <span class="historico-item_badge">Concluído</span>
-                                <span class="historico-item_preco">R$ 89,50</span>
-                            </div>
-                            <i class="ph ph-caret-right historico-item_seta"></i>
-                        </div>
-                    </li>
-
-                    
-                    <li class="historico-item">
-                        <div class="historico-item_info">
-                            <h3 class="historico-item_titulo">Pedido #8210</h3>
-                            <div class="historico-item_data">
-                                <i class="ph ph-calendar-blank"></i> 10 de Setembro, 2023
-                            </div>
-                        </div>
-                        <div class="historico-item_detalhes">
-                            <div class="historico-item_valores">
-                                <span class="historico-item_badge">Concluído</span>
-                                <span class="historico-item_preco">R$ 210,00</span>
-                            </div>
-                            <i class="ph ph-caret-right historico-item_seta"></i>
-                        </div>
-                    </li>
+                    <!-- Injetado via TypeScript -->
                 </ul>
 
-                <!-- Link Desktop -->
-                <a href="#" class="historico-card_link-desktop">
-                    Ver todos os pedidos <i class="ph-bold ph-arrow-right"></i>
-                </a>
             </section>
 
         </div>
@@ -174,5 +156,8 @@
             </a>
         </nav>
     </footer>
+
+    <script type="module" src="/src/components/perfilController.ts"></script>
 </body>
+
 </html>

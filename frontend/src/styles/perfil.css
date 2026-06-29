@@ -1,5 +1,5 @@
 .perfil-page {
-    background-color: color-mix(in srgb, var(--secondary-color) 5%, white); 
+    background-color: color-mix(in srgb, var(--secondary-color) 5%, white);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -20,7 +20,7 @@
     margin: 0 auto;
 }
 
-.header_logo{
+.header_logo {
     width: 150px;
     height: 50px;
     object-fit: cover;
@@ -194,19 +194,16 @@
     display: none;
 }
 
-.historico-card_link-mobile {
-    color: var(--tertiary-color);
-    font-size: 0.875rem;
-    font-weight: var(--fw-bold);
-    text-decoration: none;
-}
-
 .historico-lista {
     list-style: none;
     padding: 0;
+    padding-right: 0.5rem;
+    /* para a barra de rolagem não colar */
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
 .historico-item {
@@ -253,12 +250,46 @@
 }
 
 .historico-item_badge {
-    color: var(--primary-color);
-    background-color: color-mix(in srgb, var(--primary-color) 15%, transparent);
     padding: 0.25rem 0.65rem;
     border-radius: 1rem;
     font-size: 0.7rem;
     font-weight: var(--fw-bold);
+    /* Cores padrão (caso falte a classe específica) */
+    color: var(--neutral-color);
+    background-color: color-mix(in srgb, var(--neutral-color) 15%, transparent);
+}
+
+.historico-item_badge--recebido {
+    color: #64748b;
+    /* slate-500 */
+    background-color: #f1f5f9;
+    /* slate-100 */
+}
+
+.historico-item_badge--preparando {
+    color: #ea580c;
+    /* orange-600 */
+    background-color: #ffedd5;
+    /* orange-100 */
+}
+
+.historico-item_badge--pronto {
+    color: #2563eb;
+    /* blue-600 */
+    background-color: #dbeafe;
+    /* blue-100 */
+}
+
+.historico-item_badge--entregue {
+    color: var(--primary-color);
+    background-color: color-mix(in srgb, var(--primary-color) 15%, transparent);
+}
+
+.historico-item_badge--cancelado {
+    color: #ef4444;
+    /* red-500 */
+    background-color: #fee2e2;
+    /* red-100 */
 }
 
 .historico-item_preco {
@@ -267,9 +298,6 @@
     font-size: 1rem;
 }
 
-.historico-card_link-desktop {
-    display: none; 
-}
 
 /* BUTAO NAV MOBILE */
 .butao-nav {
@@ -416,9 +444,6 @@
         margin-top: 1rem;
     }
 
-    .historico-card_link-mobile {
-        display: none;
-    }
 
     .perfil-card_subtitulo {
         display: block;
@@ -444,16 +469,6 @@
         font-size: 1.125rem;
     }
 
-    .historico-card_link-desktop {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-top: 2rem;
-        color: var(--tertiary-color);
-        font-weight: var(--fw-bold);
-        text-decoration: none;
-        align-self: flex-start;
-    }
 
     .butao-nav {
         display: none;
