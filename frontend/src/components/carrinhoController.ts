@@ -7,6 +7,60 @@ import { setLoading, showFeedback, formatarMoeda, sanitizeImageUrl } from '@/uti
 
 const TAXA_ENTREGA = 6.00
 
+// Modal
+
+type ModalTipo = 'aviso' | 'erro'
+
+const ICONES: Record<ModalTipo, string> = {
+  aviso: '<i class="ph-bold ph-map-pin-area"></i>',
+  erro:  '<i class="ph-bold ph-x-circle"></i>',
+}
+
+function showModal(
+  titulo: string,
+  mensagem: string,
+  tipo: ModalTipo = 'aviso',
+  opcoes?: { labelOk?: string; labelAcao?: string; onAcao?: () => void }
+): Promise<void> {
+  return new Promise(resolve => {
+    const overlay  = document.getElementById('modal-overlay')!
+    const iconEl   = document.getElementById('modal-icon')!
+    const tituloEl = document.getElementById('modal-titulo')!
+    const msgEl    = document.getElementById('modal-mensagem')!
+    const acoesEl  = document.getElementById('modal-acoes')!
+
+    if (!overlay) { resolve(); return }
+
+    iconEl.className = `modal-icon modal-icon--${tipo}`
+    iconEl.innerHTML = ICONES[tipo]
+    tituloEl.textContent = titulo
+    msgEl.textContent = mensagem
+    acoesEl.innerHTML = ''
+
+    // Botão de ação opcional (ex: "Adicionar endereço")
+    if (opcoes?.labelAcao && opcoes.onAcao) {
+      const btnAcao = document.createElement('button')
+      btnAcao.className = 'modal-btn modal-btn--primario'
+      btnAcao.textContent = opcoes.labelAcao
+      btnAcao.onclick = () => {
+        overlay.style.display = 'none'
+        opcoes.onAcao!()
+        resolve()
+      }
+      acoesEl.appendChild(btnAcao)
+    }
+
+    const btnOk = document.createElement('button')
+    btnOk.className = opcoes?.labelAcao ? 'modal-btn modal-btn--secundario' : 'modal-btn modal-btn--primario'
+    btnOk.textContent = opcoes?.labelOk ?? 'Entendi'
+    btnOk.onclick = () => { overlay.style.display = 'none'; resolve() }
+    acoesEl.appendChild(btnOk)
+
+    overlay.style.display = 'flex'
+    acoesEl.querySelector<HTMLButtonElement>('.modal-btn')?.focus()
+  })
+}
+
 
 if (!isAutenticado()) {
   window.location.replace('login.html')
@@ -68,7 +122,7 @@ function openEditEndereco() {
 function saveEndereco() {
   const novoEndereco = inputEnderecoEdit?.value.trim() || ''
   if (novoEndereco === '') {
-    alert('O endereço não pode estar vazio.')
+    showModal('Endereço vazio', 'Por favor, preencha o endereço antes de salvar.', 'aviso')
     return
   }
 
@@ -251,7 +305,19 @@ async function handleSubmit(e: SubmitEvent) {
 
   if (tipoEntrega === 'delivery') {
     if (!inputEnderecoOculto?.value || inputEnderecoOculto.value.trim() === '') {
-      alert('Por favor, adicione um endereço de entrega para o delivery! Clique em "Editar" no campo de endereço.')
+      await showModal(
+        'Endereço de entrega não informado',
+        'Para pedidos com Delivery, é necessário informar um endereço de entrega.',
+        'aviso',
+        {
+          labelAcao: 'Adicionar endereço',
+          onAcao: () => {
+            // Abre o modo de edição do endereço automaticamente
+            const btnEditar = document.querySelector<HTMLButtonElement>('.endereco-card_editar-btn')
+            btnEditar?.click()
+          }
+        }
+      )
       return
     }
   }
@@ -289,7 +355,7 @@ async function handleSubmit(e: SubmitEvent) {
   } catch (error: any) {
     console.error('[CARRINHO ERRO]', error)
     const errBody = error?.body ? JSON.stringify(error.body) : (error?.message || JSON.stringify(error))
-    alert('Erro detalhado: ' + errBody)
+    console.error('Erro detalhado:', errBody)
     showFeedback(form, 'Erro ao enviar pedido. Verifique sua conexão e tente novamente.', 'erro')
   } finally {
     setLoading(btnSubmit, false)

@@ -22,7 +22,6 @@ const btnEditFoto = document.querySelector<HTMLButtonElement>('#btn-edit-foto')
 
 let isEditing = false
 let novaFotoBase64: string | null = null
-
 async function init() {
   if (!isAutenticado()) {
     window.location.href = 'login.html'
@@ -173,20 +172,17 @@ async function toggleEditMode() {
     })
     if (passwordFields) passwordFields.style.display = 'block'
     if (btnCancelEdit) btnCancelEdit.style.display = 'block'
-    if (btnEditFoto) btnEditFoto.disabled = false
+    if (btnEditFoto) { btnEditFoto.style.display = 'flex'; btnEditFoto.disabled = false }
 
     if (inputNome) inputNome.focus()
     if (btnEdit) btnEdit.textContent = 'Salvar'
   } else {
-    // Save state
     const updateDto: any = {}
     if (inputNome) updateDto.username = inputNome.value
     if (inputEmail) updateDto.email = inputEmail.value
     if (inputTelefone) updateDto.whatsapp = inputTelefone.value
     if (inputEndereco) updateDto.endereco = inputEndereco.value
     if (novaFotoBase64) updateDto.foto = novaFotoBase64
-
-    // Check password
     if (inputSenha?.value) {
       if (inputSenha.value !== inputSenhaConfirm?.value) {
         alert('As senhas não coincidem.')
@@ -213,7 +209,7 @@ async function toggleEditMode() {
       if (btnCancelEdit) btnCancelEdit.style.display = 'none'
       if (inputSenha) inputSenha.value = ''
       if (inputSenhaConfirm) inputSenhaConfirm.value = ''
-      if (btnEditFoto) btnEditFoto.disabled = true
+      if (btnEditFoto) { btnEditFoto.style.display = 'none'; btnEditFoto.disabled = true }
 
       if (btnEdit) btnEdit.textContent = 'Editar'
 
@@ -242,10 +238,10 @@ async function cancelEditMode() {
   if (btnCancelEdit) btnCancelEdit.style.display = 'none'
   if (inputSenha) inputSenha.value = ''
   if (inputSenhaConfirm) inputSenhaConfirm.value = ''
-  if (btnEditFoto) btnEditFoto.disabled = true
+  if (btnEditFoto) { btnEditFoto.style.display = 'none'; btnEditFoto.disabled = true }
   if (btnEdit) btnEdit.textContent = 'Editar'
 
-  await carregarDadosUsuario() // restaura os dados originais
+  await carregarDadosUsuario()
 }
 
 document.addEventListener('DOMContentLoaded', init)

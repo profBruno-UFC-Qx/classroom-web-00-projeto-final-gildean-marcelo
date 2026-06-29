@@ -1,3 +1,127 @@
+/* MODAL CUSTOMIZADO */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1.5rem;
+    animation: modal-fade-in 0.2s ease;
+}
+
+@keyframes modal-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.modal-box {
+    background: white;
+    border-radius: 1.5rem;
+    padding: 2rem 1.75rem;
+    max-width: 380px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    animation: modal-slide-up 0.25s ease;
+}
+
+@keyframes modal-slide-up {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modal-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+}
+
+.modal-icon--sucesso {
+    background-color: color-mix(in srgb, var(--primary-color) 12%, transparent);
+    color: var(--primary-color);
+}
+
+.modal-icon--aviso {
+    background-color: color-mix(in srgb, var(--secondary-color) 20%, transparent);
+    color: #92641a;
+}
+
+.modal-icon--erro {
+    background-color: color-mix(in srgb, #dc2626 10%, transparent);
+    color: #dc2626;
+}
+
+.modal-titulo {
+    font-size: 1.25rem;
+    font-weight: var(--fw-bold);
+    color: var(--tertiary-color);
+}
+
+.modal-mensagem {
+    font-size: 0.9rem;
+    color: var(--neutral-color);
+    line-height: 1.5;
+}
+
+.modal-acoes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    width: 100%;
+    margin-top: 0.75rem;
+}
+
+.modal-btn {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    font-weight: var(--fw-bold);
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.modal-btn--primario {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.modal-btn--primario:hover {
+    background-color: color-mix(in srgb, var(--primary-color) 80%, black);
+}
+
+.modal-btn--perigo {
+    background-color: #dc2626;
+    color: white;
+}
+
+.modal-btn--perigo:hover {
+    background-color: color-mix(in srgb, #dc2626 80%, black);
+}
+
+.modal-btn--secundario {
+    background-color: transparent;
+    color: var(--neutral-color);
+    border: 1px solid color-mix(in srgb, var(--neutral-color) 30%, transparent);
+}
+
+.modal-btn--secundario:hover {
+    background-color: color-mix(in srgb, var(--neutral-color) 8%, transparent);
+}
+
 /* HEADER */
 .header {
     padding: 1.5rem;
@@ -12,7 +136,7 @@
     margin: 0 auto;
 }
 
-.header_logo{
+.header_logo {
     width: 150px;
     height: 50px;
     object-fit: cover;
@@ -41,6 +165,64 @@
 
 .status-pedido_cabecalho {
     display: none;
+    margin-bottom: 1.5rem;
+    padding-top: 1rem;
+}
+
+.status-pedido_titulo {
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    font-weight: var(--fw-bold);
+    margin-bottom: 0.25rem;
+}
+
+.status-pedido_subtitulo {
+    color: var(--neutral-color);
+    font-size: 0.875rem;
+}
+
+/* EMPTY STATE */
+.status-empty-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1rem;
+    padding: 4rem 2rem;
+    min-height: 60vh;
+}
+
+.status-empty-state i {
+    font-size: 4rem;
+    color: color-mix(in srgb, var(--neutral-color) 40%, transparent);
+}
+
+.status-empty-state h2 {
+    font-size: 1.5rem;
+    font-weight: var(--fw-bold);
+    color: var(--tertiary-color);
+}
+
+.status-empty-state p {
+    font-size: 0.9rem;
+    color: var(--neutral-color);
+    max-width: 260px;
+}
+
+.status-empty-state .btn {
+    margin-top: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: var(--fw-bold);
+    transition: background-color 0.2s ease;
+}
+
+.status-empty-state .btn:hover {
+    background-color: color-mix(in srgb, var(--primary-color) 80%, black);
 }
 
 .status-pedido_container {
@@ -98,10 +280,12 @@
         transform: scale(0.95);
         box-shadow: 0 0 0 0 rgba(241, 190, 73, 0.7);
     }
+
     70% {
         transform: scale(1);
         box-shadow: 0 0 0 10px rgba(241, 190, 73, 0);
     }
+
     100% {
         transform: scale(0.95);
         box-shadow: 0 0 0 0 rgba(241, 190, 73, 0);
@@ -113,10 +297,12 @@
         transform: scale(0.95);
         box-shadow: 0 0 0 0 rgba(49, 112, 57, 0.7);
     }
+
     70% {
         transform: scale(1);
         box-shadow: 0 0 0 10px rgba(49, 112, 57, 0);
     }
+
     100% {
         transform: scale(0.95);
         box-shadow: 0 0 0 0 rgba(49, 112, 57, 0);
@@ -152,6 +338,7 @@
     font-weight: var(--fw-bold);
     color: var(--primary-color);
 }
+
 .estimativa-tempo i {
     font-size: 1.5rem;
 }
@@ -170,7 +357,8 @@
     transition: opacity 0.3s ease;
 }
 
-.stepper-item.active, .stepper-item.completed {
+.stepper-item.active,
+.stepper-item.completed {
     opacity: 1;
 }
 
@@ -218,7 +406,7 @@
 }
 
 .stepper-linha {
-    margin-left: 19px; 
+    margin-left: 19px;
     width: 2px;
     height: 35px;
     background-color: color-mix(in srgb, var(--neutral-color) 15%, transparent);
@@ -248,7 +436,8 @@
 }
 
 /* Efeito serrilhado (recibo) - simplificado com radial-gradient */
-.recibo-card::before, .recibo-card::after {
+.recibo-card::before,
+.recibo-card::after {
     content: '';
     position: absolute;
     left: 0;
@@ -256,10 +445,12 @@
     height: 10px;
     background-size: 20px 20px;
 }
+
 .recibo-card::before {
     top: -5px;
     background-image: radial-gradient(circle at 10px 0, transparent 10px, white 11px);
 }
+
 .recibo-card::after {
     bottom: -5px;
     background-image: radial-gradient(circle at 10px 20px, transparent 10px, white 11px);
@@ -458,24 +649,24 @@
         border-bottom: 2px solid color-mix(in srgb, var(--neutral-color) 20%, white);
         box-shadow: 0 8px 32px color-mix(in srgb, var(--tertiary-color) 5%, transparent);
     }
-    
+
     .header_nav {
         display: flex;
         gap: 2.5rem;
     }
-    
+
     .header_nav-link {
         color: var(--neutral-color);
         text-decoration: none;
         font-weight: var(--fw-bold);
         font-size: 1.25rem;
     }
-    
+
     .header_nav-link--ativo {
         color: var(--primary-color);
         border-bottom: 2px solid var(--primary-color);
     }
-    
+
     .status-pedido {
         padding: 0 4rem 4rem 4rem;
         max-width: 1200px;
@@ -499,23 +690,23 @@
         font-size: 1rem;
         font-weight: var(--fw-regular);
     }
-    
+
     .status-pedido_container {
         flex-direction: row;
         align-items: flex-start;
         gap: 3rem;
     }
-    
+
     .status-pedido_principal {
         flex: 0 0 60%;
     }
-    
+
     .status-pedido_lateral {
         flex: 0 0 calc(40% - 3rem);
         position: sticky;
         top: 2rem;
     }
-    
+
     .butao-nav {
         display: none;
     }

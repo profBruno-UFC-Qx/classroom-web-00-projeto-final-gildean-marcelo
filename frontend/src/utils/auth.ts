@@ -40,7 +40,7 @@ export function isAutenticado(): boolean {
 }
 
 
-export function redirecionarSeLogado(destino = 'index.html'): void {
+export function redirecionarSeLogado(destino = '/index.html'): void {
   if (isAutenticado()) {
     window.location.replace(destino)
   }

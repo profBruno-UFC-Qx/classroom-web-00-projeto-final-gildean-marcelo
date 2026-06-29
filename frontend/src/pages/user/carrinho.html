@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danny's - Carrinho</title>
 
-    <link rel="stylesheet" href="src/styles/reset.css">
-    <link rel="stylesheet" href="src/styles/style.css">
-    <link rel="stylesheet" href="src/styles/carrinho.css">
+    <link rel="stylesheet" href="../../../src/styles/reset.css">
+    <link rel="stylesheet" href="../../../src/styles/style.css">
+    <link rel="stylesheet" href="../../../src/styles/user/carrinho.css">
 
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
@@ -23,10 +23,10 @@
             <h1 class="header_titulo-mobile">Carrinho</h1>
 
             <!-- Navegação Desktop -->
-            <img src="src/assets/images/logo_simples.png" alt="Danny's Logo" class="header_logo">
+            <img src="../../../src/assets/images/logo_simples.png" alt="Danny's Logo" class="header_logo">
 
             <nav class="header_nav">
-                <a href="index.html" class="header_nav-link">Home</a>
+                <a href="../../../index.html" class="header_nav-link">Home</a>
                 <a href="status.html" class="header_nav-link">Pedidos</a>
                 <a href="perfil.html" class="header_nav-link">Perfil</a>
             </nav>
@@ -50,7 +50,7 @@
                     Seu carrinho está vazio</h2>
                 <p style="color: var(--neutral-color); margin-bottom: 2rem;">Adicione alguns itens deliciosos para fazer
                     seu pedido.</p>
-                <a href="index.html" class="btn btn--primary"
+                <a href="../../../index.html" class="btn btn--primary"
                     style="display: inline-flex; justify-content: center; text-decoration: none;">Ver Cardápio</a>
             </div>
 
@@ -195,6 +195,16 @@
             </div>
         </form>
     </main>
+
+    <!-- Modal Customizado -->
+    <div id="modal-overlay" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+        <div class="modal-box">
+            <div class="modal-icon" id="modal-icon"></div>
+            <h2 class="modal-titulo" id="modal-titulo"></h2>
+            <p class="modal-mensagem" id="modal-mensagem"></p>
+            <div class="modal-acoes" id="modal-acoes"></div>
+        </div>
+    </div>
 
     <script type="module" src="/src/components/carrinhoController.ts"></script>
 </body>

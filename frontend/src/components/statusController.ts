@@ -2,6 +2,75 @@ import { pedidoService, SituacaoPedido } from '@/services/PedidoService'
 import { isAutenticado, getUsuarioLogado } from '@/utils/auth'
 import { formatarMoeda } from '@/utils/ui'
 
+// ─── Modal Customizado ────────────────────────────────────────────────────────
+
+type ModalTipo = 'sucesso' | 'aviso' | 'erro'
+
+const ICONES: Record<ModalTipo, string> = {
+  sucesso: '<i class="ph-bold ph-check"></i>',
+  aviso:   '<i class="ph-bold ph-warning"></i>',
+  erro:    '<i class="ph-bold ph-x-circle"></i>',
+}
+
+function showModal(titulo: string, mensagem: string, tipo: ModalTipo = 'sucesso'): Promise<void> {
+  return new Promise(resolve => {
+    const overlay  = document.getElementById('modal-overlay')!
+    const iconEl   = document.getElementById('modal-icon')!
+    const tituloEl = document.getElementById('modal-titulo')!
+    const msgEl    = document.getElementById('modal-mensagem')!
+    const acoesEl  = document.getElementById('modal-acoes')!
+
+    iconEl.className = `modal-icon modal-icon--${tipo}`
+    iconEl.innerHTML = ICONES[tipo]
+    tituloEl.textContent = titulo
+    msgEl.textContent = mensagem
+
+    acoesEl.innerHTML = ''
+    const btnOk = document.createElement('button')
+    btnOk.className = 'modal-btn modal-btn--primario'
+    btnOk.textContent = 'OK'
+    btnOk.onclick = () => { overlay.style.display = 'none'; resolve() }
+    acoesEl.appendChild(btnOk)
+
+    overlay.style.display = 'flex'
+    btnOk.focus()
+  })
+}
+
+function showConfirmModal(titulo: string, mensagem: string): Promise<boolean> {
+  return new Promise(resolve => {
+    const overlay  = document.getElementById('modal-overlay')!
+    const iconEl   = document.getElementById('modal-icon')!
+    const tituloEl = document.getElementById('modal-titulo')!
+    const msgEl    = document.getElementById('modal-mensagem')!
+    const acoesEl  = document.getElementById('modal-acoes')!
+
+    iconEl.className = 'modal-icon modal-icon--aviso'
+    iconEl.innerHTML = ICONES.aviso
+    tituloEl.textContent = titulo
+    msgEl.textContent = mensagem
+
+    acoesEl.innerHTML = ''
+
+    const btnConfirmar = document.createElement('button')
+    btnConfirmar.className = 'modal-btn modal-btn--perigo'
+    btnConfirmar.textContent = 'Sim, cancelar'
+    btnConfirmar.onclick = () => { overlay.style.display = 'none'; resolve(true) }
+
+    const btnVoltar = document.createElement('button')
+    btnVoltar.className = 'modal-btn modal-btn--secundario'
+    btnVoltar.textContent = 'Voltar'
+    btnVoltar.onclick = () => { overlay.style.display = 'none'; resolve(false) }
+
+    acoesEl.appendChild(btnConfirmar)
+    acoesEl.appendChild(btnVoltar)
+
+    overlay.style.display = 'flex'
+    btnVoltar.focus()
+  })
+}
+
+
 // Elementos do Rastreador
 const trackerTitulo = document.getElementById('tracker-titulo')
 const trackerPulse = document.getElementById('tracker-pulse')
@@ -25,9 +94,7 @@ const spanTaxa = document.getElementById('recibo-taxa')
 const spanTotal = document.getElementById('recibo-total-valor')
 
 async function init() {
-  console.error('[STATUS DEBUG] init() começou a rodar na página de status!')
   if (!isAutenticado()) {
-    console.error('[STATUS DEBUG] Usuário não está autenticado. Redirecionando...')
     window.location.href = 'login.html'
     return
   }
@@ -35,7 +102,6 @@ async function init() {
   let pedidoId: string | number = 0
   const urlParams = new URLSearchParams(window.location.search)
   const pedidoIdStr = urlParams.get('pedido_id')
-  console.error('[STATUS DEBUG] pedidoId da URL:', pedidoIdStr)
 
   if (!pedidoIdStr) {
     const user = getUsuarioLogado()
@@ -53,11 +119,10 @@ async function init() {
           window.history.replaceState(null, '', `?pedido_id=${pedidoId}`)
         }
       } catch (error) {
-        console.error('[STATUS DEBUG] Erro ao buscar pedidos ativos:', error)
+        console.error('Erro ao buscar pedidos ativos:', error)
       }
     }
   } else {
-    // Se for apenas numérico, converte para número. Caso contrário, documentId.
     pedidoId = /^\d+$/.test(pedidoIdStr) ? Number(pedidoIdStr) : pedidoIdStr
   }
 
@@ -86,7 +151,24 @@ function mostrarEmptyState() {
 }
 
 function renderizarPedido(pedido: any) {
-  if (badgeResumoId) badgeResumoId.textContent = `#DAN-${pedido.id.toString().padStart(4, '0')}`
+  const numPedido = pedido.id.toString().padStart(4, '0')
+
+  // Atualiza cabeçalho
+  const elTitulo = document.getElementById('status-titulo')
+  const elSubtitulo = document.getElementById('status-subtitulo')
+  if (elTitulo) elTitulo.textContent = `Pedido #DAN-${numPedido}`
+  if (elSubtitulo) {
+    const data = new Date(pedido.createdAt)
+    elSubtitulo.textContent = `Realizado em ${data.toLocaleDateString('pt-BR')} às ${data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+  }
+
+  // Mostra o cabeçalho e o container
+  const elCabecalho = document.getElementById('status-cabecalho')
+  const elContainer = document.getElementById('status-container')
+  if (elCabecalho) elCabecalho.style.display = 'block'
+  if (elContainer) elContainer.style.display = 'flex'
+
+  if (badgeResumoId) badgeResumoId.textContent = `#DAN-${numPedido}`
 
   // Renderizar itens do recibo
   if (listaItens && pedido.item_pedidos) {
@@ -148,20 +230,23 @@ function renderizarPedido(pedido: any) {
       btnCancelar.style.display = 'none'
     } else {
       btnCancelar.onclick = async () => {
-        if (confirm('Tem certeza que deseja cancelar este pedido?')) {
+        const confirmado = await showConfirmModal(
+          'Cancelar Pedido',
+          'Tem certeza que deseja cancelar este pedido? Esta ação não pode ser desfeita.'
+        )
+        if (confirmado) {
           try {
             btnCancelar.textContent = 'Cancelando...'
             const docId = pedido.documentId || pedido.id
             await pedidoService.update(docId, { situacao: SituacaoPedido.Cancelado })
-            alert('Pedido cancelado com sucesso.')
+            await showModal('Pedido Cancelado', 'Seu pedido foi cancelado com sucesso.', 'sucesso')
             window.location.reload()
           } catch (error: any) {
             console.error('Erro ao cancelar pedido:', error)
-
             if (error?.status === 403) {
-              alert('O sistema bloqueou o cancelamento (Erro 403). Para resolver, vá no Painel Admin do Strapi > Configurações > Roles > Authenticated > Pedido, e marque a caixinha "update" (salvar).')
+              await showModal('Sem permissão', 'O sistema bloqueou o cancelamento. Tente falar com o suporte.', 'erro')
             } else {
-              alert('Não foi possível cancelar o pedido. Tente falar com o suporte.')
+              await showModal('Erro', 'Não foi possível cancelar o pedido. Tente falar com o suporte.', 'erro')
             }
             btnCancelar.textContent = 'Cancelar Pedido'
           }

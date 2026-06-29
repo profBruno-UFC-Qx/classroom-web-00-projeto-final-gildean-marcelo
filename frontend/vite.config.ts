@@ -13,11 +13,11 @@ export default defineConfig({
       input: {
         // App do Cliente (Mobile)
         main: resolve(__dirname, 'index.html'),
-        login:     resolve(__dirname, 'login.html'),
-        cadastro:  resolve(__dirname, 'cadastro.html'),
-        carrinho:  resolve(__dirname, 'carrinho.html'),
-        status:    resolve(__dirname, 'status.html'),
-        perfil:    resolve(__dirname, 'perfil.html'),
+        login:     resolve(__dirname, 'src/pages/user/login.html'),
+        cadastro:  resolve(__dirname, 'src/pages/user/cadastro.html'),
+        carrinho:  resolve(__dirname, 'src/pages/user/carrinho.html'),
+        status:    resolve(__dirname, 'src/pages/user/status.html'),
+        perfil:    resolve(__dirname, 'src/pages/user/perfil.html'),
 
         // App do Admin   
         kds: resolve(__dirname, 'src/pages/admin/kds.html'),
