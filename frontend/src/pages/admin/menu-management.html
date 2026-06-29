@@ -11,159 +11,171 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
-  <!-- Styles -->  
   <link rel="stylesheet" href="../../styles/style.css">
   <link rel="stylesheet" href="../../styles/admin/menu-management.css">
 
-    <script  type="module" src="../../scripts/admin/menu-management.ts"></script>
+  <script type="module" src="../../scripts/admin/menu-management.ts"></script>
 </head>
+
+<!-- FIX: .app-body na tag body (define altura 100vh, overflow:hidden, cor de fundo) -->
 <body class="app-body">
 
+  <!-- FIX: .app-shell envolve sidebar + main para o layout flex em linha -->
   <div class="app-shell">
-    
-    <nav class="sidebar" id="sidebar" aria-label="Menu de navegação">
+
+    <!-- ============================================================
+         Sidebar
+         ============================================================ -->
+    <nav class="sidebar" aria-label="Main navigation">
 
       <div class="sidebar__brand">
         <img
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg4kP6VZ1YjoDuDNu1Rkf2Hg6ZGpdkSCl3nt5PZVpVSR3b_l407_Yp6mP8YsG_eULaXGV7eRarGt5dUn_OFsyxMp2_98n94gaGHzQcsvqdnCDiGm1csC2TEbrsyt2-ElIIpzPEPJsVFddctOXQJCPE9q8UV87_4Ma-yCs9vjr9GrhJ71DWE5FwSeqyAE0p3ppknziWX-hOhcvP5yUQAM16FNStkQ9BHXi1EFiOOpxWrKKhw8r4dhiHevvT081qfqrfFWtBAM0lOV8"
-          alt="Danny's Fresh Market"
           class="sidebar__logo"
-        />
-        <span class="sidebar__brand-name">Danny's Admin</span>
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuArRIlw9F8XaQevtW6PO7lYyVFdEXswYY7kKhJua4IzlNsWvqeX8pItqTzGHwSSr4bC4Vxlwgvq4cWiKgA6Yl2gMaLRgNqqKxLzCM9Faj4M5P0nOcoEpmdNuNWCnwGr_RghNbVAuMUQPSKyGpPjwMEXefGv61fSY1zC4MGAHTQTruEMS1YkM4oh12C7IKwC2UyzOrQSqcq1uGgxKztYoYA-yDAf_4Yj6-MOnKCfPuruufAq_wlmksXUeioM3bBfqVHKmOXtSSSmSoM"
+          alt="Danny's Fresh Market logo">
+        <div>
+          <!-- FIX: sidebar__app-name → sidebar__brand-name -->
+          <span class="sidebar__brand-name">Admin Panel</span>
+          <!-- FIX: sidebar__app-sub → sidebar__brand-subtitle -->
+          <span class="sidebar__brand-subtitle">Management Console</span>
+        </div>
       </div>
 
-      <ul class="sidebar__nav" role="list">
+      <ul class="sidebar__nav">
         <li>
-          <a href="#" class="sidebar__nav-item" data-page="dashboard">
+          <!-- FIX: sidebar__nav-link → sidebar__nav-item; sidebar__nav-icon adicionado ao ícone -->
+          <a href="#" class="sidebar__nav-item">
             <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">dashboard</span>
-            <span class="sidebar__nav-label">Dashboard</span>
-          </a>
-        </li>        
-        <li>
-          <a href="menu-management.html" class="sidebar__nav-item sidebar__nav-item--active" data-page="menu" aria-current="page">
-            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true" style="font-variation-settings:'FILL' 1;">restaurant_menu</span>
-            <span class="sidebar__nav-label">Menu Management</span>
+            Dashboard
           </a>
         </li>
         <li>
-          <a href="kds.html" class="sidebar__nav-item" data-page="kds">
-            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">kitchen</span>
-            <span class="sidebar__nav-label">KDS Monitor</span>
+          <!-- FIX: is-active → sidebar__nav-item--active -->
+          <a href="#" class="sidebar__nav-item sidebar__nav-item--active" aria-current="page">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">restaurant_menu</span>
+            Menu Management
           </a>
         </li>
         <li>
-          <a href="team-management.html" class="sidebar__nav-item" data-page="team">
+          <a href="#" class="sidebar__nav-item">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">skillet</span>
+            KDS Monitor
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar__nav-item">
             <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">group</span>
-            <span class="sidebar__nav-label">Team Management</span>
-          </a>
-        </li>
-        <li>
-          <a href="orders.html" class="sidebar__nav-item" data-page="orders">
-            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">receipt_long</span>
-            <span class="sidebar__nav-label">Pedidos</span>
+            Team Management
           </a>
         </li>
       </ul>
 
       <div class="sidebar__footer">
-        <button class="sidebar__user" id="sidebar-user" aria-label="Perfil do usuário">
+        <div class="sidebar__user">
+          <!-- FIX: sidebar__avatar → sidebar__user-avatar -->
           <img
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2tCHSKhri8qtjBJC6PDuuFvH1dLCnkKaUFO4XcgigqziMJ7LbeSqVUpbxdFZy91364REXmlCet--BEDk_1w1CP7as_Qjn-sp9Zb_N_E2D_fazvOaydqY29OwcKDm_gSkbwNdzVkUj8IbMGAEdGFtJ7Wr8jWU99-bDFrPGUwWkZ-2mtllNj6Vk92l6pbnelxULgCjmlzr2rTA_m_GRW9xqcaPE6_2mr_kSPsyvwndIrQxK2jFe6rpIhOxaiRQfPrPqE4Rq7fAbc2o"
-            alt="Admin User"
             class="sidebar__user-avatar"
-          />
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-aLLYIvNweuNeqRqhgwU2aGoHCBdhYdsyHPpTyxiTb1kYWPZSqG9ph6rhagrRXUCTV9RKs-91v-0zX8JuN6DAYWYRFycKphEfc1ZIqchVsTV_4e5pB9vgTstJOHEeD9zXeirIxupjJnjPvJjqhxGO9lv3sSn4CcjwGUOyoMn4mIYSRDfeCGUNK3IYVk-btW0QtKrwE-LI_PYKziz2LrV6rZrZZ6PgMuDGIy7r98GsX5ZEaYyrrGxKIIStNgNefVwezbAxIUOuVsg"
+            alt="Admin User avatar">
+          <!-- FIX: wrapper interno ganha sidebar__user-info (ellipsis no nome) -->
           <div class="sidebar__user-info">
             <span class="sidebar__user-name">Admin User</span>
-            <span class="sidebar__user-role">Gerente</span>
+            <span class="sidebar__user-role">Administrator</span>
           </div>
-          <span class="material-symbols-outlined sidebar__user-chevron" aria-hidden="true">expand_more</span>
-        </button>
+        </div>
       </div>
 
     </nav>
-    
-    <div class="main-wrapper">
-      
-      <header class="topbar">
-        <h1 class="topbar__title">Admin Dashboard</h1>
 
+    <!-- ============================================================
+         Main Content
+         ============================================================ -->
+    <!-- FIX: main-content → main-wrapper -->
+    <main class="main-wrapper">
+
+      <!-- Topbar -->
+      <header class="topbar">
+        <h1 class="topbar__title">Menu Management</h1>
         <div class="topbar__actions">
-          <button class="topbar__icon-btn" id="btn-notifications" aria-label="Notificações">
+          <!-- FIX: topbar__btn → topbar__icon-btn; topbar__badge → topbar__notif-dot -->
+          <button class="topbar__icon-btn" id="btn-notifications" aria-label="Notifications">
             <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
             <span class="topbar__notif-dot" aria-hidden="true"></span>
           </button>
-
           <div class="topbar__divider" aria-hidden="true"></div>
-
-          <button class="topbar__logout-btn" id="btn-logout">
+          <!-- FIX: topbar__btn → topbar__icon-btn -->
+          <button class="topbar__icon-btn" id="btn-logout" aria-label="Log out">
             <span class="material-symbols-outlined" aria-hidden="true">logout</span>
-            Sair
           </button>
         </div>
       </header>
-      
-      <main class="page-content" id="main-content" aria-label="Conteúdo principal">
+
+      <!-- Scrollable canvas -->
+      <!-- FIX: page-canvas → page-content; page-inner → page-content__inner -->
+      <div class="page-content">
         <div class="page-content__inner">
 
-        <!-- Page header -->
-        <div class="page-header">
-          <div class="page-header__text">
-            <h2 class="page-header__title">Products</h2>
-            <p class="page-header__sub">Manage your menu items, categories, and pricing.</p>
-          </div>
-          <div class="page-header__actions">
+          <!-- Page header -->
+          <div class="page-header">
+            <div class="page-header__text">
+              <h2 class="page-header__title">Products</h2>
+              <p class="page-header__sub">Manage your menu items, categories, and pricing.</p>
+            </div>
+            <div class="page-header__actions">
 
-            <div class="search-field">
-              <span class="material-symbols-outlined search-field__icon" aria-hidden="true">search</span>
-              <input
-                class="search-field__input"
-                id="search-input"
-                type="text"
-                placeholder="Search products..."
-                aria-label="Search products"
-                autocomplete="off">
+              <div class="search-field">
+                <span class="material-symbols-outlined search-field__icon" aria-hidden="true">search</span>
+                <input
+                  class="search-field__input"
+                  id="search-input"
+                  type="text"
+                  placeholder="Search products..."
+                  aria-label="Search products"
+                  autocomplete="off">
+              </div>
+
+              <button class="btn btn--ghost" id="btn-filter">
+                <span class="material-symbols-outlined" aria-hidden="true">filter_list</span>
+                Filter
+              </button>
+
+              <button class="btn btn--cta" id="btn-new-product">
+                <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                Novo Produto
+              </button>
+
+            </div>
+          </div>
+
+          <!-- Metrics — populated by TypeScript -->
+          <div class="metrics-grid" id="metrics-grid" aria-label="Summary metrics"></div>
+
+          <!-- Product table -->
+          <div class="product-table-container" role="region" aria-label="Products table">
+
+            <div class="table-head" role="row">
+              <div class="table-head__col" role="columnheader">Product Name</div>
+              <div class="table-head__col" role="columnheader">Category</div>
+              <div class="table-head__col" role="columnheader">Price</div>
+              <div class="table-head__col" role="columnheader">Status</div>
+              <div class="table-head__col table-head__col--actions" role="columnheader">Actions</div>
             </div>
 
-            <button class="btn btn--ghost" id="btn-filter">
-              <span class="material-symbols-outlined" aria-hidden="true">filter_list</span>
-              Filter
-            </button>
+            <!-- Table body — populated by TypeScript -->
+            <div class="table-body" id="table-body" role="rowgroup"></div>
 
-            <button class="btn btn--cta" id="btn-new-product">
-              <span class="material-symbols-outlined" aria-hidden="true">add</span>
-              Novo Produto
-            </button>
+            <div class="table-footer">
+              <span class="table-info" id="table-info"></span>
+              <nav class="pagination" id="pagination" aria-label="Pagination"></nav>
+            </div>
 
           </div>
-        </div>
-
-        <!-- Metrics — populated by TypeScript -->
-        <div class="metrics-grid" id="metrics-grid" aria-label="Summary metrics"></div>
-
-        <!-- Product table -->
-        <div class="product-table-container" role="region" aria-label="Products table">
-
-          <div class="table-head" role="row">
-            <div class="table-head__col" role="columnheader">Product Name</div>
-            <div class="table-head__col" role="columnheader">Category</div>
-            <div class="table-head__col" role="columnheader">Price</div>
-            <div class="table-head__col" role="columnheader">Status</div>
-            <div class="table-head__col table-head__col--actions" role="columnheader">Actions</div>
-          </div>
-
-          <!-- Table body — populated by TypeScript -->
-          <div class="table-body" id="table-body" role="rowgroup"></div>
-
-          <div class="table-footer">
-            <span class="table-info" id="table-info"></span>
-            <nav class="pagination" id="pagination" aria-label="Pagination"></nav>
-          </div>
-
         </div>
       </div>
+
     </main>
-  </div>
-</div>
+
+  </div><!-- /.app-shell -->
 
   <!-- ============================================================
        Modal — Add / Edit Product
@@ -203,7 +215,6 @@
               <span class="upload-area__label">Clique para enviar ou arraste aqui</span>
               <span class="upload-area__hint">SVG, PNG, JPG ou GIF (máx. 5 MB)</span>
             </div>
-            <!-- Hidden file input triggered by upload area -->
             <input
               type="file"
               id="image-file-input"
@@ -238,12 +249,8 @@
               </label>
               <div class="select-wrapper">
                 <div class="input-wrapper">
-                  <select class="field__select" id="prod-category">
-                    <option value="" disabled selected>Selecionar categoria...</option>
-                    <option value="Sandwiches">Sandwiches</option>
-                    <option value="Salads">Salads</option>
-                    <option value="Soups">Soups</option>
-                    <option value="Beverages">Beverages</option>
+                  <select class="field__select" id="prod-category" disabled>
+                    <option value="" disabled selected>Carregando categorias…</option>
                   </select>
                 </div>
                 <span class="material-symbols-outlined select-wrapper__icon" aria-hidden="true">expand_more</span>
@@ -305,7 +312,6 @@
 
     </div>
   </div>
-
 
 </body>
 </html>

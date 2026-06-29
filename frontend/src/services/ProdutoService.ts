@@ -11,14 +11,13 @@ export enum StatusProduto {
 export interface ProdutoAttributes {
   nome:       string
   descricao:  string | null
-  preco:      number             
+  preco:      number
   imagem_url: string | null
   situacao:   StatusProduto
-  categoria:  { data: StrapiEntity<CategoriaAttributes> | null }
+  categoria:  (StrapiEntity<CategoriaAttributes> & { nome: string }) | null
   createdAt:  string
   updatedAt:  string
 }
-
 
 export interface CreateProdutoDto {
   nome:        string
@@ -26,7 +25,7 @@ export interface CreateProdutoDto {
   preco:       number
   descricao?:  string
   imagem_url?: string
-  situacao?:   StatusProduto  
+  situacao?:   StatusProduto
 }
 
 export interface UpdateProdutoDto {
@@ -72,13 +71,31 @@ export class ProdutoService extends StrapiCrudService<ProdutoAttributes, CreateP
       populate: ['categoria'],
     })
   }
-  
+
   async listAtivos(params?: StrapiQueryParams<ProdutoAttributes>) {
     return this.list({
       ...params,
       filters:  { ...params?.filters, situacao: { $eq: StatusProduto.Ativo } },
       sort:     ['nome:asc'],
       populate: ['categoria'],
+    })
+  }
+
+  /**
+   * Listagem irrestrita (sem filtro de situacao) com populate de categoria.
+   *
+   * Necessário porque list() em StrapiCrudService é protected, não
+   * acessível diretamente de fora da hierarquia de classe.
+   * Usado pelo painel admin para exibir TODOS os produtos
+   * (ativos + pausados) com filtros dinâmicos.
+   *
+   * @param params - Quaisquer StrapiQueryParams; populate padrão ['categoria']
+   *                 pode ser sobrescrito via params.populate.
+   */
+  async listAll(params?: StrapiQueryParams<ProdutoAttributes>) {
+    return this.list({
+      populate: ['categoria'],
+      ...params,          // params sobrescreve o populate padrão se necessário
     })
   }
 

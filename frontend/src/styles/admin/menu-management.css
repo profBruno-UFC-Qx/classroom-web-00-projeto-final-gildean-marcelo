@@ -1,7 +1,7 @@
 @import './admin-template.css';
 
 :root {
-  /* Bridge variables to standard template variables */
+  /* Bridge — mapeia os tokens canônicos do template para os atalhos usados neste arquivo */
   --c-surface:                  var(--color-surface);
   --c-surface-dim:              var(--color-surface-dim);
   --c-surface-bright:           var(--color-surface-bright);
@@ -21,19 +21,19 @@
   --c-deep-forest:              var(--color-sidebar-bg);
   --c-cta-yellow:               var(--color-secondary-container);
   --c-error:                    var(--color-error);
-  
+
   --c-active-bg:                rgba(172, 241, 172, 0.20);
   --c-active-text:              #165723;
   --c-active-border:            rgba(22, 87, 35, 0.20);
 
   /* Spacing */
-  --sp-xs:      var(--space-xs);
-  --sp-sm:      var(--space-sm);
-  --sp-md:      var(--space-md);
-  --sp-lg:      var(--space-lg);
-  --sp-xl:      var(--space-xl);
-  --sp-gutter:  var(--space-gutter);
-  --sp-margin:  var(--space-margin-desktop);
+  --sp-xs:     var(--space-xs);
+  --sp-sm:     var(--space-sm);
+  --sp-md:     var(--space-md);
+  --sp-lg:     var(--space-lg);
+  --sp-xl:     var(--space-xl);
+  --sp-gutter: var(--space-gutter);
+  --sp-margin: var(--space-margin-desktop);
 
   /* Border radius */
   --r-sm:   var(--radius-sm);
@@ -42,15 +42,35 @@
   --r-lg:   var(--radius-lg);
   --r-xl:   var(--radius-xl);
   --r-full: var(--radius-full);
+
+  /* FIX: --font-main não estava definido em nenhum lugar; adicionado aqui */
+  --font-main: 'Inter', sans-serif;
 }
 
-/* Override page-content for menu management (scrollable canvas) */
+/* ============================================================
+   Sidebar — complemento específico desta página
+   ============================================================ */
+
+/* FIX: subtítulo do brand (Management Console) — classe não existia no template */
+.sidebar__brand-subtitle {
+  display: block;
+  font-size: var(--fs-label-sm);
+  font-weight: var(--fw-label-sm);
+  line-height: var(--lh-label-sm);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ============================================================
+   Page content — override: canvas rolável nesta página
+   ============================================================ */
+
 .page-content {
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--color-surface-dim) transparent;
 }
-.page-content::-webkit-scrollbar { width: 8px; }
+
+.page-content::-webkit-scrollbar       { width: 8px; }
 .page-content::-webkit-scrollbar-track { background: transparent; }
 .page-content::-webkit-scrollbar-thumb {
   background-color: var(--color-surface-dim);
@@ -133,16 +153,17 @@
 
 .btn .material-symbols-outlined { font-size: 20px; }
 
-/* Ghost (secondary action) */
+/* Ghost (ação secundária) */
 .btn--ghost {
   background-color: var(--c-surface-lowest);
   color: var(--c-on-surface);
   border: 1px solid var(--c-outline-variant);
-  box-shadow: var(--shadow-ambient);
+  /* FIX: --shadow-ambient não existe → --shadow-sm */
+  box-shadow: var(--shadow-sm);
 }
 .btn--ghost:hover { background-color: var(--c-surface-low); }
 
-/* Outline primary (Cancel in modal) */
+/* Outline primary (Cancelar no modal) */
 .btn--outline-primary {
   background: transparent;
   color: var(--c-primary);
@@ -150,17 +171,19 @@
 }
 .btn--outline-primary:hover { background-color: rgba(22, 87, 35, 0.05); }
 
-/* CTA — primary action button (yellow) */
+/* CTA — botão principal amarelo */
 .btn--cta {
   background-color: var(--c-cta-yellow);
   color: var(--c-deep-forest);
   font-weight: 700;
   padding: 0 var(--sp-lg);
-  box-shadow: var(--shadow-ambient);
+  /* FIX: --shadow-ambient não existe → --shadow-sm */
+  box-shadow: var(--shadow-sm);
 }
 .btn--cta:hover {
   filter: brightness(1.05);
-  box-shadow: var(--shadow-ambient-hover);
+  /* FIX: --shadow-ambient-hover não existe → --shadow-md */
+  box-shadow: var(--shadow-md);
   transform: scale(1.02);
 }
 .btn--cta:disabled {
@@ -185,7 +208,8 @@
   background-color: var(--c-surface-lowest);
   border: 1px solid var(--c-outline-variant);
   border-radius: var(--r);
-  box-shadow: var(--shadow-ambient);
+  /* FIX: --shadow-ambient não existe → --shadow-sm */
+  box-shadow: var(--shadow-sm);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -239,7 +263,8 @@
   padding: var(--sp-md);
   background-color: var(--c-surface-lowest);
   border-radius: var(--r-lg);
-  box-shadow: var(--shadow-ambient);
+  /* FIX: --shadow-ambient não existe → --shadow-sm */
+  box-shadow: var(--shadow-sm);
   min-height: 100px;
 }
 
@@ -277,7 +302,8 @@
 .product-table-container {
   background-color: var(--c-surface-lowest);
   border-radius: var(--r-lg);
-  box-shadow: var(--shadow-ambient);
+  /* FIX: --shadow-ambient não existe → --shadow-sm */
+  box-shadow: var(--shadow-sm);
   border: 1px solid var(--c-outline-variant);
   overflow: hidden;
 }
@@ -328,8 +354,8 @@
 }
 
 .table-row:last-child { border-bottom: none; }
-.table-row:hover { background-color: var(--c-surface-bright); }
-.table-row--paused { background-color: rgba(242, 245, 237, 0.50); }
+.table-row:hover      { background-color: var(--c-surface-bright); }
+.table-row--paused    { background-color: rgba(242, 245, 237, 0.50); }
 
 /* Cells */
 
@@ -368,9 +394,9 @@
   justify-content: center;
 }
 
-.product-thumb__img { width: 100%; height: 100%; object-fit: cover; }
+.product-thumb__img         { width: 100%; height: 100%; object-fit: cover; }
 .product-thumb__placeholder { color: var(--c-outline-variant); font-size: 24px; }
-.product-thumb--dim { filter: grayscale(50%); opacity: 0.85; }
+.product-thumb--dim         { filter: grayscale(50%); opacity: 0.85; }
 
 /* Name + description */
 
@@ -689,7 +715,7 @@
 
 .field__label .req { color: var(--c-error); margin-left: 2px; }
 
-/* Input wrapper — handles border + focus ring as a unit */
+/* Input wrapper */
 
 .input-wrapper {
   display: flex;
@@ -708,22 +734,12 @@
   box-shadow: 0 0 0 2px var(--c-primary-container), 0 0 8px rgba(49, 112, 57, 0.25);
 }
 
-.field--error .input-wrapper {
-  border-color: var(--c-error);
-}
-
-.field--error .input-wrapper:focus-within {
-  box-shadow: 0 0 0 2px var(--c-error);
-}
+.field--error .input-wrapper { border-color: var(--c-error); }
+.field--error .input-wrapper:focus-within { box-shadow: 0 0 0 2px var(--c-error); }
 
 /* Error message */
 
-.field__error-msg {
-  display: none;
-  font-size: var(--fs-label-sm);
-  color: var(--c-error);
-}
-
+.field__error-msg { display: none; font-size: var(--fs-label-sm); color: var(--c-error); }
 .field--error .field__error-msg { display: block; }
 
 /* Actual controls */
@@ -758,10 +774,9 @@
   font-size: var(--fs-body-md);
 }
 
-/* Select wrapper — positions the chevron icon */
+/* Select wrapper */
 
 .select-wrapper { position: relative; }
-
 .select-wrapper .input-wrapper { padding-right: 36px; }
 
 .select-wrapper__icon {
@@ -886,18 +901,9 @@
   transition: transform 0.2s ease;
 }
 
-.toggle__input:checked + .toggle__track {
-  background-color: var(--c-primary-container);
-}
-
-.toggle__input:checked + .toggle__track::after {
-  transform: translateX(20px);
-}
-
-.toggle__input:focus-visible + .toggle__track {
-  outline: 2px solid var(--c-primary-container);
-  outline-offset: 2px;
-}
+.toggle__input:checked + .toggle__track { background-color: var(--c-primary-container); }
+.toggle__input:checked + .toggle__track::after { transform: translateX(20px); }
+.toggle__input:focus-visible + .toggle__track { outline: 2px solid var(--c-primary-container); outline-offset: 2px; }
 
 /* ============================================================
    Accessibility — reduced motion
@@ -912,8 +918,9 @@
   .upload-area,
   .table-row,
   .row-action,
-  .topbar__btn,
-  .sidebar__nav-link,
+  /* FIX: topbar__btn → topbar__icon-btn */
+  .topbar__icon-btn,
+  .sidebar__nav-item,
   .toggle__track,
   .toggle__track::after,
   .pagination__btn,

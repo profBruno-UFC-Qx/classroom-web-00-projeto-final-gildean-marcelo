@@ -15,9 +15,9 @@ export interface StrapiList<T> {
     }
 }
 
-export interface StrapiEntity<T> {
+export type StrapiEntity<T> = T & {
     id: number;
-    attributes: T;
+    documentId: string;
 }
 
 export interface StrapiQueryParams<T = Record<string, unknown>> {

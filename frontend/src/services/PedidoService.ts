@@ -4,23 +4,26 @@ import type { UsuarioAttributes } from './UsuarioService'
 import type { ItemPedidoAttributes } from './ItemPedidoService'
 
 
-export enum TipoEntrega {
-    Delivery = 'delivery',
-    Retirada = 'retirada',
-}
+export const TipoEntrega = {
+    Delivery: 'delivery',
+    Retirada: 'retirada',
+} as const
+export type TipoEntrega = typeof TipoEntrega[keyof typeof TipoEntrega]
 
-export enum SituacaoPedido {
-    Recebido = 'recebido',
-    Preparando = 'preparando',
-    Pronto = 'pronto',
-    Entregue = 'entregue',
-    Cancelado = 'cancelado',
-}
+export const SituacaoPedido = {
+    Recebido:   'recebido',
+    Preparando: 'preparando',
+    Pronto:     'pronto',
+    Entregue:   'entregue',
+    Cancelado:  'cancelado',
+} as const
+export type SituacaoPedido = typeof SituacaoPedido[keyof typeof SituacaoPedido]
 
-export enum FormaPagamento {
-    Pix = 'pix',
-    CartaoNaEntrega = 'cartao_na_entrega',
-}
+export const FormaPagamento = {
+    Pix:             'pix',
+    CartaoNaEntrega: 'cartao_na_entrega',
+} as const
+export type FormaPagamento = typeof FormaPagamento[keyof typeof FormaPagamento]
 
 export interface PedidoAttributes {
     tipo_entrega: TipoEntrega
@@ -28,6 +31,7 @@ export interface PedidoAttributes {
     forma_pagamento: FormaPagamento
     total: number
     observacao_geral: string | null
+    endereco_entrega: string | null
     usuario: { data: StrapiEntity<UsuarioAttributes> | null }
     itens: { data: StrapiEntity<ItemPedidoAttributes>[] }
     createdAt: string
@@ -40,6 +44,7 @@ export interface CreatePedidoDto {
     forma_pagamento: FormaPagamento
     total: number
     observacao_geral?: string
+    endereco_entrega?: string
     situacao?: SituacaoPedido    
 }
 

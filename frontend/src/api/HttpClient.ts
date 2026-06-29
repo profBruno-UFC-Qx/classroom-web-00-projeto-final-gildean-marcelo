@@ -22,13 +22,18 @@ export interface HttpResponse<T> {
 }
 
 export class HttpError extends Error {
+  readonly status: number
+  readonly body: unknown
+
   constructor(
-    public readonly status: number,
-    public readonly body: unknown,
+    status: number,
+    body: unknown,
     message?: string
   ) {
     super(message ?? `HTTP error ${status}`)
     this.name = 'HttpError'
+    this.status = status
+    this.body = body
   }
 }
 
@@ -134,6 +139,18 @@ class HttpClient {
       throw new HttpError(response.status, responseBody)
     }
 
+    if (!response.ok) {
+      const error = new HttpError(response.status, responseBody)
+      
+      // Token expirado → limpa sessão e redireciona para login
+      if (response.status === 401 && !config.skipAuth) {
+        localStorage.removeItem('strapi_token')
+        window.location.href = '/login'   // rota de login
+      }
+
+      throw error
+    }
+
     return { data: responseBody as T, status: response.status }
   }
 
@@ -173,10 +190,8 @@ class HttpClient {
 //     () => null
 
 const httpClient = new HttpClient(
-    //   Vite    → import.meta.env.VITE_API_URL
-    //   import.meta.env.VITE_API_URL ?? 'http://localhost:1337',
-    'http://localhost:1337',
-
+  //   Vite    → import.meta.env.VITE_API_URL
+  import.meta.env.VITE_API_URL ?? 'http://localhost:1337',
   () => localStorage.getItem('strapi_token')
 )
 
