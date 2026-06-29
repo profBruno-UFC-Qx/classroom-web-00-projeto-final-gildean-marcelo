@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danny's — Menu Management</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../styles/style.css">
+  <link rel="stylesheet" href="../../styles/admin/menu-management.css">
+
+  <script type="module" src="../../scripts/admin/menu-management.ts"></script>
+</head>
+
+<!-- FIX: .app-body na tag body (define altura 100vh, overflow:hidden, cor de fundo) -->
+<body class="app-body">
+
+  <!-- FIX: .app-shell envolve sidebar + main para o layout flex em linha -->
+  <div class="app-shell">
+
+    <!-- ============================================================
+         Sidebar
+         ============================================================ -->
+    <nav class="sidebar" aria-label="Main navigation">
+
+      <div class="sidebar__brand">
+        <img
+          class="sidebar__logo"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuArRIlw9F8XaQevtW6PO7lYyVFdEXswYY7kKhJua4IzlNsWvqeX8pItqTzGHwSSr4bC4Vxlwgvq4cWiKgA6Yl2gMaLRgNqqKxLzCM9Faj4M5P0nOcoEpmdNuNWCnwGr_RghNbVAuMUQPSKyGpPjwMEXefGv61fSY1zC4MGAHTQTruEMS1YkM4oh12C7IKwC2UyzOrQSqcq1uGgxKztYoYA-yDAf_4Yj6-MOnKCfPuruufAq_wlmksXUeioM3bBfqVHKmOXtSSSmSoM"
+          alt="Danny's Fresh Market logo">
+        <div>
+          <!-- FIX: sidebar__app-name → sidebar__brand-name -->
+          <span class="sidebar__brand-name">Admin Panel</span>
+          <!-- FIX: sidebar__app-sub → sidebar__brand-subtitle -->
+          <span class="sidebar__brand-subtitle">Management Console</span>
+        </div>
+      </div>
+
+      <ul class="sidebar__nav">
+        <li>
+          <!-- FIX: sidebar__nav-link → sidebar__nav-item; sidebar__nav-icon adicionado ao ícone -->
+          <a href="#" class="sidebar__nav-item">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">dashboard</span>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <!-- FIX: is-active → sidebar__nav-item--active -->
+          <a href="#" class="sidebar__nav-item sidebar__nav-item--active" aria-current="page">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">restaurant_menu</span>
+            Menu Management
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar__nav-item">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">skillet</span>
+            KDS Monitor
+          </a>
+        </li>
+        <li>
+          <a href="#" class="sidebar__nav-item">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">group</span>
+            Team Management
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar__footer">
+        <div class="sidebar__user">
+          <!-- FIX: sidebar__avatar → sidebar__user-avatar -->
+          <img
+            class="sidebar__user-avatar"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-aLLYIvNweuNeqRqhgwU2aGoHCBdhYdsyHPpTyxiTb1kYWPZSqG9ph6rhagrRXUCTV9RKs-91v-0zX8JuN6DAYWYRFycKphEfc1ZIqchVsTV_4e5pB9vgTstJOHEeD9zXeirIxupjJnjPvJjqhxGO9lv3sSn4CcjwGUOyoMn4mIYSRDfeCGUNK3IYVk-btW0QtKrwE-LI_PYKziz2LrV6rZrZZ6PgMuDGIy7r98GsX5ZEaYyrrGxKIIStNgNefVwezbAxIUOuVsg"
+            alt="Admin User avatar">
+          <!-- FIX: wrapper interno ganha sidebar__user-info (ellipsis no nome) -->
+          <div class="sidebar__user-info">
+            <span class="sidebar__user-name">Admin User</span>
+            <span class="sidebar__user-role">Administrator</span>
+          </div>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- ============================================================
+         Main Content
+         ============================================================ -->
+    <!-- FIX: main-content → main-wrapper -->
+    <main class="main-wrapper">
+
+      <!-- Topbar -->
+      <header class="topbar">
+        <h1 class="topbar__title">Menu Management</h1>
+        <div class="topbar__actions">
+          <!-- FIX: topbar__btn → topbar__icon-btn; topbar__badge → topbar__notif-dot -->
+          <button class="topbar__icon-btn" id="btn-notifications" aria-label="Notifications">
+            <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
+            <span class="topbar__notif-dot" aria-hidden="true"></span>
+          </button>
+          <div class="topbar__divider" aria-hidden="true"></div>
+          <!-- FIX: topbar__btn → topbar__icon-btn -->
+          <button class="topbar__icon-btn" id="btn-logout" aria-label="Log out">
+            <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable canvas -->
+      <!-- FIX: page-canvas → page-content; page-inner → page-content__inner -->
+      <div class="page-content">
+        <div class="page-content__inner">
+
+          <!-- Page header -->
+          <div class="page-header">
+            <div class="page-header__text">
+              <h2 class="page-header__title">Products</h2>
+              <p class="page-header__sub">Manage your menu items, categories, and pricing.</p>
+            </div>
+            <div class="page-header__actions">
+
+              <div class="search-field">
+                <span class="material-symbols-outlined search-field__icon" aria-hidden="true">search</span>
+                <input
+                  class="search-field__input"
+                  id="search-input"
+                  type="text"
+                  placeholder="Search products..."
+                  aria-label="Search products"
+                  autocomplete="off">
+              </div>
+
+              <button class="btn btn--ghost" id="btn-filter">
+                <span class="material-symbols-outlined" aria-hidden="true">filter_list</span>
+                Filter
+              </button>
+
+              <button class="btn btn--cta" id="btn-new-product">
+                <span class="material-symbols-outlined" aria-hidden="true">add</span>
+                Novo Produto
+              </button>
+
+            </div>
+          </div>
+
+          <!-- Metrics — populated by TypeScript -->
+          <div class="metrics-grid" id="metrics-grid" aria-label="Summary metrics"></div>
+
+          <!-- Product table -->
+          <div class="product-table-container" role="region" aria-label="Products table">
+
+            <div class="table-head" role="row">
+              <div class="table-head__col" role="columnheader">Product Name</div>
+              <div class="table-head__col" role="columnheader">Category</div>
+              <div class="table-head__col" role="columnheader">Price</div>
+              <div class="table-head__col" role="columnheader">Status</div>
+              <div class="table-head__col table-head__col--actions" role="columnheader">Actions</div>
+            </div>
+
+            <!-- Table body — populated by TypeScript -->
+            <div class="table-body" id="table-body" role="rowgroup"></div>
+
+            <div class="table-footer">
+              <span class="table-info" id="table-info"></span>
+              <nav class="pagination" id="pagination" aria-label="Pagination"></nav>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div><!-- /.app-shell -->
+
+  <!-- ============================================================
+       Modal — Add / Edit Product
+       ============================================================ -->
+  <div
+    class="modal"
+    id="product-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+    aria-labelledby="modal-title">
+
+    <div class="modal__backdrop" id="modal-backdrop"></div>
+
+    <div class="modal__content">
+
+      <div class="modal__header">
+        <h2 class="modal__title" id="modal-title">Adicionar Novo Produto</h2>
+        <button class="modal__close" id="modal-close" aria-label="Fechar modal">
+          <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        </button>
+      </div>
+
+      <div class="modal__body">
+        <form class="form" id="product-form" novalidate>
+
+          <!-- Image upload -->
+          <div class="field">
+            <label class="field__label">Imagem do Produto</label>
+            <div
+              class="upload-area"
+              id="image-upload-area"
+              tabindex="0"
+              role="button"
+              aria-label="Upload product image">
+              <span class="material-symbols-outlined upload-area__icon" aria-hidden="true">add_a_photo</span>
+              <span class="upload-area__label">Clique para enviar ou arraste aqui</span>
+              <span class="upload-area__hint">SVG, PNG, JPG ou GIF (máx. 5 MB)</span>
+            </div>
+            <input
+              type="file"
+              id="image-file-input"
+              accept="image/*"
+              style="display:none"
+              aria-hidden="true"
+              tabindex="-1">
+          </div>
+
+          <div class="form-grid">
+
+            <!-- Product name -->
+            <div class="field field--full" id="field-name">
+              <label class="field__label" for="prod-name">
+                Nome do Produto <span class="req" aria-hidden="true">*</span>
+              </label>
+              <div class="input-wrapper">
+                <input
+                  class="field__input"
+                  id="prod-name"
+                  type="text"
+                  placeholder="Ex.: Avocado Toast"
+                  autocomplete="off">
+              </div>
+              <span class="field__error-msg" role="alert">Nome é obrigatório.</span>
+            </div>
+
+            <!-- Category -->
+            <div class="field" id="field-category">
+              <label class="field__label" for="prod-category">
+                Categoria <span class="req" aria-hidden="true">*</span>
+              </label>
+              <div class="select-wrapper">
+                <div class="input-wrapper">
+                  <select class="field__select" id="prod-category" disabled>
+                    <option value="" disabled selected>Carregando categorias…</option>
+                  </select>
+                </div>
+                <span class="material-symbols-outlined select-wrapper__icon" aria-hidden="true">expand_more</span>
+              </div>
+              <span class="field__error-msg" role="alert">Categoria é obrigatória.</span>
+            </div>
+
+            <!-- Price -->
+            <div class="field" id="field-price">
+              <label class="field__label" for="prod-price">
+                Preço (USD) <span class="req" aria-hidden="true">*</span>
+              </label>
+              <div class="input-wrapper">
+                <span class="field__prefix" aria-hidden="true">$</span>
+                <input
+                  class="field__input"
+                  id="prod-price"
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  placeholder="0.00">
+              </div>
+              <span class="field__error-msg" role="alert">Insira um preço válido.</span>
+            </div>
+
+          </div>
+
+          <!-- Description -->
+          <div class="field">
+            <label class="field__label" for="prod-desc">Descrição</label>
+            <div class="textarea-wrapper">
+              <textarea
+                class="field__textarea"
+                id="prod-desc"
+                rows="3"
+                placeholder="Descreva os ingredientes e o modo de preparo..."></textarea>
+            </div>
+          </div>
+
+          <!-- Active status toggle -->
+          <div class="toggle-row">
+            <div class="toggle-row__info">
+              <p class="toggle-row__title">Status Ativo</p>
+              <p class="toggle-row__sub">Torna o produto visível no cardápio imediatamente.</p>
+            </div>
+            <label class="toggle" aria-label="Ativar produto">
+              <input class="toggle__input" id="prod-status" type="checkbox" checked>
+              <span class="toggle__track" aria-hidden="true"></span>
+            </label>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal__footer">
+        <button class="btn btn--outline-primary" id="modal-cancel">Cancelar</button>
+        <button class="btn btn--cta" id="modal-submit">Salvar Produto</button>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
