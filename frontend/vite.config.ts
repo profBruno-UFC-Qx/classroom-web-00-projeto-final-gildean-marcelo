@@ -13,13 +13,18 @@ export default defineConfig({
       input: {
         // App do Cliente (Mobile)
         main: resolve(__dirname, 'index.html'),
+        login:     resolve(__dirname, 'login.html'),
+        cadastro:  resolve(__dirname, 'cadastro.html'),
+        carrinho:  resolve(__dirname, 'carrinho.html'),
+        status:    resolve(__dirname, 'status.html'),
+        perfil:    resolve(__dirname, 'perfil.html'),
 
         // App do Admin   
         kds: resolve(__dirname, 'src/pages/admin/kds.html'),
         teamManagement: resolve(__dirname, 'src/pages/admin/team-management.html'),
         orders: resolve(__dirname, 'src/pages/admin/orders.html'),
         cadastroFuncionario: resolve(__dirname, 'src/pages/admin/employee-form.html'),
-        menuManagement: resolve(__dirname, 'src/pages/admin/menu-management.html')
+        menuManagement: resolve(__dirname, 'src/pages/admin/menu-management.html')              
       }
     }
   }
