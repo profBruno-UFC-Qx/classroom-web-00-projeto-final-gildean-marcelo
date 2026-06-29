@@ -487,7 +487,7 @@ function initSearch(): void {
 
 /** Botão "Add Employee" — stub para modal/drawer futuro. */
 function initAddEmployee(): void {
-  el<HTMLButtonElement>('#btn-add-employee').addEventListener('click', () => {  
+  el<HTMLButtonElement>('#btn-add-employee').addEventListener('click', () => {
     window.location.href = "http://localhost:5173/src/pages/admin/employee-form.html";
   });
 }
