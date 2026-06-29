@@ -4,11 +4,12 @@ import httpClient from '@/api/HttpClient'
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
-export enum PerfilUsuario {
-  Cliente = 'cliente',
-  Admin   = 'admin',
-  Cozinha = 'cozinha',   // Caixa removido — MVP foca em pedidos digitais
-}
+export const PerfilUsuario = {
+  Cliente: 'cliente',
+  Admin:   'admin',
+  Cozinha: 'cozinha',
+} as const
+export type PerfilUsuario = typeof PerfilUsuario[keyof typeof PerfilUsuario]
 
 // ─── Attributes ───────────────────────────────────────────────────────────────
 
@@ -199,8 +200,7 @@ export class UsuarioService extends StrapiCrudService<UsuarioAttributes, CreateU
   }
 
   private toEntity(raw: UsuarioRaw): UsuarioEntity {
-    const { id, ...attributes } = raw
-    return { id, attributes: attributes as UsuarioAttributes }
+    return raw as unknown as UsuarioEntity
   }
 }
 

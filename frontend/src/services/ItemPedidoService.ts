@@ -5,6 +5,7 @@ import type { ProdutoAttributes } from './ProdutoService'
 export interface ItemPedidoAttributes {
     quantidade: number
     preco_unitario_cobrado: number
+    observacao:             string | null
     pedido: { data: StrapiEntity<{ total: number }> | null}
     produto: { data: StrapiEntity<ProdutoAttributes> | null}
     createdAt: string
@@ -17,6 +18,7 @@ export interface CreateItemPedidoDto {
     produto: number
     quantidade: number
     preco_unitario_cobrado: number    
+    observacao?: string
 }
 
 export interface UpdateItemPedidoDto {    

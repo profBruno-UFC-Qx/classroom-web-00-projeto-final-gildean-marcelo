@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danny's - Login</title>
+    
+    <link rel="stylesheet" href="src/styles/reset.css">
+    <link rel="stylesheet" href="src/styles/style.css">
+    <link rel="stylesheet" href="src/styles/login.css">
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="login-page">
+
+    <div class="login-layout">
+        <!-- Logo Mobile (Fora do cartão) -->
+        <header class="login-header">
+            <img src="src/assets/images/logo-dannis.png" alt="Danny's Logo" class="login-logo">
+        </header>
+
+        <main class="login-main">
+            <form id="form-login" class="login-card">
+                
+                <div class="login-card_cabecalho">
+                    <!-- Logo Desktop (Dentro do cartão) -->
+                    <img src="src/assets/images/logo-dannis.png" alt="Danny's Logo" class="login-card_logo">
+                    
+                    <h1 class="login-card_titulo">Bem-vindo de Volta</h1>
+                    <p class="login-card_subtitulo">Faça login para continuar o seu pedido</p>
+                </div>
+
+                <div class="login-form_group">
+                    <label for="email" class="login-form_label">E-mail</label>
+                    <div class="input-container">
+                        <i class="ph ph-envelope input-icon"></i>
+                        
+                        <input type="email" name="email" id="email" class="login-form_input" required placeholder="seu.email@email.com">
+                    </div>
+                </div>
+
+                <div class="login-form_group">
+                    <label for="senha" class="login-form_label">Senha</label>
+                    <div class="input-container">
+                        <i class="ph ph-lock input-icon"></i>
+                        <input type="password" name="senha" id="senha" class="login-form_input" required placeholder="Digite sua senha">
+                        
+                        <button type="button" class="input-acao-btn" aria-label="Mostrar senha">
+                            <i class="ph ph-eye-slash"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="login-form_esqueceu_senha">
+                        <a href="#" class="login-form_esqueceu_senha-link">Esqueceu a senha?</a>
+                    </div>
+                </div>
+
+                <!-- Botão Principal -->
+                <button type="submit" class="btn btn--submit">
+                    Entrar <i class="ph-bold ph-arrow-right"></i>
+                </button>
+
+                <div class="login-criar-link">
+                    Não tem uma conta? <a href="cadastro.html">Criar Conta</a>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script type="module" src="src/components/loginController.ts"></script>
+</body>
+</html>

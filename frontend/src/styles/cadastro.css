@@ -1,0 +1,249 @@
+.cadastro-page {
+    background-color: color-mix(in srgb, var(--primary-color) 12%, white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.cadastro-layout {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    max-width: 100%;
+}
+
+
+.cadastro-header {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.cadastro-header_voltar {
+    background: none;
+    border: none;
+    color: var(--tertiary-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* MAIN LAYOUT */
+.cadastro-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    flex: 1;
+}
+
+.cadastro-card {
+    background-color: white;
+    width: 100%;
+    border-radius: 1.5rem;
+    padding: 2rem 1.5rem;
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--tertiary-color) 8%, transparent);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.cadastro-card_cabecalho {
+    text-align: center;
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cadastro-card_logo {
+    height: 150px; 
+    width: auto;
+}
+
+.cadastro-card_titulo {
+    color: var(--tertiary-color);
+    font-weight: var(--fw-bold);
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.cadastro-card_subtitulo {
+    color: var(--neutral-color);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    max-width: 90%;
+}
+
+
+.cadastro-form_grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+}
+
+.cadastro-form_group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.cadastro-form_label {
+    color: var(--tertiary-color);
+    font-weight: var(--fw-bold);
+    font-size: 0.9rem;
+}
+
+.input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--neutral-color);
+    font-size: 1.25rem;
+    pointer-events: none;
+}
+
+.cadastro-form_input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 1px solid color-mix(in srgb, var(--neutral-color) 30%, transparent);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    color: var(--tertiary-color);
+    transition: all 0.2s ease;
+    background-color: white; 
+}
+
+.cadastro-form_input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 15%, transparent);
+}
+
+.cadastro-form_input::placeholder {
+    color: color-mix(in srgb, var(--neutral-color) 50%, transparent);
+}
+
+input[type="password"].cadastro-form_input {
+    padding-right: 3rem;
+}
+
+.input-acao-btn {
+    position: absolute;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--neutral-color);
+    font-size: 1.25rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+}
+
+.input-acao-btn:hover {
+    color: var(--tertiary-color);
+}
+
+
+.btn {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-weight: var(--fw-bold);
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    margin-top: 1rem;
+}
+
+.btn--submit {
+    background-color: var(--secondary-color);
+    color: var(--tertiary-color);
+}
+
+.btn--submit:hover {
+    filter: brightness(0.95);
+}
+
+.cadastro-footer {
+    text-align: center;
+    color: var(--neutral-color);
+    font-size: 0.875rem;
+    margin-top: 1rem;
+    padding-top: 1.5rem;
+
+}
+
+.cadastro-footer_link {
+    color: var(--tertiary-color);
+    font-weight: var(--fw-bold);
+    text-decoration: none;
+    margin-left: 0.25rem;
+}
+
+.cadastro-footer_link:hover {
+    text-decoration: underline;
+}
+
+/* ADAPTAÇÃO PARA DESKTOP */
+
+@media (min-width: 768px) {
+    .cadastro-layout {
+        justify-content: center;
+        align-items: center;
+        padding: 4rem 2rem;
+    }
+    
+    .cadastro-header {
+        display: none;
+    }
+
+    .cadastro-card {
+        padding: 3rem;
+        max-width: 700px;
+        box-shadow: 0 12px 32px color-mix(in srgb, var(--tertiary-color) 8%, transparent);
+    }
+    
+    .cadastro-card_cabecalho {
+        margin-bottom: 1.5rem;
+    }
+    
+    .cadastro-card_titulo {
+        font-size: 2rem;
+    }
+    
+    .cadastro-card_subtitulo {
+        font-size: 1rem;
+    }
+
+    .cadastro-form_grid {
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 1.5rem;
+        row-gap: 1.25rem;
+    }
+
+    .cadastro-form_group--full {
+        grid-column: span 2;
+    }
+    
+    .btn {
+        max-width: 300px;
+        margin: 1.5rem auto 0 auto;
+    }
+}
