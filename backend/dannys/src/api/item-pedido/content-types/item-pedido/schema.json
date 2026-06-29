@@ -7,7 +7,7 @@
     "displayName": "ItemPedido"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
@@ -30,6 +30,9 @@
       "relation": "manyToOne",
       "target": "api::produto.produto",
       "inversedBy": "item_pedidos"
+    },
+    "observacao": {
+      "type": "string"
     }
   }
 }

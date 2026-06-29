@@ -97,6 +97,10 @@
       "relation": "oneToMany",
       "target": "api::pedido.pedido",
       "mappedBy": "users_permissions_user"
+    },
+    "foto": {
+      "type": "text",
+      "required": false
     }
   }
 }

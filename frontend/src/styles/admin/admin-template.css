@@ -1,0 +1,414 @@
+
+
+:root {
+  /* ── Superfícies ── */
+  --color-surface:                   #f8faf2;
+  --color-surface-dim:               #d8dbd3;
+  --color-surface-bright:            #f8faf2;
+  --color-surface-container-lowest:  #ffffff;
+  --color-surface-container-low:     #f2f5ed;
+  --color-surface-container:         #ecefe7;
+  --color-surface-container-high:    #e6e9e1;
+  --color-surface-container-highest: #e1e4dc;
+  --color-surface-variant:           #e1e4dc;
+
+  /* ── On-surface ── */
+  --color-on-surface:         #191d18;
+  --color-on-surface-variant: #41493f;
+  --color-inverse-surface:    #2e312c;
+  --color-inverse-on-surface: #eff2ea;
+
+  /* ── Outline ── */
+  --color-outline:         #717a6e;
+  --color-outline-variant: #c0c9bc;
+
+  /* ── Primary ── */
+  --color-primary:              #165723;
+  --color-on-primary:           #ffffff;
+  --color-primary-container:    #317039;
+  --color-on-primary-container: #acf1ac;
+  --color-inverse-primary:      #93d694;
+  --color-surface-tint:         #2c6b34;
+
+  /* ── Secondary ── */
+  --color-secondary:              #795900;
+  --color-on-secondary:           #ffffff;
+  --color-secondary-container:    #feca54;
+  --color-on-secondary-container: #735500;
+
+  /* ── Tertiary ── */
+  --color-tertiary:              #355242;
+  --color-on-tertiary:           #ffffff;
+  --color-tertiary-container:    #4d6a59;
+  --color-on-tertiary-container: #c8e9d3;
+
+  /* ── Error ── */
+  --color-error:              #ba1a1a;
+  --color-on-error:           #ffffff;
+  --color-error-container:    #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* ── Background ── */
+  --color-background:    #f8faf2;
+  --color-on-background: #191d18;
+
+  /* ── Brand ── */
+  --color-sidebar-bg: #143022; /* Deep Forest */
+
+  /* ── Tipografia ── */
+  --fs-headline-xl: 48px; --fw-headline-xl: 800; --lh-headline-xl: 56px; --ls-headline-xl: -0.02em;
+  --fs-headline-lg: 32px; --fw-headline-lg: 700; --lh-headline-lg: 40px; --ls-headline-lg: -0.01em;
+  --fs-headline-md: 24px; --fw-headline-md: 700; --lh-headline-md: 32px;
+  --fs-headline-sm: 20px; --fw-headline-sm: 600; --lh-headline-sm: 28px;
+  --fs-body-lg:     18px; --fw-body-lg:     400; --lh-body-lg:     28px;
+  --fs-body-md:     16px; --fw-body-md:     400; --lh-body-md:     24px;
+  --fs-label-lg:    14px; --fw-label-lg:    600; --lh-label-lg:    20px; --ls-label-lg: 0.02em;
+  --fs-label-sm:    12px; --fw-label-sm:    500; --lh-label-sm:    16px;
+
+  /* ── Raios de borda ── */
+  --radius-sm:   0.25rem;   /*  4px */
+  --radius:      0.5rem;    /*  8px */
+  --radius-md:   0.75rem;   /* 12px */
+  --radius-lg:   1rem;      /* 16px */
+  --radius-xl:   1.5rem;    /* 24px */
+  --radius-full: 9999px;
+
+  /* ── Espaçamentos ── */
+  --space-base:            4px;
+  --space-xs:              8px;
+  --space-sm:             16px;
+  --space-md:             24px;
+  --space-lg:             40px;
+  --space-xl:             64px;
+  --space-gutter:         20px;
+  --space-margin-desktop: 48px;
+  --space-margin-mobile:  16px;
+
+  /* ── Sombras (Deep Forest em baixa opacidade) ── */
+  --shadow-sm:      0 1px 3px rgba(20,48,34,.06), 0 1px 2px rgba(20,48,34,.04);
+  --shadow-md:      0 4px 12px rgba(20,48,34,.08), 0 2px 4px rgba(20,48,34,.04);
+  --shadow-lg:      0 8px 20px rgba(20,48,34,.12), 0 4px 8px rgba(20,48,34,.06);
+  --shadow-sidebar: 4px 0 16px rgba(20,48,34,.18);
+}
+
+
+/* ==========================================================================
+   2. CONFIGURAÇÃO DE ÍCONES
+   ========================================================================== */
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+
+/* ==========================================================================
+   3. APP SHELL
+   ========================================================================== */
+
+.app-body {
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.app-shell {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+
+/* ==========================================================================
+   4. SIDEBAR
+   ========================================================================== */
+
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-sidebar-bg);
+  color: #fff;
+  position: relative;
+  z-index: 20;
+  box-shadow: var(--shadow-sidebar);
+  border-right: 1px solid rgba(192,201,188,.15);
+}
+
+/* ── Brand / Logo ── */
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: var(--space-md);
+  height: 80px;
+  flex-shrink: 0;
+}
+
+.sidebar__logo {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  background-color: #fff;
+  flex-shrink: 0;
+}
+
+.sidebar__brand-name {
+  font-size: var(--fs-headline-sm);
+  font-weight: 700;
+  line-height: var(--lh-headline-sm);
+  letter-spacing: -0.01em;
+}
+
+/* ── Navegação ── */
+.sidebar__nav {
+  flex: 1;
+  padding: var(--space-md) var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.sidebar__nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px var(--space-sm);
+  border-radius: var(--radius-lg);
+  color: rgba(255,255,255,.65);
+  font-size: var(--fs-label-lg);
+  font-weight: var(--fw-label-lg);
+  line-height: var(--lh-label-lg);
+  letter-spacing: var(--ls-label-lg);
+  transition: background-color .15s ease, color .15s ease;
+  cursor: pointer;
+}
+
+.sidebar__nav-item:hover {
+  background-color: rgba(255,255,255,.1);
+  color: #fff;
+}
+
+.sidebar__nav-item--active {
+  background-color: rgba(255,255,255,.12);
+  color: #fff;
+  font-weight: 600;
+}
+
+.sidebar__nav-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+/* ── Footer / Usuário ── */
+.sidebar__footer {
+  flex-shrink: 0;
+  padding: var(--space-xs) var(--space-sm) var(--space-sm);
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+
+.sidebar__user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px var(--space-sm);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color .15s ease;
+  text-align: left;
+}
+
+.sidebar__user:hover { background-color: rgba(255,255,255,.1); }
+
+.sidebar__user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.sidebar__user-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar__user-name {
+  font-size: var(--fs-label-lg);
+  font-weight: var(--fw-label-lg);
+  line-height: var(--lh-label-lg);
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar__user-role {
+  font-size: var(--fs-label-sm);
+  font-weight: var(--fw-label-sm);
+  line-height: var(--lh-label-sm);
+  color: rgba(255,255,255,.55);
+}
+
+.sidebar__user-chevron {
+  color: rgba(255,255,255,.55);
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+
+/* ==========================================================================
+   5. MAIN WRAPPER
+   ========================================================================== */
+
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--color-surface);
+  min-width: 0;
+}
+
+
+/* ==========================================================================
+   6. TOPBAR
+   ========================================================================== */
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+  padding: 0 var(--space-lg);
+  background-color: var(--color-surface-container-lowest);
+  border-bottom: 1px solid rgba(192,201,188,.3);
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.topbar__title {
+  font-size: var(--fs-headline-md);
+  font-weight: var(--fw-headline-md);
+  line-height: var(--lh-headline-md);
+  color: var(--color-on-surface);
+}
+
+.topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.topbar__icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: none;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease;
+}
+
+.topbar__icon-btn:hover { background-color: var(--color-surface-container); }
+
+.topbar__notif-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 9px;
+  height: 9px;
+  background-color: var(--color-error);
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-surface-container-lowest);
+}
+
+.topbar__divider {
+  width: 1px;
+  height: 32px;
+  background-color: rgba(192,201,188,.35);
+}
+
+.topbar__logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  border-radius: var(--radius);
+  color: var(--color-on-surface-variant);
+  font-size: var(--fs-label-lg);
+  font-weight: var(--fw-label-lg);
+  line-height: var(--lh-label-lg);
+  cursor: pointer;
+  transition: color .15s ease, background-color .15s ease;
+}
+
+.topbar__logout-btn:hover {
+  color: var(--color-error);
+  background-color: var(--color-error-container);
+}
+
+
+/* ==========================================================================
+   7. PAGE CONTENT (base — sobrescreva nas páginas quando necessário)
+   ========================================================================== */
+
+.page-content {
+  flex: 1;
+  overflow: hidden;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-height: 0;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.page-header__title {
+  font-size: var(--fs-headline-lg);
+  font-weight: var(--fw-headline-lg);
+  line-height: var(--lh-headline-lg);
+  letter-spacing: var(--ls-headline-lg);
+  color: var(--color-on-surface);
+}
+
+.page-header__subtitle {
+  font-size: var(--fs-body-md);
+  font-weight: var(--fw-body-md);
+  line-height: var(--lh-body-md);
+  color: var(--color-on-surface-variant);
+  margin-top: var(--space-base);
+}
+
+.page-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

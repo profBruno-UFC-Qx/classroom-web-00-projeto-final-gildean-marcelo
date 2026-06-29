@@ -12,7 +12,7 @@
 export interface RequestConfig {
   params?: Record<string, unknown>
   headers?: Record<string, string>
-  
+
   skipAuth?: boolean
 }
 
@@ -22,13 +22,18 @@ export interface HttpResponse<T> {
 }
 
 export class HttpError extends Error {
+  readonly status: number
+  readonly body: unknown
+
   constructor(
-    public readonly status: number,
-    public readonly body: unknown,
+    status: number,
+    body: unknown,
     message?: string
   ) {
     super(message ?? `HTTP error ${status}`)
     this.name = 'HttpError'
+    this.status = status
+    this.body = body
   }
 }
 
@@ -62,13 +67,15 @@ function serializeParams(
         if (typeof item === 'object' && item !== null) {
           parts.push(serializeParams(item as Record<string, unknown>, `${fullKey}[${index}]`))
         } else {
-          parts.push(`${encodeURIComponent(`${fullKey}[${index}]`)}=${encodeURIComponent(String(item))}`)
+          // Keys NOT encoded — only values are encoded (Strapi bracket notation)
+          parts.push(`${fullKey}[${index}]=${encodeURIComponent(String(item))}`)
         }
       })
     } else if (typeof value === 'object') {
       parts.push(serializeParams(value as Record<string, unknown>, fullKey))
     } else {
-      parts.push(`${encodeURIComponent(fullKey)}=${encodeURIComponent(String(value))}`)
+      // Keys NOT encoded — only values are encoded (Strapi bracket notation)
+      parts.push(`${fullKey}=${encodeURIComponent(String(value))}`)
     }
   }
 
@@ -98,7 +105,7 @@ class HttpClient {
     body?: unknown,
     config: RequestConfig = {}
   ): Promise<HttpResponse<T>> {
-    
+
     let url = `${this.baseURL}${path}`
     if (config.params && Object.keys(config.params).length > 0) {
       const qs = serializeParams(config.params)
@@ -134,6 +141,18 @@ class HttpClient {
       throw new HttpError(response.status, responseBody)
     }
 
+    if (!response.ok) {
+      const error = new HttpError(response.status, responseBody)
+      
+      // Token expirado → limpa sessão e redireciona para login
+      if (response.status === 401 && !config.skipAuth) {
+        localStorage.removeItem('strapi_token')
+        window.location.href = '/login'   // rota de login
+      }
+
+      throw error
+    }
+
     return { data: responseBody as T, status: response.status }
   }
 
@@ -159,23 +178,9 @@ class HttpClient {
   }
 }
 
-// ─── Instância singleton ─────────────────────────────────────────────────────
-//
-// Passe uma TokenProvider compatível com o seu mecanismo de auth.
-// O HttpClient não importa nada de browser/node — fica totalmente agnóstico.
-//
-// Exemplos:
-//
-//   localStorage (browser, requer lib DOM no tsconfig):
-//     () => localStorage.getItem('strapi_token'
-//
-//   Sem auth (público):
-//     () => null
 
 const httpClient = new HttpClient(
-    //   Vite    → import.meta.env.VITE_API_URL
-    //   import.meta.env.VITE_API_URL ?? 'http://localhost:1337',
-    'http://localhost:1337',
+  import.meta.env.VITE_API_URL ?? 'http://localhost:1337',
 
   () => localStorage.getItem('strapi_token')
 )

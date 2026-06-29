@@ -62,6 +62,7 @@ Funcionalidades **Restritas** a Usuários Logados:
 - Categoria
 - Produto
 - Pedido
+- Item_Pedido
 
 
 

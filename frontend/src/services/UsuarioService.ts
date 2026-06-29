@@ -4,23 +4,25 @@ import httpClient from '@/api/HttpClient'
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
-export enum PerfilUsuario {
-  Cliente = 'cliente',
-  Admin   = 'admin',
-  Cozinha = 'cozinha',   // Caixa removido — MVP foca em pedidos digitais
-}
+export const PerfilUsuario = {
+  Cliente: 'cliente',
+  Admin: 'admin',
+  Cozinha: 'cozinha',
+} as const
+export type PerfilUsuario = typeof PerfilUsuario[keyof typeof PerfilUsuario]
 
 // ─── Attributes ───────────────────────────────────────────────────────────────
 
 export interface UsuarioAttributes {
-  username:  string      // nome visível
-  email:     string      // e-mail real do cliente
-  whatsapp:  string      // login do cliente (Unique)
-  cpf:       string
-  endereco:  string | null
-  perfil:    PerfilUsuario
-  ativo:     boolean     // substitui "status" (nome reservado no Strapi)
-  blocked:   boolean     // campo nativo do plugin
+  username: string      // nome visível
+  email: string      // e-mail real do cliente
+  whatsapp: string      // login do cliente (Unique)
+  cpf: string
+  endereco: string | null
+  perfil: PerfilUsuario
+  ativo: boolean     // substitui "status" (nome reservado no Strapi)
+  foto: string | null
+  blocked: boolean     // campo nativo do plugin
   confirmed: boolean     // campo nativo do plugin
   createdAt: string
   updatedAt: string
@@ -29,30 +31,32 @@ export interface UsuarioAttributes {
 // ─── DTOs ─────────────────────────────────────────────────────────────────────
 
 export interface CreateUsuarioDto {
-  username:  string
-  email:     string
-  password:  string      // texto puro — Strapi faz o bcrypt
-  whatsapp:  string
-  cpf:       string
+  username: string
+  email: string
+  password: string      // texto puro — Strapi faz o bcrypt
+  whatsapp: string
+  cpf: string
   endereco?: string
-  perfil?:   PerfilUsuario  // default: cliente
-  ativo?:    boolean        // default: true
+  perfil?: PerfilUsuario  // default: cliente
+  ativo?: boolean        // default: true
+  foto?: string | null
 }
 
 export interface UpdateUsuarioDto {
-  username?:  string
-  email?:     string
-  password?:  string
-  whatsapp?:  string
-  cpf?:       string
-  endereco?:  string | null
-  perfil?:    PerfilUsuario
-  ativo?:     boolean
-  blocked?:   boolean
+  username?: string
+  email?: string
+  password?: string
+  whatsapp?: string
+  cpf?: string
+  endereco?: string | null
+  perfil?: PerfilUsuario
+  ativo?: boolean
+  foto?: string | null
+  blocked?: boolean
 }
 
 export interface LoginResponse {
-  jwt:  string
+  jwt: string
   user: { id: number } & Omit<UsuarioAttributes, 'createdAt' | 'updatedAt'>
 }
 
@@ -103,10 +107,10 @@ export class UsuarioService extends StrapiCrudService<UsuarioAttributes, CreateU
       try {
         await this.update(data.user.id, {
           whatsapp: payload.whatsapp,
-          cpf:      payload.cpf,
+          cpf: payload.cpf,
           endereco: payload.endereco ?? null,
-          perfil:   payload.perfil   ?? PerfilUsuario.Cliente,
-          ativo:    payload.ativo    ?? true,
+          perfil: payload.perfil ?? PerfilUsuario.Cliente,
+          ativo: payload.ativo ?? true,
         })
       } finally {
         // Restaura o token anterior (pode ser null se não havia sessão)
@@ -155,10 +159,10 @@ export class UsuarioService extends StrapiCrudService<UsuarioAttributes, CreateU
     return {
       data: entities,
       pagination: {
-        page:      params?.pagination?.page     ?? 1,
-        pageSize:  params?.pagination?.pageSize ?? entities.length,
+        page: params?.pagination?.page ?? 1,
+        pageSize: params?.pagination?.pageSize ?? entities.length,
         pageCount: 1,
-        total:     entities.length,
+        total: entities.length,
       },
     }
   }
@@ -169,7 +173,7 @@ export class UsuarioService extends StrapiCrudService<UsuarioAttributes, CreateU
     return this.list({
       ...params,
       filters: { ...params?.filters, perfil: { $eq: perfil } },
-      sort:    params?.sort ?? ['username:asc'],
+      sort: params?.sort ?? ['username:asc'],
     })
   }
 
@@ -177,7 +181,7 @@ export class UsuarioService extends StrapiCrudService<UsuarioAttributes, CreateU
     return this.list({
       ...params,
       filters: { ...params?.filters, ativo: { $eq: true } },
-      sort:    params?.sort ?? ['username:asc'],
+      sort: params?.sort ?? ['username:asc'],
     })
   }
 
@@ -199,8 +203,7 @@ export class UsuarioService extends StrapiCrudService<UsuarioAttributes, CreateU
   }
 
   private toEntity(raw: UsuarioRaw): UsuarioEntity {
-    const { id, ...attributes } = raw
-    return { id, attributes: attributes as UsuarioAttributes }
+    return raw as unknown as UsuarioEntity
   }
 }
 

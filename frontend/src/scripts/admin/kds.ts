@@ -1,16 +1,14 @@
-// =============================================================================
-// kds.ts — KDS Monitor  |  Danny's Fresh Market Admin
-// =============================================================================
-// Architecture:
-//   Types → MockData → OrderService (swap for real API here) → State → Render
-// =============================================================================
 
-// =============================================================================
-// TYPES
-// =============================================================================
+import {
+  pedidoService,
+  SituacaoPedido,
+  TipoEntrega,
+  type PedidoEntity,
+} from "@/services/PedidoService";
+
 
 type OrderStatus = "new" | "preparing" | "ready";
-type OrderType   = "Balcão" | "Delivery" | "Salão";
+type OrderType   = "Delivery" | "Balcão" | "Salão";
 type NoteType    = "remove" | "add" | "info";
 
 interface OrderNote {
@@ -22,18 +20,18 @@ interface OrderItem {
   id:       string;
   quantity: number;
   name:     string;
-  notes:    OrderNote[];
+  notes:    OrderNote[];   
 }
 
 interface Order {
   id:                     string;
   number:                 number;
   type:                   OrderType;
-  tableInfo?:             string;   // e.g. "Mesa 4" for Salão orders
   status:                 OrderStatus;
-  elapsedSeconds:         number;
-  urgentThresholdSeconds: number;   // when to flag as urgent (red)
+  createdAt:              string;          
+  urgentThresholdSeconds: number;
   items:                  OrderItem[];
+  generalNote?:           string;          
 }
 
 interface KDSColumn {
@@ -42,161 +40,96 @@ interface KDSColumn {
   dotClass: string;
 }
 
-// =============================================================================
-// MOCK DATA
-// Tip: keep this structure — your real API should return the same shape.
-// =============================================================================
 
-const MOCK_ORDERS: Order[] = [
-  {
-    id:                     "ord-1042",
-    number:                 1042,
-    type:                   "Balcão",
-    status:                 "new",
-    elapsedSeconds:         135,   // 02:15
-    urgentThresholdSeconds: 600,   // 10 min
-    items: [
-      {
-        id:       "i-1",
-        quantity: 1,
-        name:     "Danny's Classic Burger",
-        notes: [
-          { type: "remove", text: "Sem Cebola" },
-          { type: "remove", text: "Ponto da Carne: Bem Passada" },
-        ],
-      },
-      {
-        id:       "i-2",
-        quantity: 2,
-        name:     "Batata Frita Média",
-        notes:    [],
-      },
-    ],
-  },
-  {
-    id:                     "ord-1043",
-    number:                 1043,
-    type:                   "Delivery",
-    status:                 "new",
-    elapsedSeconds:         45,
-    urgentThresholdSeconds: 600,
-    items: [
-      {
-        id:       "i-3",
-        quantity: 1,
-        name:     "Veggie Delight Sandwich",
-        notes:    [{ type: "add", text: "Extra Molho Verde" }],
-      },
-    ],
-  },
-  {
-    id:                     "ord-1039",
-    number:                 1039,
-    type:                   "Salão",
-    tableInfo:              "Mesa 4",
-    status:                 "preparing",
-    elapsedSeconds:         750,   // 12:30 — already urgent
-    urgentThresholdSeconds: 600,
-    items: [
-      {
-        id:       "i-4",
-        quantity: 2,
-        name:     "Smash Burger Duplo",
-        notes:    [],
-      },
-      {
-        id:       "i-5",
-        quantity: 1,
-        name:     "Salada Caesar",
-        notes:    [{ type: "remove", text: "Sem Croutons" }],
-      },
-    ],
-  },
-  {
-    id:                     "ord-1038",
-    number:                 1038,
-    type:                   "Delivery",
-    status:                 "ready",
-    elapsedSeconds:         0,
-    urgentThresholdSeconds: 600,
-    items: [
-      {
-        id:       "i-6",
-        quantity: 1,
-        name:     "Combo Família",
-        notes:    [],
-      },
-    ],
-  },
-];
+function mapSituacaoToStatus(situacao: SituacaoPedido): OrderStatus {
+  switch (situacao) {
+    case SituacaoPedido.Recebido:   return "new";
+    case SituacaoPedido.Preparando: return "preparing";
+    case SituacaoPedido.Pronto:     return "ready";
+    default:                        return "new";
+  }
+}
+
+function mapTipoEntrega(tipo: TipoEntrega): OrderType {
+  return tipo === TipoEntrega.Delivery ? "Delivery" : "Balcão";  
+}
+
+function mapEntityToOrder(entity: PedidoEntity): Order {
+  const a = entity.attributes;
+
+  const items: OrderItem[] = (a.itens?.data ?? []).map((item) => ({
+    id:       String(item.id),
+    quantity: item.attributes.quantidade,
+    name:     item.attributes.produto?.data?.attributes.nome ?? "(produto)",    
+    notes: item.attributes.observacao
+      ? [{ type: "info", text: item.attributes.observacao }]
+      : [],
+  }));
+
+  return {
+    id:                     String(entity.id),
+    number:                 entity.id,
+    type:                   mapTipoEntrega(a.tipo_entrega),
+    status:                 mapSituacaoToStatus(a.situacao),
+    createdAt:              a.createdAt,
+    urgentThresholdSeconds: 600,           
+    items,
+    generalNote:            a.observacao_geral ?? undefined,
+  };
+}
+
+// Calcula elapsed em segundos a partir do createdAt real
+function getElapsedSeconds(order: Order): number {
+  return Math.floor((Date.now() - new Date(order.createdAt).getTime()) / 1000);
+}
 
 // =============================================================================
-// SERVICE LAYER
-// Replace each method body with a real fetch() call when connecting to an API.
-// The call signatures intentionally match common REST patterns.
+// SERVICE LAYER  (fina camada sobre o pedidoService)
 // =============================================================================
 
 const OrderService = {
   /**
-   * Fetch all active KDS orders.
-   *
-   * TODO — replace with:
-   *   const res = await fetch("/api/kds/orders", { headers: authHeaders() });
-   *   if (!res.ok) throw new Error(await res.text());
-   *   return res.json() as Promise<Order[]>;
+   * Busca pedidos ativos no KDS (recebido + preparando).
+   * Fonte: pedidoService.listParaKDS() com populate de itens.produto.
    */
   async getOrders(): Promise<Order[]> {
-    return structuredClone(MOCK_ORDERS);
+    const { data } = await pedidoService.listParaKDS();
+    return data.map(mapEntityToOrder);
   },
 
   /**
-   * Advance an order to the next status.
-   *
-   * TODO — replace with:
-   *   const res = await fetch(`/api/orders/${id}/status`, {
-   *     method:  "PATCH",
-   *     headers: { "Content-Type": "application/json", ...authHeaders() },
-   *     body:    JSON.stringify({ status }),
-   *   });
-   *   if (!res.ok) throw new Error(await res.text());
+   * Avança o status de um pedido.
+   * "preparing" → pedidoService.iniciarPreparo()
+   * "ready"     → pedidoService.marcarPronto()
    */
-  async updateStatus(id: string, status: OrderStatus): Promise<void> {
-    const order = state.orders.find((o) => o.id === id);
-    if (!order) throw new Error(`Order ${id} not found`);
-    order.status = status;
-    // Reset timer when entering 'preparing' so prep-time is accurate
-    if (status === "preparing") order.elapsedSeconds = 0;
+  async updateStatus(id: string, status: "preparing" | "ready"): Promise<void> {
+    const numId = Number(id);
+    if (status === "preparing") await pedidoService.iniciarPreparo(numId);
+    if (status === "ready")     await pedidoService.marcarPronto(numId);
   },
 
   /**
-   * Archive / dismiss a completed order from the KDS view.
-   *
-   * TODO — replace with:
-   *   const res = await fetch(`/api/orders/${id}/dismiss`, {
-   *     method:  "POST",
-   *     headers: authHeaders(),
-   *   });
-   *   if (!res.ok) throw new Error(await res.text());
+   * Remove um pedido "pronto" do KDS marcando-o como entregue.
+   * Chama pedidoService.marcarEntregue() e remove do estado local.
    */
   async dismissOrder(id: string): Promise<void> {
+    await pedidoService.marcarEntregue(Number(id));
     state.orders = state.orders.filter((o) => o.id !== id);
   },
 };
 
 // =============================================================================
-// APPLICATION STATE
+// STATE
 // =============================================================================
 
 interface AppState {
-  orders:      Order[];
-  activePage:  string;
-  isLoading:   boolean;
+  orders:     Order[];
+  activePage: string;
 }
 
 const state: AppState = {
   orders:     [],
   activePage: "kds",
-  isLoading:  false,
 };
 
 // =============================================================================
@@ -212,7 +145,7 @@ function formatElapsed(seconds: number): string {
 function isUrgent(order: Order): boolean {
   return (
     order.status === "preparing" &&
-    order.elapsedSeconds >= order.urgentThresholdSeconds
+    getElapsedSeconds(order) >= order.urgentThresholdSeconds
   );
 }
 
@@ -225,12 +158,6 @@ function badgeClassFor(type: OrderType): string {
   return map[type];
 }
 
-function badgeLabelFor(order: Order): string {
-  return order.type === "Salão" && order.tableInfo
-    ? `Salão — ${order.tableInfo}`
-    : order.type;
-}
-
 // =============================================================================
 // RENDERERS
 // =============================================================================
@@ -241,16 +168,10 @@ function renderNote(note: OrderNote): string {
 }
 
 function renderItem(item: OrderItem, isDone: boolean): string {
-  const nameClass = isDone
-    ? "order-item__name order-item__name--done"
-    : "order-item__name";
-
+  const nameClass = isDone ? "order-item__name order-item__name--done" : "order-item__name";
   const notesHtml = item.notes.length
-    ? `<ul class="order-item__notes" aria-label="Observações">
-         ${item.notes.map(renderNote).join("")}
-       </ul>`
+    ? `<ul class="order-item__notes">${item.notes.map(renderNote).join("")}</ul>`
     : "";
-
   return `
     <div class="order-item">
       <span class="${nameClass}">${item.quantity}x ${item.name}</span>
@@ -259,16 +180,19 @@ function renderItem(item: OrderItem, isDone: boolean): string {
 }
 
 function renderTimer(order: Order): string {
-  if (isUrgent(order)) {
+  const elapsed = getElapsedSeconds(order);
+  const urgent  = isUrgent(order);
+
+  if (urgent) {
     return `
-      <span class="order-card__timer order-card__timer--urgent" role="timer" aria-label="Tempo decorrido ${formatElapsed(order.elapsedSeconds)} — atrasado">
+      <span class="order-card__timer order-card__timer--urgent" role="timer">
         <span class="material-symbols-outlined order-card__timer-icon" aria-hidden="true">warning</span>
-        ${formatElapsed(order.elapsedSeconds)}
+        ${formatElapsed(elapsed)}
       </span>`;
   }
   return `
-    <span class="order-card__timer" data-timer="${order.id}" role="timer" aria-label="Tempo decorrido ${formatElapsed(order.elapsedSeconds)}">
-      ${formatElapsed(order.elapsedSeconds)}
+    <span class="order-card__timer" data-timer="${order.id}" role="timer">
+      ${formatElapsed(elapsed)}
     </span>`;
 }
 
@@ -276,48 +200,35 @@ function renderFooter(order: Order): string {
   if (order.status === "new") {
     return `
       <div class="order-card__footer">
-        <button
-          class="btn btn--cta"
-          data-action="start"
-          data-id="${order.id}"
-          aria-label="Iniciar preparo do pedido #${order.number}"
-        >
-          <span class="material-symbols-outlined btn__icon" aria-hidden="true" style="font-variation-settings:'FILL' 1;">play_arrow</span>
+        <button class="btn btn--cta" data-action="start" data-id="${order.id}"
+          aria-label="Iniciar preparo do pedido #${order.number}">
+          <span class="material-symbols-outlined btn__icon" aria-hidden="true"
+            style="font-variation-settings:'FILL' 1;">play_arrow</span>
           Iniciar Preparo
         </button>
       </div>`;
   }
-
   if (order.status === "preparing") {
     return `
       <div class="order-card__footer">
-        <button
-          class="btn btn--confirm"
-          data-action="ready"
-          data-id="${order.id}"
-          aria-label="Marcar pedido #${order.number} como pronto"
-        >
-          <span class="material-symbols-outlined btn__icon" aria-hidden="true" style="font-variation-settings:'FILL' 1;">check_circle</span>
+        <button class="btn btn--confirm" data-action="ready" data-id="${order.id}"
+          aria-label="Marcar pedido #${order.number} como pronto">
+          <span class="material-symbols-outlined btn__icon" aria-hidden="true"
+            style="font-variation-settings:'FILL' 1;">check_circle</span>
           Marcar Pronto
         </button>
       </div>`;
   }
-
   if (order.status === "ready") {
     return `
       <div class="order-card__footer">
-        <button
-          class="btn btn--ghost"
-          data-action="dismiss"
-          data-id="${order.id}"
-          aria-label="Ocultar pedido #${order.number}"
-        >
-          <span class="material-symbols-outlined btn__icon" aria-hidden="true">delete</span>
-          Ocultar
+        <button class="btn btn--ghost" data-action="dismiss" data-id="${order.id}"
+          aria-label="Marcar pedido #${order.number} como entregue">
+          <span class="material-symbols-outlined btn__icon" aria-hidden="true">done_all</span>
+          Marcar Entregue
         </button>
       </div>`;
   }
-
   return "";
 }
 
@@ -339,32 +250,40 @@ function renderCard(order: Order): string {
     ? "order-card__body order-card__body--done"
     : "order-card__body";
 
-  const divider = `<div class="order-item__divider" aria-hidden="true"></div>`;
+  const divider   = `<div class="order-item__divider" aria-hidden="true"></div>`;
   const itemsHtml = order.items.map((it) => renderItem(it, isDone)).join(divider);
+
+  // observacao_geral exibida como nota geral ao final dos itens
+  const generalNoteHtml = order.generalNote
+    ? `${divider}
+       <div class="order-item">
+         <ul class="order-item__notes">
+           <li class="order-item__note order-item__note--info">• ${order.generalNote}</li>
+         </ul>
+       </div>`
+    : "";
 
   return `
     <article class="${cardClass}" data-order-id="${order.id}" aria-label="Pedido #${order.number}">
       <header class="order-card__header">
         <div class="order-card__header-left">
           <span class="${numberClass}">#${order.number}</span>
-          <span class="order-card__badge ${badgeClassFor(order.type)}">${badgeLabelFor(order)}</span>
+          <span class="order-card__badge ${badgeClassFor(order.type)}">${order.type}</span>
         </div>
         ${renderTimer(order)}
       </header>
-
       <div class="${bodyClass}">
         ${itemsHtml}
+        ${generalNoteHtml}
       </div>
-
       ${renderFooter(order)}
     </article>`;
 }
 
-// KDS column definitions
 const COLUMNS: KDSColumn[] = [
-  { status: "new",       label: "Novos",     dotClass: "kds-col__dot--new" },
+  { status: "new",       label: "Novos",      dotClass: "kds-col__dot--new"       },
   { status: "preparing", label: "Em Preparo", dotClass: "kds-col__dot--preparing" },
-  { status: "ready",     label: "Prontos",    dotClass: "kds-col__dot--ready" },
+  { status: "ready",     label: "Prontos",    dotClass: "kds-col__dot--ready"      },
 ];
 
 function renderBoard(): void {
@@ -377,14 +296,12 @@ function renderBoard(): void {
 
     const bodyContent = count
       ? orders.map(renderCard).join("")
-      : `<div class="kds-col__empty" aria-label="Nenhum pedido em ${col.label}">
+      : `<div class="kds-col__empty">
            <span class="material-symbols-outlined kds-col__empty-icon" aria-hidden="true">inbox</span>
            Nenhum pedido
          </div>`;
 
-    const colClass = col.status === "ready"
-      ? "kds-col kds-col--ready"
-      : "kds-col";
+    const colClass = col.status === "ready" ? "kds-col kds-col--ready" : "kds-col";
 
     return `
       <section class="${colClass}" aria-label="${col.label}">
@@ -395,9 +312,7 @@ function renderBoard(): void {
           </div>
           <span class="kds-col__count" aria-label="${count} pedidos">${count}</span>
         </div>
-        <div class="kds-col__body">
-          ${bodyContent}
-        </div>
+        <div class="kds-col__body">${bodyContent}</div>
       </section>`;
   }).join("");
 
@@ -420,25 +335,32 @@ async function handleCardAction(e: Event): Promise<void> {
   const id     = btn.dataset.id;
   if (!action || !id) return;
 
-  // Optimistic UI — disable button immediately to prevent double-tap
   btn.disabled = true;
 
   try {
     switch (action) {
       case "start":
         await OrderService.updateStatus(id, "preparing");
+        
+        const orderToStart = state.orders.find((o) => o.id === id);
+        if (orderToStart) orderToStart.status = "preparing";
         break;
+
       case "ready":
         await OrderService.updateStatus(id, "ready");
+        const orderToReady = state.orders.find((o) => o.id === id);
+        if (orderToReady) orderToReady.status = "ready";
         break;
+
       case "dismiss":
         await OrderService.dismissOrder(id);
+        
         break;
     }
   } catch (err) {
-    console.error("[KDS] Action failed:", err);
+    console.error("[KDS] Ação falhou:", err);
     btn.disabled = false;
-    // TODO: show a toast notification with error feedback
+    // TODO: exibir toast de erro
     return;
   }
 
@@ -448,38 +370,28 @@ async function handleCardAction(e: Event): Promise<void> {
 function attachNavListeners(): void {
   document.querySelectorAll<HTMLAnchorElement>(".sidebar__nav-item").forEach((item) => {
     item.addEventListener("click", (e) => {
-      const href = item.getAttribute("href");
-      if (href && href !== "#") {
-        return;
-      }
       e.preventDefault();
-
-      // Update active state visually
       document.querySelectorAll(".sidebar__nav-item").forEach((el) => {
         el.classList.remove("sidebar__nav-item--active");
         el.removeAttribute("aria-current");
       });
       item.classList.add("sidebar__nav-item--active");
       item.setAttribute("aria-current", "page");
-
       state.activePage = item.dataset.page ?? "kds";
-      // TODO: trigger page/view change when routing is implemented
     });
   });
 
   document.getElementById("btn-logout")?.addEventListener("click", () => {
-    // TODO: call AuthService.logout() and redirect to /login
-    console.log("[KDS] Logout requested");
+    // TODO: AuthService.logout() + redirect /login
+    console.log("[KDS] Logout");
   });
 
   document.getElementById("btn-notifications")?.addEventListener("click", () => {
-    // TODO: open notifications drawer
-    console.log("[KDS] Notifications requested");
+    console.log("[KDS] Notificações");
   });
 
   document.getElementById("sidebar-user")?.addEventListener("click", () => {
-    // TODO: open user profile / account settings
-    console.log("[KDS] User profile requested");
+    console.log("[KDS] Perfil do usuário");
   });
 }
 
@@ -489,16 +401,12 @@ function attachNavListeners(): void {
 
 function updateClock(): void {
   const el = document.getElementById("clock");
-  if (el) {
-    el.textContent = new Date().toLocaleTimeString("pt-BR", { hour12: false });
-  }
+  if (el) el.textContent = new Date().toLocaleTimeString("pt-BR", { hour12: false });
 }
 
 /**
- * Advances elapsed seconds for active orders and updates timer elements
- * in-place (without a full board re-render) for performance.
- * When an order crosses the urgency threshold, a full re-render is triggered
- * so the card can pick up the urgent styling.
+ * Recalcula o elapsed de cada ordem ativa a partir do createdAt real.
+ * Não incrementa um contador — usa sempre Date.now() como referência.
  */
 function tickTimers(): void {
   let needsFullRender = false;
@@ -506,24 +414,67 @@ function tickTimers(): void {
   state.orders.forEach((order) => {
     if (order.status !== "new" && order.status !== "preparing") return;
 
-    const wasUrgentBefore = isUrgent(order);
-    order.elapsedSeconds++;
-    const isUrgentNow = isUrgent(order);
+    const elapsed      = getElapsedSeconds(order);
+    const prevElapsed  = elapsed - 1;
+    const wasUrgent    = order.status === "preparing" && prevElapsed >= order.urgentThresholdSeconds;
+    const isUrgentNow  = isUrgent(order);
 
-    // Urgency just flipped → need a full render for style change
-    if (!wasUrgentBefore && isUrgentNow) {
+    // Cruzou o limiar de urgência → re-render para aplicar estilos
+    if (!wasUrgent && isUrgentNow) {
       needsFullRender = true;
       return;
     }
 
-    // Fast path: update timer text in-place
+    // Fast path: atualiza só o texto do timer sem re-render
     if (!isUrgentNow) {
       const el = document.querySelector<HTMLElement>(`[data-timer="${order.id}"]`);
-      if (el) el.textContent = formatElapsed(order.elapsedSeconds);
+      if (el) el.textContent = formatElapsed(elapsed);
     }
   });
 
   if (needsFullRender) renderBoard();
+}
+
+// =============================================================================
+// POLLING  (novos pedidos chegando em tempo real)
+// =============================================================================
+
+const POLL_INTERVAL_MS = 30_000; 
+
+async function pollOrders(): Promise<void> {
+  try {
+    const freshOrders = await OrderService.getOrders();
+
+    // Merge: preserva ordens que estão em transição local (botão disabled)
+    // e adiciona/atualiza as que vieram da API
+    const localIds  = new Set(state.orders.map((o) => o.id));
+    const remoteIds = new Set(freshOrders.map((o) => o.id));
+
+    // Remove orders que não existem mais na API (ex: foram entregues por outro terminal)
+    state.orders = state.orders.filter((o) => remoteIds.has(o.id));
+
+    // Adiciona novas ordens que chegaram
+    freshOrders.forEach((fresh) => {
+      if (!localIds.has(fresh.id)) {
+        state.orders.push(fresh);
+      } else {
+        // Atualiza dados do item sem sobrescrever status local em transição
+        const local = state.orders.find((o) => o.id === fresh.id);
+        if (local) {
+          local.items       = fresh.items;
+          local.generalNote = fresh.generalNote;
+          // Só atualiza status se a API avançou além do que está localmente
+          // (ex: outro terminal marcou como pronto)
+          if (fresh.status !== local.status) local.status = fresh.status;
+        }
+      }
+    });
+
+    renderBoard();
+  } catch (err) {
+    console.error("[KDS] Poll falhou:", err);
+    // Não re-renderiza — mantém estado anterior
+  }
 }
 
 // =============================================================================
@@ -534,19 +485,22 @@ async function init(): Promise<void> {
   try {
     state.orders = await OrderService.getOrders();
   } catch (err) {
-    console.error("[KDS] Failed to load orders:", err);
-    // TODO: show error state in the board
+    console.error("[KDS] Falha ao carregar pedidos:", err);
+    // TODO: exibir estado de erro no board
   }
 
   renderBoard();
   updateClock();
   attachNavListeners();
 
-  // Shared 1-second tick for clock + order timers
+  // Tick de 1s para clock + timers
   setInterval(() => {
     updateClock();
     tickTimers();
-  }, 1000);
+  }, 1_000);
+
+  // Poll de 30s para novos pedidos
+  setInterval(pollOrders, POLL_INTERVAL_MS);
 }
 
 document.addEventListener("DOMContentLoaded", init);

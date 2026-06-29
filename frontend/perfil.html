@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danny's - Minha Conta</title>
+
+    <link rel="stylesheet" href="src/styles/reset.css">
+    <link rel="stylesheet" href="src/styles/style.css">
+    <link rel="stylesheet" href="src/styles/perfil.css">
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body class="perfil-page">
+
+    <header class="header">
+        <div class="header_interno">
+            <img src="src/assets/images/logo_simples.png" alt="Danny's Logo" class="header_logo">
+
+            <!-- Navegação Desktop -->
+            <nav class="header_nav">
+                <a href="index.html" class="header_nav-link">Home</a>
+                <a href="status.html" class="header_nav-link">Pedidos</a>
+                <a href="#" class="header_nav-link header_nav-link--ativo">Perfil</a>
+            </nav>
+
+            <a href="carrinho.html" class="header_cart-btn" aria-label="Carrinho de compras">
+                <i class="ph ph-shopping-cart"></i>
+            </a>
+        </div>
+    </header>
+
+    <main class="perfil-main">
+        <!-- Cabeçalho da Página (Desktop) -->
+        <div class="perfil-cabecalho-desktop">
+            <h1 class="perfil-cabecalho-desktop_titulo">Minha Conta</h1>
+            <p class="perfil-cabecalho-desktop_subtitulo">Gerencie suas informações pessoais e histórico de pedidos.</p>
+        </div>
+
+        <div class="perfil-grid">
+
+            <form id="form-perfil" class="perfil-card">
+
+                <div class="perfil-card_header-usuario">
+                    <div class="avatar-container">
+                        <img src="src/assets/images/perfil.jpeg" alt="Sua Foto de Perfil" class="avatar-imagem"
+                            id="avatar-imagem">
+                        <input type="file" id="perfil-foto-input" accept="image/*" style="display: none;">
+                        <button type="button" class="avatar-edit-btn" aria-label="Editar Foto" id="btn-edit-foto"
+                            disabled>
+                            <i class="ph-fill ph-pencil-simple"></i>
+                        </button>
+                    </div>
+
+                    <!-- Informacoes (Desktop) -->
+                    <div class="perfil-card_textos-desktop">
+                        <h2 class="perfil-card_titulo">Informações do Usuário</h2>
+                        <p class="perfil-card_subtitulo">Seus dados básicos.</p>
+                    </div>
+                </div>
+
+
+                <div class="perfil-form_group">
+                    <label class="perfil-form_label">Nome Completo</label>
+                    <input type="text" id="perfil-nome" class="perfil-form_input" value="" readonly>
+                </div>
+
+                <div class="perfil-form_group">
+                    <label class="perfil-form_label">E-mail</label>
+                    <input type="email" id="perfil-email" class="perfil-form_input" value="" readonly>
+                </div>
+
+                <div class="perfil-form_group">
+                    <label class="perfil-form_label">Telefone</label>
+                    <input type="tel" id="perfil-telefone" class="perfil-form_input" value="" readonly>
+                </div>
+
+                <div class="perfil-form_group">
+                    <label class="perfil-form_label">Endereço de Entrega</label>
+                    <input type="text" id="perfil-endereco" class="perfil-form_input" value="" readonly>
+                </div>
+
+                <!-- Campos de Senha (Visíveis apenas ao editar) -->
+                <div id="password-fields" style="display: none;">
+                    <div class="perfil-form_group">
+                        <label class="perfil-form_label">Nova Senha</label>
+                        <input type="password" id="perfil-senha" class="perfil-form_input"
+                            placeholder="Deixe em branco para não alterar">
+                    </div>
+                    <div class="perfil-form_group">
+                        <label class="perfil-form_label">Confirmar Senha</label>
+                        <input type="password" id="perfil-senha-confirm" class="perfil-form_input"
+                            placeholder="Confirme a nova senha">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; width: 100%;">
+                    <button type="button" class="btn btn-edit" style="flex: 1;">
+                        Editar
+                    </button>
+                    <button type="button" id="btn-cancel-edit" class="btn btn--outline" style="flex: 1; display: none;">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+
+
+
+            <section class="perfil-card historico-card">
+
+                <div class="historico-card_cabecalho">
+                    <div class="historico-card_titulos">
+                        <h2 class="perfil-card_titulo">Histórico de Pedidos</h2>
+                        <p class="perfil-card_subtitulo">Seus pedidos recentes.</p>
+                    </div>
+
+
+                </div>
+
+                <div id="historico-empty-state" class="empty-state"
+                    style="display: none; text-align: center; padding: 2rem 1rem; flex-direction: column; align-items: center; justify-content: center;">
+                    <i class="ph ph-receipt"
+                        style="font-size: 3rem; color: var(--neutral-color); margin-bottom: 0.5rem;"></i>
+                    <p style="color: var(--neutral-color); font-weight: bold; margin-bottom: 1rem;">Nenhum pedido ainda
+                    </p>
+                    <a href="index.html" class="btn btn--primary"
+                        style="display: inline-flex; justify-content: center; text-decoration: none; padding: 0.5rem 1rem; font-size: 0.875rem;">Fazer
+                        meu primeiro pedido</a>
+                </div>
+
+                <ul class="historico-lista">
+                    <!-- Injetado via TypeScript -->
+                </ul>
+
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Navegação Mobile -->
+    <footer class="butao-nav">
+        <nav class="butao-nav_menu">
+            <a href="index.html" class="butao-nav_item">
+                <i class="ph-fill ph-house"></i>
+                <span class="butao-nav_label">Home</span>
+            </a>
+            <a href="status.html" class="butao-nav_item">
+                <i class="ph ph-receipt"></i>
+                <span class="butao-nav_label">Pedidos</span>
+            </a>
+            <a href="#" class="butao-nav_item butao-nav_item--active">
+                <i class="ph ph-user"></i>
+                <span class="butao-nav_label">Perfil</span>
+            </a>
+        </nav>
+    </footer>
+
+    <script type="module" src="/src/components/perfilController.ts"></script>
+</body>
+
+</html>

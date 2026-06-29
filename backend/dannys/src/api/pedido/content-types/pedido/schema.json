@@ -7,7 +7,7 @@
     "displayName": "Pedido"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
@@ -45,6 +45,9 @@
     "observacao_geral": {
       "type": "text"
     },
+    "endereco_entrega": {
+      "type": "string"
+    },
     "users_permissions_user": {
       "type": "relation",
       "relation": "manyToOne",
@@ -56,6 +59,9 @@
       "relation": "oneToMany",
       "target": "api::item-pedido.item-pedido",
       "mappedBy": "pedido"
+    },
+    "endereco_entrega": {
+      "type": "text"
     }
   }
 }
