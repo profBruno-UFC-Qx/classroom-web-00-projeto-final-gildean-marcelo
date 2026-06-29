@@ -1,7 +1,11 @@
 import { usuarioService } from '@/services/UsuarioService'
 import { pedidoService, SituacaoPedido } from '@/services/PedidoService'
-import { isAutenticado, getUsuarioLogado, setUsuarioLogado } from '@/utils/auth'
-import { formatarMoeda, formatarData } from '@/utils/ui'
+import { getUsuarioLogado, setUsuarioLogado, verificarAcessoRestrito } from '@/utils/auth'
+import { formatarMoeda, formatarData, showModal } from '@/utils/ui'
+
+if (!(await verificarAcessoRestrito())) {
+  throw new Error('Acesso negado');
+}
 
 const inputNome = document.querySelector<HTMLInputElement>('#perfil-nome')
 const inputEmail = document.querySelector<HTMLInputElement>('#perfil-email')
@@ -23,10 +27,6 @@ const btnEditFoto = document.querySelector<HTMLButtonElement>('#btn-edit-foto')
 let isEditing = false
 let novaFotoBase64: string | null = null
 async function init() {
-  if (!isAutenticado()) {
-    window.location.href = 'login.html'
-    return
-  }
 
   await carregarDadosUsuario()
   await carregarHistoricoPedidos()
@@ -177,6 +177,12 @@ async function toggleEditMode() {
     if (inputNome) inputNome.focus()
     if (btnEdit) btnEdit.textContent = 'Salvar'
   } else {
+    if (inputNome && inputNome.value.trim().length < 3) {
+      await showModal('Erro', 'O nome deve ter pelo menos 3 caracteres.', 'erro', { labelOk: 'OK' })
+      isEditing = true
+      return
+    }
+
     const updateDto: any = {}
     if (inputNome) updateDto.username = inputNome.value
     if (inputEmail) updateDto.email = inputEmail.value
@@ -185,7 +191,7 @@ async function toggleEditMode() {
     if (novaFotoBase64) updateDto.foto = novaFotoBase64
     if (inputSenha?.value) {
       if (inputSenha.value !== inputSenhaConfirm?.value) {
-        alert('As senhas não coincidem.')
+        await showModal('Erro', 'As senhas não coincidem.', 'erro', { labelOk: 'OK' })
         isEditing = true
         return
       }
@@ -212,10 +218,12 @@ async function toggleEditMode() {
       if (btnEditFoto) { btnEditFoto.style.display = 'none'; btnEditFoto.disabled = true }
 
       if (btnEdit) btnEdit.textContent = 'Editar'
+      await showModal('Sucesso', 'Perfil atualizado com sucesso.', 'sucesso', { labelOk: 'OK' })
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao atualizar usuário:', error)
-      alert('Não foi possível atualizar o perfil. Verifique se o e-mail ou telefone já existem em outra conta.')
+      const msg = error.response?.data?.error?.message || 'Não foi possível atualizar o perfil. Verifique se os dados são válidos.'
+      await showModal('Erro', msg, 'erro', { labelOk: 'OK' })
       isEditing = true
     }
   }

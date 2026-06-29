@@ -1,69 +1,14 @@
 import { carrinhoService, type ItemCarrinho } from '@/services/CarrinhoService'
 import { pedidoService, type TipoEntrega, type FormaPagamento } from '@/services/PedidoService'
 import { itemPedidoService } from '@/services/ItemPedidoService'
-import { getUsuarioLogado, setUsuarioLogado, isAutenticado } from '@/utils/auth'
+import { getUsuarioLogado, setUsuarioLogado, verificarAcessoRestrito } from '@/utils/auth'
 import { usuarioService } from '@/services/UsuarioService'
-import { setLoading, showFeedback, formatarMoeda, sanitizeImageUrl } from '@/utils/ui'
+import { setLoading, showFeedback, formatarMoeda, sanitizeImageUrl, showModal } from '@/utils/ui'
 
 const TAXA_ENTREGA = 6.00
 
-// Modal
-
-type ModalTipo = 'aviso' | 'erro'
-
-const ICONES: Record<ModalTipo, string> = {
-  aviso: '<i class="ph-bold ph-map-pin-area"></i>',
-  erro:  '<i class="ph-bold ph-x-circle"></i>',
-}
-
-function showModal(
-  titulo: string,
-  mensagem: string,
-  tipo: ModalTipo = 'aviso',
-  opcoes?: { labelOk?: string; labelAcao?: string; onAcao?: () => void }
-): Promise<void> {
-  return new Promise(resolve => {
-    const overlay  = document.getElementById('modal-overlay')!
-    const iconEl   = document.getElementById('modal-icon')!
-    const tituloEl = document.getElementById('modal-titulo')!
-    const msgEl    = document.getElementById('modal-mensagem')!
-    const acoesEl  = document.getElementById('modal-acoes')!
-
-    if (!overlay) { resolve(); return }
-
-    iconEl.className = `modal-icon modal-icon--${tipo}`
-    iconEl.innerHTML = ICONES[tipo]
-    tituloEl.textContent = titulo
-    msgEl.textContent = mensagem
-    acoesEl.innerHTML = ''
-
-    // Botão de ação opcional (ex: "Adicionar endereço")
-    if (opcoes?.labelAcao && opcoes.onAcao) {
-      const btnAcao = document.createElement('button')
-      btnAcao.className = 'modal-btn modal-btn--primario'
-      btnAcao.textContent = opcoes.labelAcao
-      btnAcao.onclick = () => {
-        overlay.style.display = 'none'
-        opcoes.onAcao!()
-        resolve()
-      }
-      acoesEl.appendChild(btnAcao)
-    }
-
-    const btnOk = document.createElement('button')
-    btnOk.className = opcoes?.labelAcao ? 'modal-btn modal-btn--secundario' : 'modal-btn modal-btn--primario'
-    btnOk.textContent = opcoes?.labelOk ?? 'Entendi'
-    btnOk.onclick = () => { overlay.style.display = 'none'; resolve() }
-    acoesEl.appendChild(btnOk)
-
-    overlay.style.display = 'flex'
-    acoesEl.querySelector<HTMLButtonElement>('.modal-btn')?.focus()
-  })
-}
-
-
-if (!isAutenticado()) {
-  window.location.replace('login.html')
+if (!(await verificarAcessoRestrito())) {
+  throw new Error('Acesso negado');
 }
 
 const form = document.querySelector<HTMLFormElement>('#form-pedido')
@@ -308,8 +253,9 @@ async function handleSubmit(e: SubmitEvent) {
       await showModal(
         'Endereço de entrega não informado',
         'Para pedidos com Delivery, é necessário informar um endereço de entrega.',
-        'aviso',
+        'localizacao',
         {
+          labelOk: 'Cancelar',
           labelAcao: 'Adicionar endereço',
           onAcao: () => {
             // Abre o modo de edição do endereço automaticamente

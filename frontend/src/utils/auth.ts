@@ -45,3 +45,29 @@ export function redirecionarSeLogado(destino = '/index.html'): void {
     window.location.replace(destino)
   }
 }
+
+import { showModal } from './ui'
+
+export async function verificarAcessoRestrito(destinoHome = '/index.html', destinoLogin = '/src/pages/user/login.html'): Promise<boolean> {
+  if (isAutenticado()) {
+    return true
+  }
+
+  const clickedAcao = await showModal(
+    'Login Necessário',
+    'Para acessar esta página, por favor faça login ou crie uma conta.',
+    'aviso',
+    {
+      labelOk: 'Voltar para Home',
+      labelAcao: 'Fazer Login',
+      onAcao: () => {
+        window.location.replace(destinoLogin)
+      }
+    }
+  )
+
+  if (!clickedAcao) {
+    window.location.replace(destinoHome)
+  }
+  return false
+}

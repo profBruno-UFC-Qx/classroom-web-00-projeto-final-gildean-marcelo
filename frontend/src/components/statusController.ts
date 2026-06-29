@@ -1,41 +1,12 @@
 import { pedidoService, SituacaoPedido } from '@/services/PedidoService'
-import { isAutenticado, getUsuarioLogado } from '@/utils/auth'
-import { formatarMoeda } from '@/utils/ui'
+import { getUsuarioLogado, verificarAcessoRestrito } from '@/utils/auth'
+import { formatarMoeda, showModal } from '@/utils/ui'
+
+if (!(await verificarAcessoRestrito())) {
+  throw new Error('Acesso negado');
+}
 
 // ─── Modal Customizado ────────────────────────────────────────────────────────
-
-type ModalTipo = 'sucesso' | 'aviso' | 'erro'
-
-const ICONES: Record<ModalTipo, string> = {
-  sucesso: '<i class="ph-bold ph-check"></i>',
-  aviso:   '<i class="ph-bold ph-warning"></i>',
-  erro:    '<i class="ph-bold ph-x-circle"></i>',
-}
-
-function showModal(titulo: string, mensagem: string, tipo: ModalTipo = 'sucesso'): Promise<void> {
-  return new Promise(resolve => {
-    const overlay  = document.getElementById('modal-overlay')!
-    const iconEl   = document.getElementById('modal-icon')!
-    const tituloEl = document.getElementById('modal-titulo')!
-    const msgEl    = document.getElementById('modal-mensagem')!
-    const acoesEl  = document.getElementById('modal-acoes')!
-
-    iconEl.className = `modal-icon modal-icon--${tipo}`
-    iconEl.innerHTML = ICONES[tipo]
-    tituloEl.textContent = titulo
-    msgEl.textContent = mensagem
-
-    acoesEl.innerHTML = ''
-    const btnOk = document.createElement('button')
-    btnOk.className = 'modal-btn modal-btn--primario'
-    btnOk.textContent = 'OK'
-    btnOk.onclick = () => { overlay.style.display = 'none'; resolve() }
-    acoesEl.appendChild(btnOk)
-
-    overlay.style.display = 'flex'
-    btnOk.focus()
-  })
-}
 
 function showConfirmModal(titulo: string, mensagem: string): Promise<boolean> {
   return new Promise(resolve => {
@@ -46,7 +17,7 @@ function showConfirmModal(titulo: string, mensagem: string): Promise<boolean> {
     const acoesEl  = document.getElementById('modal-acoes')!
 
     iconEl.className = 'modal-icon modal-icon--aviso'
-    iconEl.innerHTML = ICONES.aviso
+    iconEl.innerHTML = '<i class="ph-bold ph-warning"></i>'
     tituloEl.textContent = titulo
     msgEl.textContent = mensagem
 
@@ -94,10 +65,6 @@ const spanTaxa = document.getElementById('recibo-taxa')
 const spanTotal = document.getElementById('recibo-total-valor')
 
 async function init() {
-  if (!isAutenticado()) {
-    window.location.href = 'login.html'
-    return
-  }
 
   let pedidoId: string | number = 0
   const urlParams = new URLSearchParams(window.location.search)
