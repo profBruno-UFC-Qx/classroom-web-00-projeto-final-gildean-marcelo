@@ -528,7 +528,6 @@ export interface ApiItemPedidoItemPedido extends Struct.CollectionTypeSchema {
       'api::item-pedido.item-pedido'
     > &
       Schema.Attribute.Private;
-    observacao: Schema.Attribute.String;
     pedido: Schema.Attribute.Relation<'manyToOne', 'api::pedido.pedido'>;
     preco_unitario_cobrado: Schema.Attribute.Decimal &
       Schema.Attribute.Required;
@@ -555,7 +554,6 @@ export interface ApiPedidoPedido extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    endereco_entrega: Schema.Attribute.Text;
     forma_pagamento: Schema.Attribute.Enumeration<
       ['pix', 'cartao_na_entrega']
     > &
