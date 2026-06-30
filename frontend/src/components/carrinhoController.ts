@@ -1,14 +1,14 @@
 import { carrinhoService, type ItemCarrinho } from '@/services/CarrinhoService'
 import { pedidoService, type TipoEntrega, type FormaPagamento } from '@/services/PedidoService'
 import { itemPedidoService } from '@/services/ItemPedidoService'
-import { getUsuarioLogado, isAutenticado } from '@/utils/auth'
-import { setLoading, showFeedback, formatarMoeda, sanitizeImageUrl } from '@/utils/ui'
+import { getUsuarioLogado, setUsuarioLogado, verificarAcessoRestrito } from '@/utils/auth'
+import { usuarioService } from '@/services/UsuarioService'
+import { setLoading, showFeedback, formatarMoeda, sanitizeImageUrl, showModal } from '@/utils/ui'
 
 const TAXA_ENTREGA = 6.00
 
-
-if (!isAutenticado()) {
-  window.location.replace('login.html')
+if (!(await verificarAcessoRestrito())) {
+  throw new Error('Acesso negado');
 }
 
 const form = document.querySelector<HTMLFormElement>('#form-pedido')
@@ -21,6 +21,13 @@ const spanSubtotal = document.querySelector<HTMLSpanElement>('.resumo-subtotal')
 const spanTaxa = document.querySelector<HTMLSpanElement>('.resumo-taxa')
 const spanTotal = document.querySelector<HTMLSpanElement>('.resumo-total')
 
+const btnEditEndereco = document.querySelector<HTMLButtonElement>('.endereco-card_editar-btn')
+const viewModeEndereco = document.getElementById('endereco_view_mode')
+const editModeEndereco = document.getElementById('endereco_edit_mode')
+const inputEnderecoEdit = document.getElementById('input_endereco_edit') as HTMLInputElement
+const btnSalvarEndereco = document.getElementById('btn_salvar_endereco') as HTMLButtonElement
+const btnCancelarEndereco = document.getElementById('btn_cancelar_endereco') as HTMLButtonElement
+
 
 function init() {
   preencherEndereco()
@@ -28,6 +35,9 @@ function init() {
   atualizarResumo()
 
   btnVoltar?.addEventListener('click', () => history.back())
+  btnEditEndereco?.addEventListener('click', openEditEndereco)
+  btnSalvarEndereco?.addEventListener('click', saveEndereco)
+  btnCancelarEndereco?.addEventListener('click', cancelEditEndereco)
 
   form?.addEventListener('submit', handleSubmit)
 }
@@ -45,6 +55,39 @@ function preencherEndereco() {
   }
 }
 
+function openEditEndereco() {
+  if (viewModeEndereco && editModeEndereco && inputEnderecoEdit) {
+    viewModeEndereco.style.display = 'none'
+    editModeEndereco.style.display = 'block'
+    inputEnderecoEdit.value = inputEnderecoOculto?.value || ''
+    inputEnderecoEdit.focus()
+  }
+}
+
+function saveEndereco() {
+  const novoEndereco = inputEnderecoEdit?.value.trim() || ''
+  if (novoEndereco === '') {
+    showModal('Endereço vazio', 'Por favor, preencha o endereço antes de salvar.', 'aviso')
+    return
+  }
+
+  if (inputEnderecoOculto) inputEnderecoOculto.value = novoEndereco
+  if (displayEnderecoTexto) displayEnderecoTexto.textContent = novoEndereco
+
+  closeEditEndereco()
+}
+
+function cancelEditEndereco() {
+  closeEditEndereco()
+}
+
+function closeEditEndereco() {
+  if (viewModeEndereco && editModeEndereco) {
+    viewModeEndereco.style.display = 'block'
+    editModeEndereco.style.display = 'none'
+  }
+}
+
 
 
 function renderizarItens() {
@@ -53,17 +96,24 @@ function renderizarItens() {
   const itens = carrinhoService.getItens()
   listaItens.innerHTML = ''
 
+  const emptyState = document.getElementById('carrinho-empty-state')
+  const contentState = document.getElementById('carrinho-content')
+  const tituloDesktop = document.querySelector<HTMLHeadingElement>('.carrinho_titulo-desktop')
+  const tituloMobile = document.querySelector<HTMLHeadingElement>('.header_titulo-mobile')
+
   if (itens.length === 0) {
-    listaItens.innerHTML = `
-      <div class="carrinho-vazio">
-        <i class="ph ph-shopping-cart-simple"></i>
-        <p>Seu carrinho está vazio.</p>
-        <a href="index.html" class="btn btn--primary">Ver Cardápio</a>
-      </div>
-    `
+    if (emptyState) emptyState.style.display = 'flex'
+    if (contentState) contentState.style.display = 'none'
+    if (tituloDesktop) tituloDesktop.style.display = 'none'
+    if (tituloMobile) tituloMobile.style.display = 'none'
     if (btnSubmit) btnSubmit.disabled = true
     return
   }
+
+  if (emptyState) emptyState.style.display = 'none'
+  if (contentState) contentState.style.display = 'contents'
+  if (tituloDesktop) tituloDesktop.style.display = ''
+  if (tituloMobile) tituloMobile.style.display = ''
 
   if (btnSubmit) btnSubmit.disabled = false
 
@@ -178,9 +228,45 @@ async function handleSubmit(e: SubmitEvent) {
     return
   }
 
+  // Atualiza os dados do usuário se vieram incompletos do login/registro
+  let u = usuario as Record<string, any>
+  if (u.endereco === undefined) {
+    try {
+      const freshUser = await usuarioService.me()
+      setUsuarioLogado(freshUser)
+      u = freshUser as Record<string, any>
+      // Atualiza o input oculto com o endereço real vindo do banco
+      if (inputEnderecoOculto && u.endereco) {
+        inputEnderecoOculto.value = u.endereco
+      }
+    } catch (e) {
+      console.error('Erro ao buscar dados atualizados do usuário:', e)
+    }
+  }
+
   const tipoEntrega = (form.querySelector<HTMLInputElement>('input[name="delivery_tipo"]:checked')?.value ?? 'delivery') as TipoEntrega
   const formaPagamento = (form.querySelector<HTMLInputElement>('input[name="payment_tipo"]:checked')?.value ?? 'pix') as FormaPagamento
   const observacao = form.querySelector<HTMLTextAreaElement>('.observacoes_input')?.value.trim() || undefined
+
+  if (tipoEntrega === 'delivery') {
+    if (!inputEnderecoOculto?.value || inputEnderecoOculto.value.trim() === '') {
+      await showModal(
+        'Endereço de entrega não informado',
+        'Para pedidos com Delivery, é necessário informar um endereço de entrega.',
+        'localizacao',
+        {
+          labelOk: 'Cancelar',
+          labelAcao: 'Adicionar endereço',
+          onAcao: () => {
+            // Abre o modo de edição do endereço automaticamente
+            const btnEditar = document.querySelector<HTMLButtonElement>('.endereco-card_editar-btn')
+            btnEditar?.click()
+          }
+        }
+      )
+      return
+    }
+  }
 
   const subtotal = carrinhoService.calcularSubtotal()
   const total = subtotal + TAXA_ENTREGA
@@ -189,7 +275,8 @@ async function handleSubmit(e: SubmitEvent) {
 
   try {
     const pedidoCriado = await pedidoService.create({
-      usuario: usuario.id,
+      users_permissions_user: (usuario as any).documentId || usuario.id,
+      endereco_entrega: inputEnderecoOculto?.value || undefined,
       tipo_entrega: tipoEntrega,
       forma_pagamento: formaPagamento,
       total,
@@ -208,9 +295,13 @@ async function handleSubmit(e: SubmitEvent) {
     )
 
     carrinhoService.limpar()
-    window.location.href = `status.html?pedido_id=${pedidoId}`
+    const pedidoIdentifier = (pedidoCriado as any).documentId || pedidoId
+    window.location.href = `status.html?pedido_id=${pedidoIdentifier}`
 
-  } catch {
+  } catch (error: any) {
+    console.error('[CARRINHO ERRO]', error)
+    const errBody = error?.body ? JSON.stringify(error.body) : (error?.message || JSON.stringify(error))
+    console.error('Erro detalhado:', errBody)
     showFeedback(form, 'Erro ao enviar pedido. Verifique sua conexão e tente novamente.', 'erro')
   } finally {
     setLoading(btnSubmit, false)

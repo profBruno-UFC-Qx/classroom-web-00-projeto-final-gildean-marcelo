@@ -39,7 +39,7 @@ export interface PedidoAttributes {
 }
 
 export interface CreatePedidoDto {
-    usuario: number
+    users_permissions_user: number
     tipo_entrega: TipoEntrega
     forma_pagamento: FormaPagamento
     total: number
@@ -57,7 +57,7 @@ export interface UpdatePedidoDto {
 
 export type PedidoEntity = StrapiEntity<PedidoAttributes>
 
-const POPULATE_KDS = ['usuario', 'itens', 'itens.produto'] as const
+const POPULATE_KDS = ['users_permissions_user', 'item_pedidos', 'item_pedidos.produto'] as const
 
 export class PedidoService extends StrapiCrudService<PedidoAttributes, CreatePedidoDto, UpdatePedidoDto> {
 
@@ -72,11 +72,11 @@ export class PedidoService extends StrapiCrudService<PedidoAttributes, CreatePed
         })
     }
 
-    async update(id: number, payload: UpdatePedidoDto): Promise<PedidoEntity> {
+    async update(id: number | string, payload: UpdatePedidoDto): Promise<PedidoEntity> {
         return super.update(id, payload)
     }
 
-    async getWithRelations(id: number): Promise<PedidoEntity> {
+    async getWithRelations(id: number | string): Promise<PedidoEntity> {
         return this.getById(id, { populate: [...POPULATE_KDS] })
     }
 
@@ -90,11 +90,15 @@ export class PedidoService extends StrapiCrudService<PedidoAttributes, CreatePed
         })
     }
 
-    async listByUsuario(usuarioId: number, params?: StrapiQueryParams<PedidoAttributes>){
+    async listByUsuario(usuarioIdOrDoc: string | number, params?: StrapiQueryParams<PedidoAttributes>){
+        const userFilter = typeof usuarioIdOrDoc === 'string' 
+            ? { documentId: { $eq: usuarioIdOrDoc } } 
+            : { id: { $eq: usuarioIdOrDoc } };
+
         return this.list({
             ...params,
-            filters: { ...params?.filters, usuario: { id: { $eq: usuarioId } } },
-            populate: ['itens', 'itens.produto'],
+            filters: { ...params?.filters, users_permissions_user: userFilter },
+            populate: ['item_pedidos', 'item_pedidos.produto'],
             sort: ['createdAt:desc'],
         })
     }
