@@ -17,93 +17,90 @@
   <script type="module" src="../../scripts/admin/menu-management.ts"></script>
 </head>
 
-<!-- FIX: .app-body na tag body (define altura 100vh, overflow:hidden, cor de fundo) -->
 <body class="app-body">
 
-  <!-- FIX: .app-shell envolve sidebar + main para o layout flex em linha -->
+  
   <div class="app-shell">
 
     <!-- ============================================================
          Sidebar
          ============================================================ -->
-    <nav class="sidebar" aria-label="Main navigation">
+    <nav class="sidebar" id="sidebar" aria-label="Menu de navegação">
 
       <div class="sidebar__brand">
         <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg4kP6VZ1YjoDuDNu1Rkf2Hg6ZGpdkSCl3nt5PZVpVSR3b_l407_Yp6mP8YsG_eULaXGV7eRarGt5dUn_OFsyxMp2_98n94gaGHzQcsvqdnCDiGm1csC2TEbrsyt2-ElIIpzPEPJsVFddctOXQJCPE9q8UV87_4Ma-yCs9vjr9GrhJ71DWE5FwSeqyAE0p3ppknziWX-hOhcvP5yUQAM16FNStkQ9BHXi1EFiOOpxWrKKhw8r4dhiHevvT081qfqrfFWtBAM0lOV8"
+          alt="Danny's Fresh Market"
           class="sidebar__logo"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuArRIlw9F8XaQevtW6PO7lYyVFdEXswYY7kKhJua4IzlNsWvqeX8pItqTzGHwSSr4bC4Vxlwgvq4cWiKgA6Yl2gMaLRgNqqKxLzCM9Faj4M5P0nOcoEpmdNuNWCnwGr_RghNbVAuMUQPSKyGpPjwMEXefGv61fSY1zC4MGAHTQTruEMS1YkM4oh12C7IKwC2UyzOrQSqcq1uGgxKztYoYA-yDAf_4Yj6-MOnKCfPuruufAq_wlmksXUeioM3bBfqVHKmOXtSSSmSoM"
-          alt="Danny's Fresh Market logo">
-        <div>
-          <!-- FIX: sidebar__app-name → sidebar__brand-name -->
-          <span class="sidebar__brand-name">Admin Panel</span>
-          <!-- FIX: sidebar__app-sub → sidebar__brand-subtitle -->
-          <span class="sidebar__brand-subtitle">Management Console</span>
-        </div>
+        />
+        <span class="sidebar__brand-name">Danny's Admin</span>
       </div>
 
-      <ul class="sidebar__nav">
+      <ul class="sidebar__nav" role="list">
         <li>
-          <!-- FIX: sidebar__nav-link → sidebar__nav-item; sidebar__nav-icon adicionado ao ícone -->
-          <a href="#" class="sidebar__nav-item">
+          <a href="#" class="sidebar__nav-item" data-page="dashboard">
             <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">dashboard</span>
-            Dashboard
+            <span class="sidebar__nav-label">Dashboard</span>
+          </a>
+        </li>        
+        <li>
+          <a href="menu-management.html" class="sidebar__nav-item sidebar__nav-item--active" data-page="menu">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true" style="font-variation-settings:'FILL' 1;">restaurant_menu</span>
+            <span class="sidebar__nav-label">Menu Management</span>
           </a>
         </li>
         <li>
-          <!-- FIX: is-active → sidebar__nav-item--active -->
-          <a href="#" class="sidebar__nav-item sidebar__nav-item--active" aria-current="page">
-            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">restaurant_menu</span>
-            Menu Management
+          <a href="kds.html" class="sidebar__nav-item" data-page="kds" aria-current="page">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">kitchen</span>
+            <span class="sidebar__nav-label">KDS Monitor</span>
           </a>
         </li>
         <li>
-          <a href="#" class="sidebar__nav-item">
-            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">skillet</span>
-            KDS Monitor
-          </a>
-        </li>
-        <li>
-          <a href="#" class="sidebar__nav-item">
+          <a href="team-management.html" class="sidebar__nav-item" data-page="team">
             <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">group</span>
-            Team Management
+            <span class="sidebar__nav-label">Team Management</span>
+          </a>
+        </li>
+        <li>
+          <a href="orders.html" class="sidebar__nav-item" data-page="orders">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">receipt_long</span>
+            <span class="sidebar__nav-label">Pedidos</span>
           </a>
         </li>
       </ul>
 
       <div class="sidebar__footer">
-        <div class="sidebar__user">
-          <!-- FIX: sidebar__avatar → sidebar__user-avatar -->
+        <button class="sidebar__user" id="sidebar-user" aria-label="Perfil do usuário">
           <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2tCHSKhri8qtjBJC6PDuuFvH1dLCnkKaUFO4XcgigqziMJ7LbeSqVUpbxdFZy91364REXmlCet--BEDk_1w1CP7as_Qjn-sp9Zb_N_E2D_fazvOaydqY29OwcKDm_gSkbwNdzVkUj8IbMGAEdGFtJ7Wr8jWU99-bDFrPGUwWkZ-2mtllNj6Vk92l6pbnelxULgCjmlzr2rTA_m_GRW9xqcaPE6_2mr_kSPsyvwndIrQxK2jFe6rpIhOxaiRQfPrPqE4Rq7fAbc2o"
+            alt="Admin User"
             class="sidebar__user-avatar"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-aLLYIvNweuNeqRqhgwU2aGoHCBdhYdsyHPpTyxiTb1kYWPZSqG9ph6rhagrRXUCTV9RKs-91v-0zX8JuN6DAYWYRFycKphEfc1ZIqchVsTV_4e5pB9vgTstJOHEeD9zXeirIxupjJnjPvJjqhxGO9lv3sSn4CcjwGUOyoMn4mIYSRDfeCGUNK3IYVk-btW0QtKrwE-LI_PYKziz2LrV6rZrZZ6PgMuDGIy7r98GsX5ZEaYyrrGxKIIStNgNefVwezbAxIUOuVsg"
-            alt="Admin User avatar">
-          <!-- FIX: wrapper interno ganha sidebar__user-info (ellipsis no nome) -->
+          />
           <div class="sidebar__user-info">
             <span class="sidebar__user-name">Admin User</span>
-            <span class="sidebar__user-role">Administrator</span>
+            <span class="sidebar__user-role">Gerente</span>
           </div>
-        </div>
+          <span class="material-symbols-outlined sidebar__user-chevron" aria-hidden="true">expand_more</span>
+        </button>
       </div>
 
     </nav>
 
     <!-- ============================================================
          Main Content
-         ============================================================ -->
-    <!-- FIX: main-content → main-wrapper -->
+         ============================================================ -->    
     <main class="main-wrapper">
 
       <!-- Topbar -->
       <header class="topbar">
         <h1 class="topbar__title">Menu Management</h1>
         <div class="topbar__actions">
-          <!-- FIX: topbar__btn → topbar__icon-btn; topbar__badge → topbar__notif-dot -->
+          
           <button class="topbar__icon-btn" id="btn-notifications" aria-label="Notifications">
             <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
             <span class="topbar__notif-dot" aria-hidden="true"></span>
           </button>
           <div class="topbar__divider" aria-hidden="true"></div>
-          <!-- FIX: topbar__btn → topbar__icon-btn -->
           <button class="topbar__icon-btn" id="btn-logout" aria-label="Log out">
             <span class="material-symbols-outlined" aria-hidden="true">logout</span>
           </button>
@@ -261,7 +258,7 @@
             <!-- Price -->
             <div class="field" id="field-price">
               <label class="field__label" for="prod-price">
-                Preço (USD) <span class="req" aria-hidden="true">*</span>
+                Preço <span class="req" aria-hidden="true">*</span>
               </label>
               <div class="input-wrapper">
                 <span class="field__prefix" aria-hidden="true">$</span>
