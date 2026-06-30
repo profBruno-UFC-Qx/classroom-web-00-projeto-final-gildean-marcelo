@@ -1,16 +1,23 @@
 
+import {
+  pedidoService,
+  SituacaoPedido,
+  TipoEntrega,
+  FormaPagamento,
+  type PedidoEntity,
+} from "@/services/PedidoService";
 
 // =============================================================================
-// TYPES
+// TYPES  (internos — independentes do shape do Strapi)
 // =============================================================================
 
-type PedidoStatus    = "new" | "preparing" | "completed" | "cancelled";
-type PedidoTipo      = "Delivery" | "Balcão" | "Salão";
-type PedidoPagamento = "pix" | "card" | "cash";
+// Todos os status do Strapi representados na UI
+type PedidoStatus    = "new" | "preparing" | "ready" | "delivered" | "cancelled";
+type PedidoTipo      = "Delivery" | "Balcão";
+type PedidoPagamento = "pix" | "card";
 type StatusFilter    = PedidoStatus | "all";
 type DateFilter      = "today" | "week" | "month";
 
-/** List-level data (returned by GET /api/pedidos) */
 interface Pedido {
   id:       string;
   number:   number;
@@ -22,7 +29,6 @@ interface Pedido {
   status:   PedidoStatus;
 }
 
-/** Single item inside an order */
 interface PedidoItem {
   id:        string;
   name:      string;
@@ -30,15 +36,11 @@ interface PedidoItem {
   unitPrice: number;
 }
 
-/**
- * Detail-level data (returned by GET /api/pedidos/:id).
- * Extends Pedido — the real API might return this as a separate, richer shape.
- */
 interface PedidoDetail extends Pedido {
-  deliveryAddress?: string;  // only for Delivery orders
-  tableInfo?:       string;  // only for Salão orders (e.g. "Mesa 4")
+  deliveryAddress?: string;  // usuario.endereco — [3]
+  tableInfo?:       string;  // reservado para quando TipoEntrega.Salao existir
   items:            PedidoItem[];
-  notes?:           string;  // optional order-level observation
+  notes?:           string;  // observacao_geral
 }
 
 interface PaginatedResult<T> {
@@ -58,208 +60,182 @@ interface GetOrdersParams {
 }
 
 // =============================================================================
-// MOCK DATA
+// MAPPERS  Strapi → tipos internos
 // =============================================================================
 
-const MOCK_ORDERS: Pedido[] = [
-  { id: "ord-1042", number: 1042, datetime: "21/06 - 19:30", customer: "João Silva",     type: "Delivery", payment: "pix",  total: 44.00, status: "completed" },
-  { id: "ord-1043", number: 1043, datetime: "21/06 - 19:45", customer: "Maria Oliveira", type: "Balcão",   payment: "card", total: 28.00, status: "preparing" },
-  { id: "ord-1044", number: 1044, datetime: "21/06 - 20:10", customer: "Carlos Mendes",  type: "Delivery", payment: "cash", total: 52.00, status: "cancelled" },
-  { id: "ord-1045", number: 1045, datetime: "21/06 - 20:25", customer: "Ana Costa",      type: "Salão",    payment: "card", total: 87.50, status: "completed" },
-  { id: "ord-1046", number: 1046, datetime: "21/06 - 20:40", customer: "Pedro Santos",   type: "Delivery", payment: "pix",  total: 35.00, status: "new"       },
-  { id: "ord-1047", number: 1047, datetime: "21/06 - 21:00", customer: "Lucia Ferreira", type: "Balcão",   payment: "cash", total: 19.90, status: "completed" },
-  { id: "ord-1048", number: 1048, datetime: "21/06 - 21:15", customer: "Marcos Lima",    type: "Delivery", payment: "card", total: 63.00, status: "preparing" },
-  { id: "ord-1049", number: 1049, datetime: "21/06 - 21:30", customer: "Paula Rocha",    type: "Salão",    payment: "pix",  total: 42.00, status: "completed" },
-  { id: "ord-1050", number: 1050, datetime: "21/06 - 21:45", customer: "Roberto Alves",  type: "Balcão",   payment: "card", total: 31.00, status: "cancelled" },
-  { id: "ord-1051", number: 1051, datetime: "21/06 - 22:00", customer: "Fernanda Dias",  type: "Delivery", payment: "pix",  total: 78.50, status: "new"       },
-  { id: "ord-1052", number: 1052, datetime: "21/06 - 22:20", customer: "Bruno Cardoso",  type: "Salão",    payment: "cash", total: 94.00, status: "completed" },
-  { id: "ord-1053", number: 1053, datetime: "21/06 - 22:35", customer: "Camila Torres",  type: "Delivery", payment: "card", total: 38.50, status: "preparing" },
-];
+function mapSituacaoToStatus(s: SituacaoPedido): PedidoStatus {
+  switch (s) {
+    case SituacaoPedido.Recebido:   return "new";
+    case SituacaoPedido.Preparando: return "preparing";
+    case SituacaoPedido.Pronto:     return "ready";
+    case SituacaoPedido.Entregue:   return "delivered";
+    case SituacaoPedido.Cancelado:  return "cancelled";
+    default:                        return "new";
+  }
+}
 
-/**
- * Extended detail data keyed by order ID.
- * In production this comes from GET /api/pedidos/:id.
- */
-const MOCK_ORDER_DETAILS: Record<string, PedidoDetail> = {
-  "ord-1042": {
-    ...MOCK_ORDERS[0],
-    deliveryAddress: "Rua das Flores, 123, Bairro Jardim, São Paulo - SP, CEP 01234-567",
-    items: [
-      { id: "i-1", name: "Locura de Cupim",      quantity: 1, unitPrice: 32.00 },
-      { id: "i-2", name: "Suco de Laranja 500ml", quantity: 1, unitPrice: 12.00 },
-    ],
-  },
-  "ord-1043": {
-    ...MOCK_ORDERS[1],
-    items: [
-      { id: "i-3", name: "Danny's Classic Burger", quantity: 1, unitPrice: 28.00 },
-    ],
-  },
-  "ord-1044": {
-    ...MOCK_ORDERS[2],
-    deliveryAddress: "Av. Paulista, 900, Bela Vista, São Paulo - SP, CEP 01310-100",
-    items: [
-      { id: "i-4", name: "Veggie Delight Sandwich", quantity: 1, unitPrice: 26.00 },
-      { id: "i-5", name: "Água com Gás 500ml",      quantity: 2, unitPrice: 13.00 },
-    ],
-    notes: "Sem cebola no sanduíche",
-  },
-  "ord-1045": {
-    ...MOCK_ORDERS[3],
-    tableInfo: "Mesa 7",
-    items: [
-      { id: "i-6",  name: "Smash Burger Duplo",     quantity: 2, unitPrice: 36.00 },
-      { id: "i-7",  name: "Batata Frita Grande",    quantity: 2, unitPrice: 14.00 },
-      { id: "i-8",  name: "Refrigerante Lata",      quantity: 1, unitPrice:  7.50 },
-    ],
-  },
-  "ord-1046": {
-    ...MOCK_ORDERS[4],
-    deliveryAddress: "Rua Augusta, 500, Consolação, São Paulo - SP, CEP 01305-000",
-    items: [
-      { id: "i-9",  name: "Combo Família (4 Burgers)", quantity: 1, unitPrice: 35.00 },
-    ],
-  },
-  "ord-1047": {
-    ...MOCK_ORDERS[5],
-    items: [
-      { id: "i-10", name: "X-Salada",               quantity: 1, unitPrice: 19.90 },
-    ],
-  },
-  "ord-1048": {
-    ...MOCK_ORDERS[6],
-    deliveryAddress: "Rua Oscar Freire, 200, Jardins, São Paulo - SP, CEP 01426-000",
-    items: [
-      { id: "i-11", name: "Duplo B Burger",          quantity: 2, unitPrice: 25.00 },
-      { id: "i-12", name: "Batata Frita Média",      quantity: 1, unitPrice: 13.00 },
-    ],
-  },
-  "ord-1049": {
-    ...MOCK_ORDERS[7],
-    tableInfo: "Mesa 3",
-    items: [
-      { id: "i-13", name: "Salada Caesar",           quantity: 1, unitPrice: 28.00 },
-      { id: "i-14", name: "Suco de Laranja 500ml",   quantity: 2, unitPrice:  7.00 },
-    ],
-  },
-  "ord-1050": {
-    ...MOCK_ORDERS[8],
-    items: [
-      { id: "i-15", name: "Locura de Cupim",         quantity: 1, unitPrice: 31.00 },
-    ],
-  },
-  "ord-1051": {
-    ...MOCK_ORDERS[9],
-    deliveryAddress: "Al. Santos, 1420, Cerqueira César, São Paulo - SP, CEP 01418-002",
-    items: [
-      { id: "i-16", name: "Smash Burger Duplo",      quantity: 2, unitPrice: 36.00 },
-      { id: "i-17", name: "Onion Rings",             quantity: 1, unitPrice:  6.50 },
-    ],
-  },
-  "ord-1052": {
-    ...MOCK_ORDERS[10],
-    tableInfo: "Mesa 12",
-    items: [
-      { id: "i-18", name: "Combo Família (4 Burgers)", quantity: 1, unitPrice: 35.00 },
-      { id: "i-19", name: "Batata Frita Grande",       quantity: 3, unitPrice: 14.00 },
-      { id: "i-20", name: "Refrigerante Lata",         quantity: 3, unitPrice:  7.50 },
-    ],
-  },
-  "ord-1053": {
-    ...MOCK_ORDERS[11],
-    deliveryAddress: "Rua Haddock Lobo, 300, Cerqueira César, São Paulo - SP, CEP 01414-001",
-    items: [
-      { id: "i-21", name: "Veggie Delight Sandwich",  quantity: 1, unitPrice: 26.00 },
-      { id: "i-22", name: "Suco de Laranja 500ml",    quantity: 1, unitPrice: 12.00 },
-    ],
-  },
-};
+function mapStatusToSituacao(s: PedidoStatus): SituacaoPedido | null {
+  switch (s) {
+    case "new":       return SituacaoPedido.Recebido;
+    case "preparing": return SituacaoPedido.Preparando;
+    case "ready":     return SituacaoPedido.Pronto;
+    case "delivered": return SituacaoPedido.Entregue;
+    case "cancelled": return SituacaoPedido.Cancelado;
+    default:          return null;
+  }
+}
 
-const MOCK_TOTAL = 156;
+function formatDateTime(iso: string): string {
+  const d = new Date(iso);
+  const dd = d.getDate().toString().padStart(2, "0");
+  const mm = (d.getMonth() + 1).toString().padStart(2, "0");
+  const hh = d.getHours().toString().padStart(2, "0");
+  const mi = d.getMinutes().toString().padStart(2, "0");
+  return `${dd}/${mm} - ${hh}:${mi}`;
+}
+
+function mapEntityToPedido(entity: PedidoEntity): Pedido {
+  const a       = entity.attributes;
+  const usuario = a.usuario?.data?.attributes;
+  return {
+    id:       String(entity.id),
+    number:   entity.id,
+    datetime: formatDateTime(a.createdAt),
+    customer: usuario?.username ?? "Cliente",
+    type:     a.tipo_entrega === TipoEntrega.Delivery ? "Delivery" : "Balcão",
+    payment:  a.forma_pagamento === FormaPagamento.Pix ? "pix" : "card",
+    total:    a.total,
+    status:   mapSituacaoToStatus(a.situacao),
+  };
+}
+
+function mapEntityToPedidoDetail(entity: PedidoEntity): PedidoDetail {
+  const base    = mapEntityToPedido(entity);
+  const a       = entity.attributes;
+  const usuario = a.usuario?.data?.attributes;
+
+  return {
+    ...base,
+    // [3] endereco vem do perfil do usuário — troque por pedido.endereco_entrega
+    // quando o campo for adicionado ao Content-Type pedido.
+    deliveryAddress:
+      a.tipo_entrega === TipoEntrega.Delivery
+        ? (usuario?.endereco ?? undefined)
+        : undefined,
+    items: (a.itens?.data ?? []).map((item) => ({
+      id:        String(item.id),
+      name:      item.attributes.produto?.data?.attributes.nome ?? "(produto)",
+      quantity:  item.attributes.quantidade,
+      unitPrice: item.attributes.preco_unitario_cobrado,
+    })),
+    notes: a.observacao_geral ?? undefined,
+  };
+}
 
 // =============================================================================
-// SERVICE LAYER
-// Replace each method body with a real fetch() call when connecting to an API.
+// SERVICE LAYER  (fina camada sobre pedidoService)
 // =============================================================================
 
-const PedidoService = {
+const HistoricoPedidoService = {
   /**
-   * Paginated, filtered order list.
+   * Lista pedidos com paginação e filtros.
+   * Mapeia os parâmetros internos da UI para a query do Strapi.
    *
-   * TODO — replace with:
-   *   const url = new URL("/api/pedidos", window.location.origin);
-   *   url.searchParams.set("page",     String(params.page));
-   *   url.searchParams.set("pageSize", String(params.pageSize));
-   *   if (params.search)                       url.searchParams.set("search",     params.search);
-   *   if (params.status && params.status !== "all") url.searchParams.set("status", params.status);
-   *   if (params.dateFilter)                   url.searchParams.set("dateFilter", params.dateFilter);
-   *   const res = await fetch(url, { headers: authHeaders() });
-   *   if (!res.ok) throw new Error(await res.text());
-   *   return res.json() as Promise<PaginatedResult<Pedido>>;
+   * Endpoint: GET /api/pedidos (herdado de StrapiCrudService.list) — [6]
    */
   async getOrders(params: GetOrdersParams): Promise<PaginatedResult<Pedido>> {
-    const filtered = MOCK_ORDERS.filter((o) => {
-      const q = params.search?.toLowerCase() ?? "";
-      const matchesSearch =
-        !q ||
-        o.customer.toLowerCase().includes(q) ||
-        String(o.number).includes(q.replace("#", ""));
-      const matchesStatus =
-        !params.status || params.status === "all" || o.status === params.status;
-      return matchesSearch && matchesStatus;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filters: Record<string, any> = {};
+
+    // ── Filtro de status ────────────────────────────────────────────────
+    if (params.status && params.status !== "all") {
+      const situacao = mapStatusToSituacao(params.status);
+      if (situacao) filters.situacao = { $eq: situacao };
+    }
+
+    // ── Filtro de data ──────────────────────────────────────────────────
+    if (params.dateFilter) {
+      const now   = new Date();
+      const start = new Date(now);
+
+      if (params.dateFilter === "today") {
+        start.setHours(0, 0, 0, 0);
+      } else if (params.dateFilter === "week") {
+        start.setDate(now.getDate() - now.getDay());
+        start.setHours(0, 0, 0, 0);
+      } else if (params.dateFilter === "month") {
+        start.setDate(1);
+        start.setHours(0, 0, 0, 0);
+      }
+
+      filters.createdAt = { $gte: start.toISOString() };
+    }
+
+    // ── Busca — [1] [2] ─────────────────────────────────────────────────
+    // Se o termo for numérico → busca por ID do pedido.
+    // Se for texto → busca por username do cliente.
+    // Para buscar os dois juntos em uma query, adicione suporte a $or no
+    // buildQueryParams do StrapiCrudService.
+    if (params.search) {
+      const cleaned  = params.search.replace("#", "").trim();
+      const asNumber = Number(cleaned);
+
+      if (!isNaN(asNumber) && cleaned !== "") {
+        filters.id = { $eq: asNumber };                                   // [2]
+      } else {
+        filters.usuario = { username: { $containsi: cleaned } };         // [1]
+      }
+    }
+
+    const result = await pedidoService.list({
+      pagination: { page: params.page, pageSize: params.pageSize },
+      filters,
+      populate:   ["usuario"],
+      sort:       ["createdAt:desc"],
     });
 
-    const realTotal = filtered.length < MOCK_ORDERS.length ? filtered.length : MOCK_TOTAL;
-    const start     = (params.page - 1) * params.pageSize;
-    const data      = filtered.slice(start, start + params.pageSize);
-
-    return { data, total: realTotal, page: params.page, pageSize: params.pageSize, totalPages: Math.ceil(realTotal / params.pageSize) };
+    return {
+      data:       result.data.map(mapEntityToPedido),
+      total:      result.pagination.total,
+      page:       result.pagination.page,
+      pageSize:   result.pagination.pageSize,
+      totalPages: result.pagination.pageCount,
+    };
   },
 
   /**
-   * Single order detail.
-   *
-   * TODO — replace with:
-   *   const res = await fetch(`/api/pedidos/${id}`, { headers: authHeaders() });
-   *   if (!res.ok) throw new Error(await res.text());
-   *   return res.json() as Promise<PedidoDetail>;
+   * Detalhe completo de um pedido (com itens e produto populados).
+   * Endpoint: GET /api/pedidos/:id?populate=usuario,itens,itens.produto
    */
   async getOrderDetail(id: string): Promise<PedidoDetail | undefined> {
-    // Simulate network latency
-    await new Promise((r) => setTimeout(r, 300));
-    return MOCK_ORDER_DETAILS[id];
+    try {
+      const entity = await pedidoService.getWithRelations(Number(id));
+      return mapEntityToPedidoDetail(entity);
+    } catch {
+      return undefined;
+    }
   },
 
   /**
-   * Cancel / reverse an order.
-   *
-   * TODO — replace with:
-   *   const res = await fetch(`/api/pedidos/${id}/cancel`, {
-   *     method:  "POST",
-   *     headers: authHeaders(),
-   *   });
-   *   if (!res.ok) throw new Error(await res.text());
+   * Cancela / estorna um pedido.
+   * Endpoint: PUT /api/pedidos/:id  { situacao: "cancelado" }
    */
   async cancelOrder(id: string): Promise<void> {
-    await new Promise((r) => setTimeout(r, 400));
-    const order = MOCK_ORDERS.find((o) => o.id === id);
-    if (order) order.status = "cancelled";
-    if (MOCK_ORDER_DETAILS[id]) MOCK_ORDER_DETAILS[id].status = "cancelled";
+    await pedidoService.cancelar(Number(id));
   },
 
   /**
-   * Reprint order receipt (triggers print job on backend).
-   *
-   * TODO — replace with:
-   *   const res = await fetch(`/api/pedidos/${id}/reprint`, {
-   *     method:  "POST",
-   *     headers: authHeaders(),
-   *   });
-   *   if (!res.ok) throw new Error(await res.text());
+   * Reimprimir comanda.
+   * [4] Endpoint customizado não existe ainda — usando window.print() temporariamente.
+   * Para implementar no Strapi:
+   *   1. Crie src/api/pedido/routes/custom.ts com POST /api/pedidos/:id/reimprimir
+   *   2. Implemente o controller que aciona a impressora (node-thermal-printer, etc.)
+   *   3. Substitua window.print() pela chamada httpClient.post abaixo:
+   *      await httpClient.post(`/api/pedidos/${id}/reimprimir`)
    */
   async reprintOrder(id: string): Promise<void> {
-    await new Promise((r) => setTimeout(r, 300));
-    console.log(`[Orders] Reprint requested for order ${id}`);
+    console.log(`[Orders] Reimprimir pedido ${id}`);
+    window.print(); // [4] substituir pelo endpoint customizado
   },
 };
 
@@ -268,25 +244,25 @@ const PedidoService = {
 // =============================================================================
 
 interface OrdersPageState {
-  orders:          Pedido[];
-  currentPage:     number;
-  totalOrders:     number;
-  pageSize:        number;
-  totalPages:      number;
-  searchQuery:     string;
-  statusFilter:    StatusFilter;
-  dateFilter:      DateFilter;
-  isLoading:       boolean;
-  activeDropdown:  "status" | "date" | null;
-  activeOrderId:   string | null;   // which order is open in the modal
-  activeOrderDetail: PedidoDetail | null;
+  orders:             Pedido[];
+  currentPage:        number;
+  totalOrders:        number;
+  pageSize:           number;
+  totalPages:         number;
+  searchQuery:        string;
+  statusFilter:       StatusFilter;
+  dateFilter:         DateFilter;
+  isLoading:          boolean;
+  activeDropdown:     "status" | "date" | null;
+  activeOrderId:      string | null;
+  activeOrderDetail:  PedidoDetail | null;
 }
 
 const state: OrdersPageState = {
   orders:            [],
   currentPage:       1,
   totalOrders:       0,
-  pageSize:          5,
+  pageSize:          10,
   totalPages:        1,
   searchQuery:       "",
   statusFilter:      "all",
@@ -310,23 +286,23 @@ function formatCurrency(value: number): string {
 // =============================================================================
 
 function renderTypeBadge(type: PedidoTipo): string {
-  const config: Record<PedidoTipo, { cls: string; icon: string; label: string }> = {
-    Delivery: { cls: "type-badge--delivery", icon: "two_wheeler",        label: "Delivery" },
-    Balcão:   { cls: "type-badge--balcao",   icon: "storefront",         label: "Balcão"   },
-    Salão:    { cls: "type-badge--salao",    icon: "table_restaurant",   label: "Salão"    },
+  const config: Record<PedidoTipo, { cls: string; icon: string }> = {
+    Delivery: { cls: "type-badge--delivery", icon: "two_wheeler"  },
+    Balcão:   { cls: "type-badge--balcao",   icon: "storefront"   },
   };
-  const { cls, icon, label } = config[type];
+  const { cls, icon } = config[type];
   return `<span class="type-badge ${cls}">
-    <span class="material-symbols-outlined type-badge__icon" aria-hidden="true">${icon}</span>${label}
+    <span class="material-symbols-outlined type-badge__icon" aria-hidden="true">${icon}</span>${type}
   </span>`;
 }
 
 function renderStatusChip(status: PedidoStatus): string {
   const config: Record<PedidoStatus, { cls: string; label: string }> = {
-    new:       { cls: "status-chip--new",       label: "Novo"       },
-    preparing: { cls: "status-chip--preparing", label: "Em Preparo" },
-    completed: { cls: "status-chip--completed", label: "Concluído"  },
-    cancelled: { cls: "status-chip--cancelled", label: "Cancelado"  },
+    new:       { cls: "status-chip--new",       label: "Recebido"  },
+    preparing: { cls: "status-chip--preparing", label: "Em Preparo"},
+    ready:     { cls: "status-chip--ready",     label: "Pronto"    },
+    delivered: { cls: "status-chip--completed", label: "Entregue"  },
+    cancelled: { cls: "status-chip--cancelled", label: "Cancelado" },
   };
   const { cls, label } = config[status];
   return `<span class="status-chip ${cls}">
@@ -336,9 +312,8 @@ function renderStatusChip(status: PedidoStatus): string {
 
 function renderPayment(payment: PedidoPagamento): string {
   const config: Record<PedidoPagamento, { icon: string; label: string }> = {
-    pix:  { icon: "pix",         label: "Pix"      },
-    card: { icon: "credit_card", label: "Cartão"   },
-    cash: { icon: "payments",    label: "Dinheiro" },
+    pix:  { icon: "pix",         label: "Pix"    },
+    card: { icon: "credit_card", label: "Cartão" },
   };
   const { icon, label } = config[payment];
   return `<span class="orders-table__payment">
@@ -357,12 +332,8 @@ function renderRow(order: Pedido): string {
       <td class="orders-table__td"><span class="orders-table__total">${formatCurrency(order.total)}</span></td>
       <td class="orders-table__td">${renderStatusChip(order.status)}</td>
       <td class="orders-table__td orders-table__action">
-        <button
-          class="btn-view"
-          data-action="view"
-          data-id="${order.id}"
-          aria-label="Ver detalhes do pedido #${order.number}"
-        >
+        <button class="btn-view" data-action="view" data-id="${order.id}"
+          aria-label="Ver detalhes do pedido #${order.number}">
           <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
         </button>
       </td>
@@ -374,8 +345,8 @@ function renderRow(order: Pedido): string {
 // =============================================================================
 
 function renderModalBody(detail: PedidoDetail): string {
-  // Location section — Delivery has address, Salão has table info
   let locationSection = "";
+
   if (detail.type === "Delivery" && detail.deliveryAddress) {
     locationSection = `
       <section aria-label="Endereço de entrega">
@@ -385,18 +356,17 @@ function renderModalBody(detail: PedidoDetail): string {
           <p class="order-modal__address-text">${detail.deliveryAddress}</p>
         </div>
       </section>`;
-  } else if (detail.type === "Salão" && detail.tableInfo) {
+  } else if (detail.type === "Delivery" && !detail.deliveryAddress) {
+    // [3] endereço não cadastrado no perfil do usuário
     locationSection = `
-      <section aria-label="Mesa">
-        <p class="order-modal__section-label">Mesa</p>
-        <div class="order-modal__table-info">
-          <span class="material-symbols-outlined order-modal__table-icon" aria-hidden="true">table_restaurant</span>
-          <p class="order-modal__table-text">${detail.tableInfo}</p>
-        </div>
+      <section aria-label="Endereço de entrega">
+        <p class="order-modal__section-label">Endereço de Entrega</p>
+        <p style="font-size:var(--fs-body-md);color:var(--color-on-surface-variant);">
+          Endereço não cadastrado no perfil do cliente.
+        </p>
       </section>`;
   }
 
-  // Notes section (optional)
   const notesSection = detail.notes
     ? `<section aria-label="Observações">
          <p class="order-modal__section-label">Observações</p>
@@ -404,14 +374,15 @@ function renderModalBody(detail: PedidoDetail): string {
        </section>`
     : "";
 
-  // Items section
   const itemsHtml = detail.items.map((item) => `
     <div class="order-modal__item">
       <span class="order-modal__item-name">${item.quantity}x ${item.name}</span>
       <span class="order-modal__item-price">${formatCurrency(item.unitPrice * item.quantity)}</span>
     </div>`).join("");
 
-  const itemsSection = `
+  return `
+    ${locationSection}
+    ${notesSection}
     <section aria-label="Resumo dos itens">
       <p class="order-modal__section-label">Resumo dos Itens</p>
       <div class="order-modal__items">
@@ -422,8 +393,6 @@ function renderModalBody(detail: PedidoDetail): string {
         </div>
       </div>
     </section>`;
-
-  return `${locationSection}${notesSection}${itemsSection}`;
 }
 
 // =============================================================================
@@ -435,50 +404,45 @@ function getModalEl(): HTMLDialogElement | null {
 }
 
 async function openModal(orderId: string): Promise<void> {
-  const modal   = getModalEl();
-  const body    = document.getElementById("modal-body");
-  const title   = document.getElementById("modal-title");
-  const skeleton = document.getElementById("modal-skeleton");
-  const cancelBtn = document.getElementById("btn-cancel-order") as HTMLButtonElement | null;
+  const modal      = getModalEl();
+  const body       = document.getElementById("modal-body");
+  const title      = document.getElementById("modal-title");
+  const cancelBtn  = document.getElementById("btn-cancel-order") as HTMLButtonElement | null;
 
   if (!modal || !body || !title) return;
 
-  // Store active order
-  state.activeOrderId   = orderId;
+  state.activeOrderId    = orderId;
   state.activeOrderDetail = null;
 
-  // Show skeleton while loading
+  // Skeleton enquanto carrega
   body.innerHTML = `<div class="order-modal__skeleton" aria-busy="true">
     <div class="skeleton-line skeleton-line--short"></div>
     <div class="skeleton-line"></div>
     <div class="skeleton-line"></div>
     <div class="skeleton-line skeleton-line--short"></div>
   </div>`;
-
   title.textContent = "Carregando…";
   modal.showModal();
 
   try {
-    const detail = await PedidoService.getOrderDetail(orderId);
+    const detail = await HistoricoPedidoService.getOrderDetail(orderId);
     if (!detail) throw new Error("Pedido não encontrado");
 
     state.activeOrderDetail = detail;
+    title.textContent       = `Detalhes do Pedido #${detail.number}`;
+    body.innerHTML          = renderModalBody(detail);
 
-    // Update title
-    title.textContent = `Detalhes do Pedido #${detail.number}`;
-
-    // Render content
-    body.innerHTML = renderModalBody(detail);
-
-    // Disable cancel button for already-terminal statuses
+    // [5] Botão cancelar — desabilitado para status terminais
     if (cancelBtn) {
-      const isTerminal = detail.status === "cancelled" || detail.status === "completed";
+      const isTerminal = detail.status === "cancelled"
+        || detail.status === "delivered"
+        || detail.status === "ready";
       cancelBtn.disabled = isTerminal;
       cancelBtn.title    = isTerminal ? "Este pedido já foi finalizado" : "";
     }
   } catch (err) {
-    console.error("[Orders] Failed to load order detail:", err);
-    body.innerHTML = `<p style="color:var(--color-error); font-size:var(--fs-body-md)">
+    console.error("[Orders] Falha ao carregar detalhe:", err);
+    body.innerHTML    = `<p style="color:var(--color-error);font-size:var(--fs-body-md)">
       Não foi possível carregar os detalhes. Tente novamente.
     </p>`;
     title.textContent = "Erro";
@@ -486,67 +450,52 @@ async function openModal(orderId: string): Promise<void> {
 }
 
 function closeModal(): void {
-  const modal = getModalEl();
-  modal?.close();
+  getModalEl()?.close();
   state.activeOrderId    = null;
   state.activeOrderDetail = null;
 }
 
 function attachModalListeners(): void {
-  const modal     = getModalEl();
-  const closeBtn  = document.getElementById("btn-modal-close");
-  const reprintBtn  = document.getElementById("btn-reprint")       as HTMLButtonElement | null;
+  const modal          = getModalEl();
+  const closeBtn       = document.getElementById("btn-modal-close");
+  const reprintBtn     = document.getElementById("btn-reprint")      as HTMLButtonElement | null;
   const cancelOrderBtn = document.getElementById("btn-cancel-order") as HTMLButtonElement | null;
 
   if (!modal) return;
 
-  // Close button
   closeBtn?.addEventListener("click", closeModal);
+  modal.addEventListener("click",  (e) => { if (e.target === modal) closeModal(); });
+  modal.addEventListener("cancel", () => { state.activeOrderId = null; state.activeOrderDetail = null; });
 
-  // Close on backdrop click (click outside the container)
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) closeModal();
-  });
-
-  // ESC key is handled natively by <dialog> — fires the "cancel" event
-  modal.addEventListener("cancel", () => {
-    state.activeOrderId    = null;
-    state.activeOrderDetail = null;
-  });
-
-  // Reimprimir Comanda
   reprintBtn?.addEventListener("click", async () => {
     if (!state.activeOrderId) return;
     reprintBtn.disabled = true;
-
     try {
-      await PedidoService.reprintOrder(state.activeOrderId);
-      // TODO: show success toast
-      console.log("[Orders] Reprint success");
+      await HistoricoPedidoService.reprintOrder(state.activeOrderId);
     } catch (err) {
-      console.error("[Orders] Reprint failed:", err);
-      // TODO: show error toast
+      console.error("[Orders] Reprint falhou:", err);
     } finally {
       reprintBtn.disabled = false;
     }
   });
 
-  // Estornar / Cancelar Pedido
   cancelOrderBtn?.addEventListener("click", async () => {
     if (!state.activeOrderId || !state.activeOrderDetail) return;
     if (!confirm(`Confirmar cancelamento do pedido #${state.activeOrderDetail.number}?`)) return;
 
     cancelOrderBtn.disabled = true;
-
     try {
-      await PedidoService.cancelOrder(state.activeOrderId);
+      await HistoricoPedidoService.cancelOrder(state.activeOrderId);
+
+      // Atualiza status localmente sem aguardar reload
+      const inList = state.orders.find((o) => o.id === state.activeOrderId);
+      if (inList) inList.status = "cancelled";
+
       closeModal();
-      // Re-render table to reflect the new status
-      await loadAndRender();
+      renderTable();
     } catch (err) {
-      console.error("[Orders] Cancel failed:", err);
+      console.error("[Orders] Cancelamento falhou:", err);
       cancelOrderBtn.disabled = false;
-      // TODO: show error toast
     }
   });
 }
@@ -558,12 +507,12 @@ function attachModalListeners(): void {
 function buildPageRange(current: number, total: number): (number | "...")[] {
   if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
   const pages: (number | "...")[] = [];
-  const add      = (p: number)   => { if (!pages.includes(p)) pages.push(p); };
-  const ellipsis = ()            => { if (pages[pages.length - 1] !== "...") pages.push("..."); };
+  const add  = (p: number) => { if (!pages.includes(p)) pages.push(p); };
+  const dots = ()          => { if (pages[pages.length - 1] !== "...") pages.push("..."); };
   add(1);
-  if (current > 3)          ellipsis();
+  if (current > 3)         dots();
   for (let p = Math.max(2, current - 1); p <= Math.min(total - 1, current + 1); p++) add(p);
-  if (current < total - 2)  ellipsis();
+  if (current < total - 2) dots();
   add(total);
   return pages;
 }
@@ -581,15 +530,19 @@ function renderPagination(): void {
   info.textContent = `Mostrando ${start} a ${end} de ${totalOrders} pedidos`;
 
   controls.innerHTML = `
-    <button class="page-btn page-btn--nav" data-page="${currentPage - 1}" aria-label="Página anterior" ${currentPage <= 1 ? "disabled" : ""}>
+    <button class="page-btn page-btn--nav" data-page="${currentPage - 1}"
+      aria-label="Página anterior" ${currentPage <= 1 ? "disabled" : ""}>
       <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
     </button>
     ${buildPageRange(currentPage, totalPages).map((p) =>
       p === "..."
         ? `<span class="pagination__ellipsis" aria-hidden="true">…</span>`
-        : `<button class="page-btn ${p === currentPage ? "page-btn--active" : ""}" data-page="${p}" aria-label="Página ${p}" ${p === currentPage ? 'aria-current="page"' : ""}>${p}</button>`
+        : `<button class="page-btn ${p === currentPage ? "page-btn--active" : ""}"
+             data-page="${p}" aria-label="Página ${p}"
+             ${p === currentPage ? 'aria-current="page"' : ""}>${p}</button>`
     ).join("")}
-    <button class="page-btn page-btn--nav" data-page="${currentPage + 1}" aria-label="Próxima página" ${currentPage >= totalPages ? "disabled" : ""}>
+    <button class="page-btn page-btn--nav" data-page="${currentPage + 1}"
+      aria-label="Próxima página" ${currentPage >= totalPages ? "disabled" : ""}>
       <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
     </button>`;
 
@@ -605,15 +558,34 @@ function renderPagination(): void {
 }
 
 // =============================================================================
-// LOAD & RENDER (table)
+// TABLE RENDER  (atualiza só tbody sem recarregar da API)
+// =============================================================================
+
+function renderTable(): void {
+  const tbody = document.getElementById("orders-tbody") as HTMLTableSectionElement | null;
+  const empty = document.getElementById("orders-empty") as HTMLElement | null;
+  if (!tbody || !empty) return;
+
+  if (state.orders.length === 0) {
+    empty.hidden = false;
+  } else {
+    tbody.innerHTML = state.orders.map(renderRow).join("");
+    empty.hidden    = true;
+    attachRowListeners();
+  }
+
+  renderPagination();
+}
+
+// =============================================================================
+// LOAD & RENDER  (busca da API + re-renderiza)
 // =============================================================================
 
 async function loadAndRender(): Promise<void> {
-  const tbody   = document.getElementById("orders-tbody")   as HTMLTableSectionElement | null;
-  const empty   = document.getElementById("orders-empty")   as HTMLElement | null;
   const loading = document.getElementById("orders-loading") as HTMLElement | null;
   const wrapper = document.getElementById("table-wrapper")  as HTMLElement | null;
-  if (!tbody || !empty || !loading || !wrapper) return;
+  const empty   = document.getElementById("orders-empty")   as HTMLElement | null;
+  if (!loading || !wrapper || !empty) return;
 
   state.isLoading = true;
   loading.hidden  = false;
@@ -621,7 +593,7 @@ async function loadAndRender(): Promise<void> {
   empty.hidden    = true;
 
   try {
-    const result = await PedidoService.getOrders({
+    const result = await HistoricoPedidoService.getOrders({
       page:       state.currentPage,
       pageSize:   state.pageSize,
       search:     state.searchQuery || undefined,
@@ -633,20 +605,11 @@ async function loadAndRender(): Promise<void> {
     state.totalOrders = result.total;
     state.totalPages  = result.totalPages;
 
-    if (result.data.length === 0) {
-      empty.hidden  = false;
-      wrapper.hidden = true;
-    } else {
-      tbody.innerHTML = result.data.map(renderRow).join("");
-      wrapper.hidden  = false;
-      empty.hidden    = true;
-      attachRowListeners();
-    }
-
-    renderPagination();
+    wrapper.hidden = result.data.length === 0;
+    renderTable();
   } catch (err) {
-    console.error("[Orders] Failed to load orders:", err);
-    // TODO: render error state / toast
+    console.error("[Orders] Falha ao carregar pedidos:", err);
+    // TODO: exibir estado de erro
   } finally {
     state.isLoading = false;
     loading.hidden  = true;
@@ -659,14 +622,9 @@ async function loadAndRender(): Promise<void> {
 
 function attachRowListeners(): void {
   document.querySelectorAll<HTMLButtonElement>("[data-action='view']").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const id = btn.dataset.id;
-      if (id) openModal(id);
-    });
+    btn.addEventListener("click", () => { const id = btn.dataset.id; if (id) openModal(id); });
   });
 }
-
-// ── Search (debounced 300 ms) ─────────────────────────────────────────────
 
 let searchTimeout: ReturnType<typeof setTimeout>;
 
@@ -683,24 +641,20 @@ function attachSearchListener(): void {
   });
 }
 
-// ── Dropdowns ─────────────────────────────────────────────────────────────
-
 function toggleDropdown(which: "status" | "date"): void {
   const isOpen = state.activeDropdown === which;
   closeAllDropdowns();
-  if (!isOpen) openDropdown(which);
-}
-
-function openDropdown(which: "status" | "date"): void {
-  const dropdownId = which === "status" ? "status-dropdown" : "date-dropdown";
-  const btnId      = which === "status" ? "btn-status-filter" : "btn-date-filter";
-  document.getElementById(dropdownId)?.removeAttribute("hidden");
-  document.getElementById(btnId)?.setAttribute("aria-expanded", "true");
-  state.activeDropdown = which;
+  if (!isOpen) {
+    const dropdownId = which === "status" ? "status-dropdown" : "date-dropdown";
+    const btnId      = which === "status" ? "btn-status-filter" : "btn-date-filter";
+    document.getElementById(dropdownId)?.removeAttribute("hidden");
+    document.getElementById(btnId)?.setAttribute("aria-expanded", "true");
+    state.activeDropdown = which;
+  }
 }
 
 function closeAllDropdowns(): void {
-  ["status-dropdown", "date-dropdown"].forEach((id) => document.getElementById(id)?.setAttribute("hidden", ""));
+  ["status-dropdown", "date-dropdown"].forEach((id)  => document.getElementById(id)?.setAttribute("hidden", ""));
   ["btn-status-filter", "btn-date-filter"].forEach((id) => document.getElementById(id)?.setAttribute("aria-expanded", "false"));
   state.activeDropdown = null;
 }
@@ -740,25 +694,18 @@ function attachFilterListeners(): void {
   document.addEventListener("click", () => closeAllDropdowns());
 }
 
-// ── Sidebar / Nav ─────────────────────────────────────────────────────────
-
 function attachNavListeners(): void {
   document.querySelectorAll<HTMLAnchorElement>(".sidebar__nav-item").forEach((item) => {
     item.addEventListener("click", (e) => {
-      const href = item.getAttribute("href");
-      if (href && href !== "#") {
-        return;
-      }
       e.preventDefault();
       document.querySelectorAll(".sidebar__nav-item").forEach((el) => { el.classList.remove("sidebar__nav-item--active"); el.removeAttribute("aria-current"); });
       item.classList.add("sidebar__nav-item--active");
       item.setAttribute("aria-current", "page");
-      // TODO: trigger routing when implemented
     });
   });
-  document.getElementById("btn-logout")?.addEventListener("click",        () => console.log("[Orders] Logout requested"));
-  document.getElementById("btn-notifications")?.addEventListener("click", () => console.log("[Orders] Notifications requested"));
-  document.getElementById("sidebar-user")?.addEventListener("click",      () => console.log("[Orders] User profile requested"));
+  document.getElementById("btn-logout")?.addEventListener("click",        () => console.log("[Orders] Logout"));
+  document.getElementById("btn-notifications")?.addEventListener("click", () => console.log("[Orders] Notificações"));
+  document.getElementById("sidebar-user")?.addEventListener("click",      () => console.log("[Orders] Perfil"));
 }
 
 // =============================================================================
