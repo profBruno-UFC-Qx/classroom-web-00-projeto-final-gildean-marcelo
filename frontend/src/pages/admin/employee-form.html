@@ -108,7 +108,6 @@
           <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
           Voltar para a lista
         </a>
-
         <!-- Cabeçalho da página -->
         <div class="page-header">
           <h2 class="page-title">Cadastro de Funcionário</h2>
@@ -120,19 +119,15 @@
             </button>
           </div>
         </div>
-
         <!-- Formulário -->
         <form class="form-card" id="employee-form" novalidate>
-
           <!-- ──── Seção 1: Dados Pessoais ──── -->
           <section class="form-section">
             <h3 class="form-section__title">
               <span class="material-symbols-outlined form-section__icon" aria-hidden="true">person</span>
               Dados Pessoais
             </h3>
-
             <div class="form-grid">
-
               <!-- Nome Completo (largura total) -->
               <div class="field field--full">
                 <label class="field__label" for="name">Nome Completo</label>
@@ -149,7 +144,22 @@
                 </div>
                 <span class="field__error" id="error-name" role="alert"></span>
               </div>
-
+              <!-- E-mail (obrigatório pelo Users & Permissions do Strapi) -->
+              <div class="field field--full">
+                <label class="field__label" for="email">E-mail</label>
+                <div class="field__input-wrap" id="wrap-email">
+                  <input
+                    class="field__input"
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="Ex: joao.silva@dannys.com"
+                    autocomplete="email"
+                    aria-describedby="error-email"
+                  >
+                </div>
+                <span class="field__error" id="error-email" role="alert"></span>
+              </div>
               <!-- WhatsApp / Telefone -->
               <div class="field">
                 <label class="field__label" for="phone">WhatsApp / Telefone</label>
@@ -167,7 +177,6 @@
                 </div>
                 <span class="field__error" id="error-phone" role="alert"></span>
               </div>
-
               <!-- CPF -->
               <div class="field">
                 <label class="field__label" for="cpf">CPF</label>
@@ -184,7 +193,6 @@
                 </div>
                 <span class="field__error" id="error-cpf" role="alert"></span>
               </div>
-
               <!-- Endereço (largura total) -->
               <div class="field field--full">
                 <label class="field__label" for="address">Endereço</label>
@@ -199,19 +207,15 @@
                   >
                 </div>
               </div>
-
             </div>
           </section>
-
           <!-- ──── Seção 2: Cargo e Acesso ──── -->
           <section class="form-section form-section--divided">
             <h3 class="form-section__title">
               <span class="material-symbols-outlined form-section__icon" aria-hidden="true">badge</span>
               Cargo e Acesso
             </h3>
-
             <div class="form-grid">
-
               <!-- Função / Cargo -->
               <div class="field">
                 <label class="field__label" for="role">Função / Cargo</label>
@@ -229,7 +233,6 @@
                 </div>
                 <span class="field__error" id="error-role" role="alert"></span>
               </div>
-
               <!-- Senha de Acesso -->
               <div class="field">
                 <label class="field__label" for="password">
@@ -256,23 +259,19 @@
                 </div>
                 <p class="field__hint">Se não preenchido, o funcionário criará a senha no primeiro acesso.</p>
               </div>
-
             </div>
           </section>
-
           <!-- ──── Seção 3: Permissões e Status ──── -->
           <section class="form-section form-section--divided">
             <h3 class="form-section__title">
               <span class="material-symbols-outlined form-section__icon" aria-hidden="true">verified_user</span>
               Permissões e Status
             </h3>
-
             <div class="status-card">
               <div class="status-card__info">
                 <p class="status-card__title">Status da Conta</p>
                 <p class="status-card__desc">Contas ativas podem acessar o sistema e receber pedidos.</p>
               </div>
-
               <!-- Toggle Switch (estado visual 100% via CSS, leitura via TS) -->
               <label class="toggle" for="toggle-active">
                 <input
@@ -288,7 +287,6 @@
               </label>
             </div>
           </section>
-
         </form>
 
       </div>

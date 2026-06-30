@@ -1,41 +1,35 @@
-/**
- * employee-form.ts
- * Danny's Fresh Market · Cadastro de Funcionário
- *
- * Compilar: tsc employee-form.ts --target ES2017 --lib ES2017,DOM --strict
- * Saída:    employee-form.js  (referenciado no HTML)
- *
- * Para conectar ao backend, implemente ApiEmployeeFormService
- * e troque a linha marcada com "▼ SWAP HERE".
- */
+
+
+import { usuarioService, PerfilUsuario } from '@/services/UsuarioService'
 
 /* ======================================================================
    TIPOS
    ====================================================================== */
 
 interface Role {
-  value: string;
-  label: string;
+  value: string
+  label: string
 }
 
 interface EmployeeFormData {
-  name:     string;
-  phone:    string;
-  cpf:      string;
-  address:  string;
-  role:     string;
-  password: string;
-  isActive: boolean;
+  name:     string
+  email:    string   // obrigatório pelo Users & Permissions do Strapi
+  phone:    string
+  cpf:      string
+  address:  string
+  role:     string   // valor do enum PerfilUsuario
+  password: string
+  isActive: boolean
 }
 
 interface ValidationError {
-  field:   string;
-  message: string;
+  field:   string
+  message: string
 }
 
 interface CreateEmployeeResult {
-  id:   string;
-  code: string;  // ex.: "EMP-4231"
+  id:   string
+  code: string   // ex.: "EMP-0007"
 }
 
 /* ======================================================================
@@ -43,138 +37,124 @@ interface CreateEmployeeResult {
    ====================================================================== */
 
 interface EmployeeFormServicePort {
-  getRoles(): Promise<Role[]>;
-  createEmployee(data: EmployeeFormData): Promise<CreateEmployeeResult>;
+  getRoles(): Promise<Role[]>
+  createEmployee(data: EmployeeFormData): Promise<CreateEmployeeResult>
 }
 
 /* ======================================================================
-   MOCK DATA
+   API SERVICE  (produção — usa UsuarioService)
    ====================================================================== */
 
-const MOCK_ROLES: Role[] = [
-  { value: 'gerente',     label: 'Gerente'      },
-  { value: 'supervisor',  label: 'Supervisor'    },
-  { value: 'caixa',       label: 'Caixa'         },
-  { value: 'atendimento', label: 'Atendimento'   },
-  { value: 'chapeiro',    label: 'Chapeiro'      },
-  { value: 'montador',    label: 'Montador'      },
-  { value: 'entregador',  label: 'Entregador'    },
-  { value: 'estoque',     label: 'Estoquista'    },
-  { value: 'limpeza',     label: 'Limpeza'       },
-  { value: 'seguranca',   label: 'Segurança'     },
-];
+class ApiEmployeeFormService implements EmployeeFormServicePort {
 
-/* ======================================================================
-   MOCK SERVICE
-   ====================================================================== */
-
-class MockEmployeeFormService implements EmployeeFormServicePort {
-
+  /**
+   * Retorna os perfis de funcionário disponíveis para seleção.
+   * Não faz chamada à API — os valores vêm do enum PerfilUsuario.
+   * Para adicionar novos perfis: expanda o enum e recrie o campo no Strapi.
+   */
   async getRoles(): Promise<Role[]> {
-    await this.delay(120);
-    return [...MOCK_ROLES];
+    return [
+      { value: PerfilUsuario.Admin,   label: 'Administrador' },
+      { value: PerfilUsuario.Cozinha, label: 'Cozinha'       },
+    ]
   }
 
   async createEmployee(data: EmployeeFormData): Promise<CreateEmployeeResult> {
-    await this.delay(700);
-    const code = `EMP-${1000 + Math.floor(Math.random() * 9000)}`;
-    console.log('[Mock] Funcionário criado:', { ...data, code });
-    return {
-      id:   String(Date.now()),
-      code,
-    };
+    const entity = await usuarioService.create({
+      username:  data.name,
+      email:     data.email,
+      // Gera senha temporária se não informada.
+      // O funcionário deverá trocar no primeiro acesso.
+      password:  data.password || this.generateTempPassword(),
+      whatsapp:  data.phone.replace(/\D/g, ''),  // armazena só dígitos
+      cpf:       data.cpf.replace(/\D/g, ''),    // armazena só dígitos
+      endereco:  data.address.trim() || undefined,
+      perfil:    data.role as PerfilUsuario,
+      ativo:     data.isActive,
+      emServico: false,   // novo funcionário começa fora de turno
+    })
+    const id = String(entity.id)
+    return { id, code: `EMP-${id.padStart(4, '0')}` }
   }
 
-  private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  /** Senha aleatória de 12 chars (letras + números sem ambíguos). */
+  private generateTempPassword(): string {
+    const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'
+    return Array.from({ length: 12 }, () =>
+      chars[Math.floor(Math.random() * chars.length)]
+    ).join('')
   }
 }
 
 /* ======================================================================
-   REAL API SERVICE  (descomentar quando o Strapi estiver pronto)
+   MOCK SERVICE  (desenvolvimento local — sem backend)
    ====================================================================== */
 
-// class ApiEmployeeFormService implements EmployeeFormServicePort {
-//   constructor(private readonly baseUrl: string) {}
-//
-//   async getRoles(): Promise<Role[]> {
-//     const r = await fetch(`${this.baseUrl}/roles`);
-//     if (!r.ok) throw new Error('Falha ao carregar cargos');
-//     return r.json();
-//   }
-//
-//   async createEmployee(data: EmployeeFormData): Promise<CreateEmployeeResult> {
-//     const r = await fetch(`${this.baseUrl}/employees`, {
-//       method:  'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//       body:    JSON.stringify(data),
-//     });
-//     if (!r.ok) {
-//       const err = await r.json().catch(() => ({})) as { message?: string };
-//       throw new Error(err.message ?? `Erro ${r.status}`);
-//     }
-//     return r.json();
-//   }
-// }
+class MockEmployeeFormService implements EmployeeFormServicePort {
+  async getRoles(): Promise<Role[]> {
+    await new Promise<void>(r => setTimeout(r, 100))
+    return [
+      { value: PerfilUsuario.Admin,   label: 'Administrador' },
+      { value: PerfilUsuario.Cozinha, label: 'Cozinha'       },
+    ]
+  }
+
+  async createEmployee(data: EmployeeFormData): Promise<CreateEmployeeResult> {
+    await new Promise<void>(r => setTimeout(r, 700))
+    const id = String(100 + Math.floor(Math.random() * 900))
+    console.log('[Mock] Funcionário criado:', { ...data, id })
+    return { id, code: `EMP-${id.padStart(4, '0')}` }
+  }
+}
 
 /* ======================================================================
-   ▼ SWAP HERE — troque para usar a API real:
-     const employeeFormService: EmployeeFormServicePort =
-       new ApiEmployeeFormService('https://api.dannys.com');
+   ▼ SWAP HERE
+   Produção  → new ApiEmployeeFormService()
+   Dev/local → new MockEmployeeFormService()
    ====================================================================== */
-const employeeFormService: EmployeeFormServicePort = new MockEmployeeFormService();
+const employeeFormService: EmployeeFormServicePort = new ApiEmployeeFormService()
 
 /* ======================================================================
    HELPERS DE DOM
    ====================================================================== */
 
 function el<T extends HTMLElement>(selector: string): T {
-  const found = document.querySelector<T>(selector);
-  if (!found) throw new Error(`[Form] Elemento não encontrado: ${selector}`);
-  return found;
+  const found = document.querySelector<T>(selector)
+  if (!found) throw new Error(`[Form] Elemento não encontrado: ${selector}`)
+  return found
 }
 
 /* ======================================================================
    MÁSCARAS DE INPUT
    ====================================================================== */
 
-/**
- * Formata CPF: 000.000.000-00
- * Aplica progressivamente conforme o usuário digita.
- */
 function applyMaskCPF(raw: string): string {
-  const d = raw.replace(/\D/g, '').slice(0, 11);
-  if (d.length <=  3) return d;
-  if (d.length <=  6) return `${d.slice(0, 3)}.${d.slice(3)}`;
-  if (d.length <=  9) return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6)}`;
-  return `${d.slice(0, 3)}.${d.slice(3, 6)}.${d.slice(6, 9)}-${d.slice(9)}`;
+  const d = raw.replace(/\D/g, '').slice(0, 11)
+  if (d.length <=  3) return d
+  if (d.length <=  6) return `${d.slice(0,3)}.${d.slice(3)}`
+  if (d.length <=  9) return `${d.slice(0,3)}.${d.slice(3,6)}.${d.slice(6)}`
+  return `${d.slice(0,3)}.${d.slice(3,6)}.${d.slice(6,9)}-${d.slice(9)}`
 }
 
-/**
- * Formata telefone brasileiro: (11) 90000-0000 ou (11) 0000-0000
- */
 function applyMaskPhone(raw: string): string {
-  const d = raw.replace(/\D/g, '').slice(0, 11);
-  if (d.length <=  2) return d.length ? `(${d}` : '';
-  if (d.length <=  6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
-  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
-  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+  const d = raw.replace(/\D/g, '').slice(0, 11)
+  if (d.length <=  2) return d.length ? `(${d}` : ''
+  if (d.length <=  6) return `(${d.slice(0,2)}) ${d.slice(2)}`
+  if (d.length <= 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`
+  return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`
 }
 
 function initMasks(): void {
-  const cpfInput   = el<HTMLInputElement>('#cpf');
-  const phoneInput = el<HTMLInputElement>('#phone');
-
+  const cpfInput   = el<HTMLInputElement>('#cpf')
+  const phoneInput = el<HTMLInputElement>('#phone')
   cpfInput.addEventListener('input', () => {
-    const cursor = cpfInput.selectionStart ?? cpfInput.value.length;
-    cpfInput.value = applyMaskCPF(cpfInput.value);
-    // Mantém o cursor próximo da posição anterior
-    cpfInput.setSelectionRange(cursor, cursor);
-  });
-
+    const pos = cpfInput.selectionStart ?? cpfInput.value.length
+    cpfInput.value = applyMaskCPF(cpfInput.value)
+    cpfInput.setSelectionRange(pos, pos)
+  })
   phoneInput.addEventListener('input', () => {
-    phoneInput.value = applyMaskPhone(phoneInput.value);
-  });
+    phoneInput.value = applyMaskPhone(phoneInput.value)
+  })
 }
 
 /* ======================================================================
@@ -182,16 +162,15 @@ function initMasks(): void {
    ====================================================================== */
 
 function initPasswordToggle(): void {
-  const input    = el<HTMLInputElement>('#password');
-  const btn      = el<HTMLButtonElement>('#btn-toggle-password');
-  const icon     = el<HTMLSpanElement>('#icon-password-toggle');
-
+  const input  = el<HTMLInputElement>('#password')
+  const btn    = el<HTMLButtonElement>('#btn-toggle-password')
+  const icon   = el<HTMLSpanElement>('#icon-password-toggle')
   btn.addEventListener('click', () => {
-    const isHidden = input.type === 'password';
-    input.type           = isHidden ? 'text' : 'password';
-    icon.textContent     = isHidden ? 'visibility_off' : 'visibility';
-    btn.setAttribute('aria-label', isHidden ? 'Ocultar senha' : 'Mostrar senha');
-  });
+    const isHidden      = input.type === 'password'
+    input.type          = isHidden ? 'text' : 'password'
+    icon.textContent    = isHidden ? 'visibility_off' : 'visibility'
+    btn.setAttribute('aria-label', isHidden ? 'Ocultar senha' : 'Mostrar senha')
+  })
 }
 
 /* ======================================================================
@@ -199,18 +178,59 @@ function initPasswordToggle(): void {
    ====================================================================== */
 
 async function loadRoles(): Promise<void> {
-  const select = el<HTMLSelectElement>('#role');
+  const select = el<HTMLSelectElement>('#role')
   try {
-    const roles = await employeeFormService.getRoles();
+    const roles = await employeeFormService.getRoles()
     roles.forEach(role => {
-      const opt       = document.createElement('option');
-      opt.value       = role.value;
-      opt.textContent = role.label;
-      select.appendChild(opt);
-    });
+      const opt = document.createElement('option')
+      opt.value       = role.value
+      opt.textContent = role.label
+      select.appendChild(opt)
+    })
   } catch (err) {
-    console.error('[Form] Erro ao carregar cargos:', err);
-    // Mantém apenas o placeholder se a chamada falhar
+    console.error('[Form] Erro ao carregar cargos:', err)
+  }
+}
+
+/* ======================================================================
+   MODO EDIÇÃO  (detecta ?id= na URL e pré-preenche o form)
+   ====================================================================== */
+
+async function loadEmployeeForEdit(): Promise<void> {
+  const id = new URLSearchParams(window.location.search).get('id')
+  if (!id) return  // modo criação — nada a fazer
+
+  const titleEl = document.querySelector<HTMLHeadingElement>('.page-title')
+  if (titleEl) titleEl.textContent = 'Editar Funcionário'
+
+  const saveBtnLabel = document.querySelector<HTMLButtonElement>('#btn-save')
+  if (saveBtnLabel) saveBtnLabel.innerHTML = `<span class="material-symbols-outlined" aria-hidden="true">save</span> Salvar Alterações`
+
+  try {
+    const entity = await usuarioService.getById(Number(id))
+    const a      = entity
+
+    el<HTMLInputElement>('#name').value    = a.username
+    el<HTMLInputElement>('#email').value   = a.email
+    el<HTMLInputElement>('#phone').value   = applyMaskPhone(a.whatsapp)
+    el<HTMLInputElement>('#cpf').value     = applyMaskCPF(a.cpf)
+    el<HTMLInputElement>('#address').value = a.endereco ?? ''
+    el<HTMLInputElement>('#toggle-active').checked = a.ativo
+
+    // Aguarda o loadRoles() terminar antes de setar o valor
+    const select = el<HTMLSelectElement>('#role')
+    if (select.options.length > 1) {
+      select.value = a.perfil
+    } else {
+      // roles ainda carregando — seta após um tick
+      setTimeout(() => { select.value = a.perfil }, 0)
+    }
+
+    // Armazena o id para o submit usar update() em vez de create()
+    el<HTMLFormElement>('#employee-form').dataset.editId = id
+  } catch (err) {
+    console.error('[Form] Erro ao carregar funcionário para edição:', err)
+    showToast('Não foi possível carregar os dados do funcionário.', 'error')
   }
 }
 
@@ -218,58 +238,57 @@ async function loadRoles(): Promise<void> {
    VALIDAÇÃO
    ====================================================================== */
 
-/**
- * Validação do dígito verificador do CPF (algoritmo oficial).
- */
+/** Validação real do dígito verificador do CPF. */
 function isValidCPF(cpf: string): boolean {
-  const d = cpf.replace(/\D/g, '');
-  if (d.length !== 11 || /^(\d)\1+$/.test(d)) return false;
-
+  const d = cpf.replace(/\D/g, '')
+  if (d.length !== 11 || /^(\d)\1+$/.test(d)) return false
   for (let t = 9; t <= 10; t++) {
-    let sum = 0;
-    for (let i = 0; i < t; i++) sum += Number(d[i]) * (t + 1 - i);
-    const rem = (sum * 10) % 11;
-    if (Number(d[t]) !== (rem >= 10 ? 0 : rem)) return false;
+    let sum = 0
+    for (let i = 0; i < t; i++) sum += Number(d[i]) * (t + 1 - i)
+    const rem = (sum * 10) % 11
+    if (Number(d[t]) !== (rem >= 10 ? 0 : rem)) return false
   }
-  return true;
+  return true
 }
 
 function collectFormData(): EmployeeFormData {
   return {
     name:     el<HTMLInputElement>('#name').value.trim(),
+    email:    el<HTMLInputElement>('#email').value.trim(),
     phone:    el<HTMLInputElement>('#phone').value.trim(),
     cpf:      el<HTMLInputElement>('#cpf').value.trim(),
     address:  el<HTMLInputElement>('#address').value.trim(),
     role:     el<HTMLSelectElement>('#role').value,
     password: el<HTMLInputElement>('#password').value,
     isActive: el<HTMLInputElement>('#toggle-active').checked,
-  };
+  }
 }
 
 function validateForm(data: EmployeeFormData): ValidationError[] {
-  const errors: ValidationError[] = [];
+  const errors: ValidationError[] = []
 
-  if (!data.name) {
-    errors.push({ field: 'name', message: 'Nome completo é obrigatório.' });
-  }
+  if (!data.name)
+    errors.push({ field: 'name', message: 'Nome completo é obrigatório.' })
 
-  if (!data.phone) {
-    errors.push({ field: 'phone', message: 'Telefone é obrigatório.' });
-  } else if (data.phone.replace(/\D/g, '').length < 10) {
-    errors.push({ field: 'phone', message: 'Número inválido. Use (DDD) + número.' });
-  }
+  if (!data.email)
+    errors.push({ field: 'email', message: 'E-mail é obrigatório.' })
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
+    errors.push({ field: 'email', message: 'E-mail inválido.' })
 
-  if (!data.cpf) {
-    errors.push({ field: 'cpf', message: 'CPF é obrigatório.' });
-  } else if (!isValidCPF(data.cpf)) {
-    errors.push({ field: 'cpf', message: 'CPF inválido.' });
-  }
+  if (!data.phone)
+    errors.push({ field: 'phone', message: 'Telefone é obrigatório.' })
+  else if (data.phone.replace(/\D/g, '').length < 10)
+    errors.push({ field: 'phone', message: 'Número inválido. Use (DDD) + número.' })
 
-  if (!data.role) {
-    errors.push({ field: 'role', message: 'Selecione uma função.' });
-  }
+  if (!data.cpf)
+    errors.push({ field: 'cpf', message: 'CPF é obrigatório.' })
+  else if (!isValidCPF(data.cpf))
+    errors.push({ field: 'cpf', message: 'CPF inválido.' })
 
-  return errors;
+  if (!data.role)
+    errors.push({ field: 'role', message: 'Selecione uma função.' })
+
+  return errors
 }
 
 /* ======================================================================
@@ -277,42 +296,30 @@ function validateForm(data: EmployeeFormData): ValidationError[] {
    ====================================================================== */
 
 function showFieldError(fieldId: string, message: string): void {
-  const input = document.querySelector(`#${fieldId}`);
-  const wrap  = input?.closest<HTMLElement>('.field__input-wrap');
-  if (wrap) wrap.classList.add('field__input-wrap--error');
-
-  const errorEl = document.querySelector<HTMLElement>(`#error-${fieldId}`);
-  if (errorEl) errorEl.textContent = message;
+  const input = document.querySelector(`#${fieldId}`)
+  input?.closest<HTMLElement>('.field__input-wrap')?.classList.add('field__input-wrap--error')
+  const errorEl = document.querySelector<HTMLElement>(`#error-${fieldId}`)
+  if (errorEl) errorEl.textContent = message
 }
 
 function clearAllErrors(): void {
   document.querySelectorAll<HTMLElement>('.field__input-wrap--error')
-    .forEach(w => w.classList.remove('field__input-wrap--error'));
+    .forEach(w => w.classList.remove('field__input-wrap--error'))
   document.querySelectorAll<HTMLElement>('[id^="error-"]')
-    .forEach(e => { e.textContent = ''; });
+    .forEach(e => { e.textContent = '' })
 }
 
-/**
- * Limpa o erro de um campo individualmente assim que o usuário
- * começa a corrigir o valor.
- */
 function initInlineValidation(): void {
-  ['name', 'phone', 'cpf', 'role'].forEach(fieldId => {
-    const input = document.querySelector(`#${fieldId}`);
-    input?.addEventListener('input', () => {
-      const wrap    = input.closest<HTMLElement>('.field__input-wrap');
-      const errorEl = document.querySelector<HTMLElement>(`#error-${fieldId}`);
-      wrap?.classList.remove('field__input-wrap--error');
-      if (errorEl) errorEl.textContent = '';
-    });
-    // select dispara 'change'
-    input?.addEventListener('change', () => {
-      const wrap    = input.closest<HTMLElement>('.field__input-wrap');
-      const errorEl = document.querySelector<HTMLElement>(`#error-${fieldId}`);
-      wrap?.classList.remove('field__input-wrap--error');
-      if (errorEl) errorEl.textContent = '';
-    });
-  });
+  ['name', 'email', 'phone', 'cpf', 'role'].forEach(fieldId => {
+    const input = document.querySelector(`#${fieldId}`)
+    const clear = () => {
+      input?.closest<HTMLElement>('.field__input-wrap')?.classList.remove('field__input-wrap--error')
+      const errorEl = document.querySelector<HTMLElement>(`#error-${fieldId}`)
+      if (errorEl) errorEl.textContent = ''
+    }
+    input?.addEventListener('input',  clear)
+    input?.addEventListener('change', clear)
+  })
 }
 
 /* ======================================================================
@@ -320,75 +327,77 @@ function initInlineValidation(): void {
    ====================================================================== */
 
 function showToast(message: string, type: 'success' | 'error'): void {
-  document.querySelector('.toast')?.remove();
-
-  const toast = document.createElement('div');
-  toast.className = `toast toast--${type}`;
-  toast.setAttribute('role', 'status');
-  toast.setAttribute('aria-live', 'polite');
+  document.querySelector('.toast')?.remove()
+  const toast = document.createElement('div')
+  toast.className = `toast toast--${type}`
+  toast.setAttribute('role', 'status')
+  toast.setAttribute('aria-live', 'polite')
   toast.innerHTML = `
-    <span class="material-symbols-outlined toast__icon" aria-hidden="true">
-      ${type === 'success' ? 'check_circle' : 'error'}
-    </span>
-    <span>${message}</span>`;
-
-  document.body.appendChild(toast);
-
-  // Força reflow para a transição de entrada funcionar
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => toast.classList.add('toast--visible'));
-  });
-
+    <span class="material-symbols-outlined toast__icon" aria-hidden="true">${type === 'success' ? 'check_circle' : 'error'}</span>
+    <span>${message}</span>`
+  document.body.appendChild(toast)
+  requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('toast--visible')))
   setTimeout(() => {
-    toast.classList.remove('toast--visible');
-    setTimeout(() => toast.remove(), 300);
-  }, 4500);
+    toast.classList.remove('toast--visible')
+    setTimeout(() => toast.remove(), 300)
+  }, 4500)
 }
 
 /* ======================================================================
-   SUBMIT DO FORMULÁRIO
+   SUBMIT
    ====================================================================== */
 
 function setSaveLoading(loading: boolean): void {
-  const btn = el<HTMLButtonElement>('#btn-save');
-  btn.disabled = loading;
+  const btn = el<HTMLButtonElement>('#btn-save')
+  btn.disabled  = loading
   btn.innerHTML = loading
     ? `<span class="material-symbols-outlined btn__spinner" aria-hidden="true">sync</span> Salvando...`
-    : `<span class="material-symbols-outlined" aria-hidden="true">save</span> Salvar Funcionário`;
+    : `<span class="material-symbols-outlined" aria-hidden="true">save</span> Salvar Funcionário`
 }
 
 function initFormSubmit(): void {
   el<HTMLButtonElement>('#btn-save').addEventListener('click', async () => {
-    clearAllErrors();
-
-    const data   = collectFormData();
-    const errors = validateForm(data);
+    clearAllErrors()
+    const data   = collectFormData()
+    const errors = validateForm(data)
 
     if (errors.length > 0) {
-      errors.forEach(e => showFieldError(e.field, e.message));
-
-      // Foca no primeiro campo inválido para feedback imediato
-      const firstInvalid = document.querySelector<HTMLElement>(
-        '.field__input-wrap--error input, .field__input-wrap--error select',
-      );
-      firstInvalid?.focus();
-      return;
+      errors.forEach(e => showFieldError(e.field, e.message))
+      document.querySelector<HTMLElement>('.field__input-wrap--error input, .field__input-wrap--error select')?.focus()
+      return
     }
 
-    setSaveLoading(true);
+    setSaveLoading(true)
     try {
-      const result = await employeeFormService.createEmployee(data);
-      showToast(`Funcionário ${result.code} cadastrado com sucesso!`, 'success');
+      const editId = el<HTMLFormElement>('#employee-form').dataset.editId
 
-      // TODO: redirecionar para a lista após salvar
-      // setTimeout(() => { window.location.href = 'team-management.html'; }, 1500);
+      if (editId) {
+        // ── MODO EDIÇÃO: usa usuarioService.update() diretamente ──────────
+        await usuarioService.update(Number(editId), {
+          username: data.name,
+          email:    data.email,
+          whatsapp: data.phone.replace(/\D/g, ''),
+          cpf:      data.cpf.replace(/\D/g, ''),
+          endereco: data.address || null,
+          perfil:   data.role as PerfilUsuario,
+          ativo:    data.isActive,
+          ...(data.password ? { password: data.password } : {}),
+        })
+        showToast('Funcionário atualizado com sucesso!', 'success')
+      } else {
+        // ── MODO CRIAÇÃO: usa o service port ──────────────────────────────
+        const result = await employeeFormService.createEmployee(data)
+        showToast(`Funcionário ${result.code} cadastrado com sucesso!`, 'success')
+      }
+
+      setTimeout(() => { window.location.href = 'team-management.html' }, 1500)
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erro ao salvar. Tente novamente.';
-      showToast(message, 'error');
+      const message = err instanceof Error ? err.message : 'Erro ao salvar. Tente novamente.'
+      showToast(message, 'error')
     } finally {
-      setSaveLoading(false);
+      setSaveLoading(false)
     }
-  });
+  })
 }
 
 /* ======================================================================
@@ -396,28 +405,24 @@ function initFormSubmit(): void {
    ====================================================================== */
 
 function initNavigation(): void {
-  // Botão Cancelar
   el<HTMLButtonElement>('#btn-cancel').addEventListener('click', () => {
-    // TODO: substituir por rota real do SPA / router
-    window.location.href = 'team-management.html';
-  });
+    window.location.href = 'team-management.html'
+  })
 
-  // Link "Voltar para a lista" já usa href nativo; não precisa de JS.
-  // O handler abaixo é para confirmar saída caso haja dados não salvos.
   el<HTMLAnchorElement>('#link-back').addEventListener('click', (e: MouseEvent) => {
     if (hasUnsavedData()) {
-      const confirm = window.confirm('Tem certeza que deseja sair? Os dados não salvos serão perdidos.');
-      if (!confirm) e.preventDefault();
+      if (!confirm('Tem certeza que deseja sair? Os dados não salvos serão perdidos.')) {
+        e.preventDefault()
+      }
     }
-  });
+  })
 }
 
-/** Verifica se o usuário já digitou algo no formulário. */
 function hasUnsavedData(): boolean {
   const inputs = document.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
-    '#employee-form input:not([type="checkbox"]), #employee-form select',
-  );
-  return Array.from(inputs).some(input => input.value.trim() !== '' && input.value !== '');
+    '#employee-form input:not([type="checkbox"]), #employee-form select'
+  )
+  return Array.from(inputs).some(i => i.value.trim() !== '' && i.value !== '')
 }
 
 /* ======================================================================
@@ -425,14 +430,15 @@ function hasUnsavedData(): boolean {
    ====================================================================== */
 
 async function init(): Promise<void> {
-  await loadRoles();        // carrega opções do select antes de tudo
-  initMasks();
-  initPasswordToggle();
-  initInlineValidation();
-  initFormSubmit();
-  initNavigation();
+  await loadRoles()           // popula <select> antes de qualquer coisa
+  await loadEmployeeForEdit() // pré-preenche se ?id= presente (modo edição)
+  initMasks()
+  initPasswordToggle()
+  initInlineValidation()
+  initFormSubmit()
+  initNavigation()
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  init().catch(err => console.error('[Form] init:', err));
-});
+  init().catch(err => console.error('[Form] init:', err))
+})

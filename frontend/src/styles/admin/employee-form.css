@@ -8,19 +8,27 @@
   --shadow-ambient: var(--shadow-sm);
   --shadow-ambient-hover: var(--shadow-md);
 
-  /* Typography scale from admin-template */
+  /* Typography scale from admin-template
+     FIX: --lh-* já existem no admin-template.css com o mesmo nome.
+     Redeclará-las como var(--lh-*) criava referência circular (valor inválido),
+     quebrando o line-height de títulos, labels e textos. Removido — o valor
+     do admin-template.css já é usado diretamente. */
   --text-headline-lg: var(--fs-headline-lg);
-  --lh-headline-lg: var(--lh-headline-lg);
   --text-headline-md: var(--fs-headline-md);
-  --lh-headline-md: var(--lh-headline-md);
   --text-headline-sm: var(--fs-headline-sm);
-  --lh-headline-sm: var(--lh-headline-sm);
   --text-body-md: var(--fs-body-md);
-  --lh-body-md: var(--lh-body-md);
   --text-label-lg: var(--fs-label-lg);
-  --lh-label-lg: var(--lh-label-lg);
   --text-label-sm: var(--fs-label-sm);
-  --lh-label-sm: var(--lh-label-sm);
+
+  /* FIX: tokens de superfície sem ponte — o template usa "-container-",
+     mas este CSS referenciava --color-surface-lowest/-high/-highest
+     (sem "container"), que não existiam. Isso deixava fundos e bordas
+     transparentes em .form-card, .field__input-wrap, .form-section--divided
+     e .toggle__track. */
+  --color-surface-lowest:  var(--color-surface-container-lowest);
+  --color-surface-low:     var(--color-surface-container-low);
+  --color-surface-high:    var(--color-surface-container-high);
+  --color-surface-highest: var(--color-surface-container-highest);
 }
 
 /* Override page-content for employee form (scrollable canvas) */

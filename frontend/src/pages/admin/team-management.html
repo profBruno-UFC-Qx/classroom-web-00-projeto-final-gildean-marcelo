@@ -103,6 +103,7 @@
       <main class="page-content" id="main-content" aria-label="Conteúdo principal">
         <div class="page-content__inner">
         
+        <!-- Page Header -->
         <div class="page-header">
           <div class="page-header__info">
             <h2 class="page-header__title">Team Management</h2>
@@ -130,13 +131,12 @@
             </button>
           </div>
         </div>
-
         <!-- Metrics Grid – populado via TS -->
         <div class="metrics-grid" id="metrics-grid" aria-label="Estatísticas da equipe"></div>
-        
+        <!-- Table Card -->
         <div class="table-card">
           <div class="employee-table">
-            
+            <!-- Cabeçalho -->
             <div class="employee-table__head" role="row">
               <div class="employee-table__cell" role="columnheader">Employee</div>
               <div class="employee-table__cell" role="columnheader">Role</div>
@@ -144,12 +144,9 @@
               <div class="employee-table__cell" role="columnheader">Status</div>
               <div class="employee-table__cell employee-table__cell--center" role="columnheader">Actions</div>
             </div>
-
             <!-- Linhas – populadas via TS -->
             <div class="employee-table__body" id="employee-list" role="rowgroup"></div>
-
           </div>
-
           <!-- Paginação – populada via TS -->
           <div class="pagination" id="pagination" aria-label="Paginação da tabela"></div>
         </div>
