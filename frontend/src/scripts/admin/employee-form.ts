@@ -1,6 +1,11 @@
 
 
 import { usuarioService, PerfilUsuario } from '@/services/UsuarioService'
+import { verificarAcessoAdmin, getUsuarioLogado, limparSessao } from '@/utils/auth'
+
+if (!verificarAcessoAdmin([PerfilUsuario.Admin])) {
+  throw new Error('Acesso restrito a administradores.')
+}
 
 /* ======================================================================
    TIPOS
@@ -60,7 +65,7 @@ class ApiEmployeeFormService implements EmployeeFormServicePort {
   }
 
   async createEmployee(data: EmployeeFormData): Promise<CreateEmployeeResult> {
-    const entity = await usuarioService.create({
+    const entity = await usuarioService.createFuncionario({
       username:  data.name,
       email:     data.email,
       // Gera senha temporária se não informada.
@@ -212,8 +217,8 @@ async function loadEmployeeForEdit(): Promise<void> {
 
     el<HTMLInputElement>('#name').value    = a.username
     el<HTMLInputElement>('#email').value   = a.email
-    el<HTMLInputElement>('#phone').value   = applyMaskPhone(a.whatsapp)
-    el<HTMLInputElement>('#cpf').value     = applyMaskCPF(a.cpf)
+    el<HTMLInputElement>('#phone').value   = applyMaskPhone(a.whatsapp ?? '')
+    el<HTMLInputElement>('#cpf').value     = applyMaskCPF(a.cpf ?? '')
     el<HTMLInputElement>('#address').value = a.endereco ?? ''
     el<HTMLInputElement>('#toggle-active').checked = a.ativo
 
@@ -416,6 +421,22 @@ function initNavigation(): void {
       }
     }
   })
+
+  document.getElementById('btn-logout')?.addEventListener('click', () => {
+    limparSessao()
+    window.location.href = '/src/pages/user/login.html'
+  })
+}
+
+const PERFIL_LABEL: Record<string, string> = { admin: 'Administrador', cozinha: 'Cozinha', cliente: 'Cliente' }
+
+function renderSidebarUser(): void {
+  const user = getUsuarioLogado()
+  if (!user) return
+  const nameEl = document.querySelector<HTMLElement>('.sidebar__user-name')
+  const roleEl = document.querySelector<HTMLElement>('.sidebar__user-role')
+  if (nameEl) nameEl.textContent = user.username
+  if (roleEl) roleEl.textContent = PERFIL_LABEL[user.perfil] ?? user.perfil
 }
 
 function hasUnsavedData(): boolean {
@@ -437,6 +458,7 @@ async function init(): Promise<void> {
   initInlineValidation()
   initFormSubmit()
   initNavigation()
+  renderSidebarUser()
 }
 
 document.addEventListener('DOMContentLoaded', () => {

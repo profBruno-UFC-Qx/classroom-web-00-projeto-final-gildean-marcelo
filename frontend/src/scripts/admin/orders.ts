@@ -6,6 +6,12 @@ import {
   FormaPagamento,
   type PedidoEntity,
 } from "@/services/PedidoService";
+import { verificarAcessoAdmin, getUsuarioLogado, limparSessao } from "@/utils/auth";
+import { PerfilUsuario } from "@/services/UsuarioService";
+
+if (!verificarAcessoAdmin([PerfilUsuario.Admin])) {
+  throw new Error("Acesso restrito a administradores.");
+}
 
 // =============================================================================
 // TYPES  (internos — independentes do shape do Strapi)
@@ -95,40 +101,38 @@ function formatDateTime(iso: string): string {
 }
 
 function mapEntityToPedido(entity: PedidoEntity): Pedido {
-  const a       = entity.attributes;
-  const usuario = a.usuario?.data?.attributes;
+  const usuario = entity.users_permissions_user;
   return {
     id:       String(entity.id),
     number:   entity.id,
-    datetime: formatDateTime(a.createdAt),
+    datetime: formatDateTime(entity.createdAt),
     customer: usuario?.username ?? "Cliente",
-    type:     a.tipo_entrega === TipoEntrega.Delivery ? "Delivery" : "Balcão",
-    payment:  a.forma_pagamento === FormaPagamento.Pix ? "pix" : "card",
-    total:    a.total,
-    status:   mapSituacaoToStatus(a.situacao),
+    type:     entity.tipo_entrega === TipoEntrega.Delivery ? "Delivery" : "Balcão",
+    payment:  entity.forma_pagamento === FormaPagamento.Pix ? "pix" : "card",
+    total:    entity.total,
+    status:   mapSituacaoToStatus(entity.situacao),
   };
 }
 
 function mapEntityToPedidoDetail(entity: PedidoEntity): PedidoDetail {
   const base    = mapEntityToPedido(entity);
-  const a       = entity.attributes;
-  const usuario = a.usuario?.data?.attributes;
+  const usuario = entity.users_permissions_user;
 
   return {
     ...base,
-    // [3] endereco vem do perfil do usuário — troque por pedido.endereco_entrega
-    // quando o campo for adicionado ao Content-Type pedido.
+    // endereco_entrega é o campo gravado no próprio pedido no momento da
+    // compra; cai para o endereço do perfil do usuário como fallback.
     deliveryAddress:
-      a.tipo_entrega === TipoEntrega.Delivery
-        ? (usuario?.endereco ?? undefined)
+      entity.tipo_entrega === TipoEntrega.Delivery
+        ? (entity.endereco_entrega ?? usuario?.endereco ?? undefined)
         : undefined,
-    items: (a.itens?.data ?? []).map((item) => ({
+    items: (entity.item_pedidos ?? []).map((item) => ({
       id:        String(item.id),
-      name:      item.attributes.produto?.data?.attributes.nome ?? "(produto)",
-      quantity:  item.attributes.quantidade,
-      unitPrice: item.attributes.preco_unitario_cobrado,
+      name:      item.produto?.nome ?? "(produto)",
+      quantity:  item.quantidade,
+      unitPrice: item.preco_unitario_cobrado,
     })),
-    notes: a.observacao_geral ?? undefined,
+    notes: entity.observacao_geral ?? undefined,
   };
 }
 
@@ -183,14 +187,14 @@ const HistoricoPedidoService = {
       if (!isNaN(asNumber) && cleaned !== "") {
         filters.id = { $eq: asNumber };                                   // [2]
       } else {
-        filters.usuario = { username: { $containsi: cleaned } };         // [1]
+        filters.users_permissions_user = { username: { $containsi: cleaned } }; // [1]
       }
     }
 
     const result = await pedidoService.list({
       pagination: { page: params.page, pageSize: params.pageSize },
       filters,
-      populate:   ["usuario"],
+      populate:   ["users_permissions_user"],
       sort:       ["createdAt:desc"],
     });
 
@@ -694,6 +698,21 @@ function attachFilterListeners(): void {
   document.addEventListener("click", () => closeAllDropdowns());
 }
 
+const PERFIL_LABEL: Record<string, string> = {
+  admin: "Administrador",
+  cozinha: "Cozinha",
+  cliente: "Cliente",
+};
+
+function renderSidebarUser(): void {
+  const user = getUsuarioLogado();
+  if (!user) return;
+  const nameEl = document.querySelector<HTMLElement>(".sidebar__user-name");
+  const roleEl = document.querySelector<HTMLElement>(".sidebar__user-role");
+  if (nameEl) nameEl.textContent = user.username;
+  if (roleEl) roleEl.textContent = PERFIL_LABEL[user.perfil] ?? user.perfil;
+}
+
 function attachNavListeners(): void {
   document.querySelectorAll<HTMLAnchorElement>(".sidebar__nav-item").forEach((item) => {
     item.addEventListener("click", (e) => {
@@ -703,7 +722,10 @@ function attachNavListeners(): void {
       item.setAttribute("aria-current", "page");
     });
   });
-  document.getElementById("btn-logout")?.addEventListener("click",        () => console.log("[Orders] Logout"));
+  document.getElementById("btn-logout")?.addEventListener("click", () => {
+    limparSessao();
+    window.location.href = "/src/pages/user/login.html";
+  });
   document.getElementById("btn-notifications")?.addEventListener("click", () => console.log("[Orders] Notificações"));
   document.getElementById("sidebar-user")?.addEventListener("click",      () => console.log("[Orders] Perfil"));
 }
@@ -714,6 +736,7 @@ function attachNavListeners(): void {
 
 async function init(): Promise<void> {
   attachNavListeners();
+  renderSidebarUser();
   attachSearchListener();
   attachFilterListeners();
   attachModalListeners();

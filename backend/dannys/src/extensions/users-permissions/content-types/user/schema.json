@@ -101,6 +101,10 @@
     "foto": {
       "type": "text",
       "required": false
+    },
+    "emServico": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

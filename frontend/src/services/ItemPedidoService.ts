@@ -6,8 +6,9 @@ export interface ItemPedidoAttributes {
     quantidade: number
     preco_unitario_cobrado: number
     observacao:             string | null
-    pedido: { data: StrapiEntity<{ total: number }> | null}
-    produto: { data: StrapiEntity<ProdutoAttributes> | null}
+    // Strapi v5: relações populadas vêm flat (sem wrapper "data").
+    pedido: StrapiEntity<{ total: number }> | null
+    produto: StrapiEntity<ProdutoAttributes> | null
     createdAt: string
     updatedAt: string
 }

@@ -2,7 +2,7 @@
  * team-management.ts — Danny's Fresh Market
  *
  * Requer Vite (ou tsc-alias) para resolver "@/".
- * HTML: <script type="module" src="./team-management.js">
+ * HTML: <script type="module" src="../../scripts/admin/team-management.ts">
  *
  * ⚠️  Strapi — antes de ativar ApiEmployeeService:
  *   1. Content-Type Builder → User → Add field:
@@ -14,6 +14,11 @@
 
 import { usuarioService, PerfilUsuario } from '@/services/UsuarioService'
 import type { UsuarioEntity } from '@/services/UsuarioService'
+import { verificarAcessoAdmin, getUsuarioLogado, limparSessao } from '@/utils/auth'
+
+if (!verificarAcessoAdmin([PerfilUsuario.Admin])) {
+  throw new Error('Acesso restrito a administradores.')
+}
 
 /* ======================================================================
    TIPOS
@@ -70,7 +75,8 @@ function resolveStatus(ativo: boolean, emServico: boolean): EmployeeStatus {
   return 'active'
 }
 
-function formatPhone(raw: string): string {
+function formatPhone(raw: string | null | undefined): string {
+  if (!raw) return 'Não informado'
   const d = raw.replace(/\D/g, '')
   if (d.length === 11) return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`
   if (d.length === 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`
@@ -484,6 +490,24 @@ function initFilters(): void {
   })
 }
 
+function initLogout(): void {
+  document.getElementById('btn-logout')?.addEventListener('click', () => {
+    limparSessao()
+    window.location.href = '/src/pages/user/login.html'
+  })
+}
+
+const PERFIL_LABEL: Record<string, string> = { admin: 'Administrador', cozinha: 'Cozinha', cliente: 'Cliente' }
+
+function renderSidebarUser(): void {
+  const user = getUsuarioLogado()
+  if (!user) return
+  const nameEl = document.querySelector<HTMLElement>('.sidebar__user-name')
+  const roleEl = document.querySelector<HTMLElement>('.sidebar__user-role')
+  if (nameEl) nameEl.textContent = user.username
+  if (roleEl) roleEl.textContent = PERFIL_LABEL[user.perfil] ?? user.perfil
+}
+
 /* ======================================================================
    INICIALIZAÇÃO
    ====================================================================== */
@@ -494,6 +518,8 @@ async function init(): Promise<void> {
   initSearch()
   initAddEmployee()
   initFilters()
+  initLogout()
+  renderSidebarUser()
 
   renderMetricsSkeleton()
 

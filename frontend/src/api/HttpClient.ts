@@ -138,19 +138,14 @@ class HttpClient {
     }
 
     if (!response.ok) {
-      throw new HttpError(response.status, responseBody)
-    }
-
-    if (!response.ok) {
-      const error = new HttpError(response.status, responseBody)
-      
-      // Token expirado → limpa sessão e redireciona para login
+      // Token expirado/inválido → limpa sessão e redireciona para login
       if (response.status === 401 && !config.skipAuth) {
         localStorage.removeItem('strapi_token')
-        window.location.href = '/login'   // rota de login
+        localStorage.removeItem('strapi_user')
+        window.location.href = '/src/pages/user/login.html'
       }
 
-      throw error
+      throw new HttpError(response.status, responseBody)
     }
 
     return { data: responseBody as T, status: response.status }

@@ -14,8 +14,10 @@ export enum PerfilUsuario {
 export interface UsuarioAttributes {
   username:   string
   email:      string
-  whatsapp:   string
-  cpf:        string
+  // whatsapp/cpf são "required: false" no Content-Type Builder do Strapi
+  // (contas criadas direto pelo painel admin podem não ter esses campos).
+  whatsapp:   string | null
+  cpf:        string | null
   endereco:   string | null
   perfil:     PerfilUsuario
   ativo:      boolean
@@ -137,6 +139,19 @@ export class UsuarioService {
 
   async me(): Promise<UsuarioEntity> {
     const { data } = await httpClient.get<UsuarioRaw>('/api/users/me')
+    return this.toEntity(data)
+  }
+
+  /**
+   * Cadastro de funcionário (admin/cozinha) feito pelo admin.
+   * Usa rota custom POST /api/users/employees (ver
+   * backend/dannys/src/extensions/users-permissions/strapi-server.ts), que
+   * resolve o Role nativo do Strapi automaticamente no servidor — ao
+   * contrário de POST /api/users, não exige que o cliente descubra/envie
+   * esse id. Restrita a admin (policy global::is-admin).
+   */
+  async createFuncionario(payload: CreateUsuarioDto): Promise<UsuarioEntity> {
+    const { data } = await httpClient.post<UsuarioRaw>(`${this.url}/employees`, payload)
     return this.toEntity(data)
   }
 

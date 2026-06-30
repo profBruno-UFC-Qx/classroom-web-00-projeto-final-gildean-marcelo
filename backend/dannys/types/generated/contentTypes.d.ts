@@ -1101,6 +1101,7 @@ export interface PluginUsersPermissionsUser
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    emServico: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     endereco: Schema.Attribute.Text;
     foto: Schema.Attribute.Text;
     locale: Schema.Attribute.String & Schema.Attribute.Private;

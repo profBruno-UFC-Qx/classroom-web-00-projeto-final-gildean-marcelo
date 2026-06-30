@@ -27,9 +27,10 @@ export class StrapiCrudService<T, TCreate = Partial<T>, TUpdate = Partial<TCreat
     }
 
     async update(id: number | string, payload: TUpdate): Promise<StrapiEntity<T>> {
+        const documentId = await this.resolveDocumentId(id)
 
         const { data } = await httpClient.put<StrapiSingle<T>>(
-            `${this.url}/${id}`, 
+            `${this.url}/${documentId}`,
             { data: payload }
         )
 
@@ -37,7 +38,24 @@ export class StrapiCrudService<T, TCreate = Partial<T>, TUpdate = Partial<TCreat
     }
 
     async delete(id: number | string): Promise<void> {
-        await httpClient.delete(`${this.url}/${id}`)
+        const documentId = await this.resolveDocumentId(id)
+        await httpClient.delete(`${this.url}/${documentId}`)
+    }
+
+    /**
+     * Strapi 5 não aceita o id numérico interno na URL de update/delete,
+     * só o documentId. Quando recebemos um id numérico (caso comum: telas
+     * admin que mapeiam StrapiEntity.id para a UI), resolvemos o documentId
+     * real via filtro antes de montar a URL — mesma estratégia já usada em
+     * getById().
+     */
+    private async resolveDocumentId(id: number | string): Promise<string> {
+        if (typeof id === 'string') return id
+
+        const queryParams: StrapiQueryParams<T> = { filters: { id: { $eq: id } } as any }
+        const listRes = await this.list(queryParams)
+        if (listRes.data.length === 0) throw new Error(`Entity with id ${id} not found`)
+        return listRes.data[0].documentId
     }
 
     async list(params?: StrapiQueryParams<T>): Promise<PaginatedResult<T>> {

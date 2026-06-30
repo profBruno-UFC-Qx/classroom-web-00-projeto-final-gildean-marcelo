@@ -5,6 +5,12 @@ import {
   TipoEntrega,
   type PedidoEntity,
 } from "@/services/PedidoService";
+import { verificarAcessoAdmin, getUsuarioLogado, limparSessao } from "@/utils/auth";
+import { PerfilUsuario } from "@/services/UsuarioService";
+
+if (!verificarAcessoAdmin([PerfilUsuario.Admin, PerfilUsuario.Cozinha])) {
+  throw new Error("Acesso restrito à equipe da cozinha/administração.");
+}
 
 
 type OrderStatus = "new" | "preparing" | "ready";
@@ -55,26 +61,24 @@ function mapTipoEntrega(tipo: TipoEntrega): OrderType {
 }
 
 function mapEntityToOrder(entity: PedidoEntity): Order {
-  const a = entity.attributes;
-
-  const items: OrderItem[] = (a.itens?.data ?? []).map((item) => ({
+  const items: OrderItem[] = (entity.item_pedidos ?? []).map((item) => ({
     id:       String(item.id),
-    quantity: item.attributes.quantidade,
-    name:     item.attributes.produto?.data?.attributes.nome ?? "(produto)",    
-    notes: item.attributes.observacao
-      ? [{ type: "info", text: item.attributes.observacao }]
+    quantity: item.quantidade,
+    name:     item.produto?.nome ?? "(produto)",
+    notes: item.observacao
+      ? [{ type: "info", text: item.observacao }]
       : [],
   }));
 
   return {
     id:                     String(entity.id),
     number:                 entity.id,
-    type:                   mapTipoEntrega(a.tipo_entrega),
-    status:                 mapSituacaoToStatus(a.situacao),
-    createdAt:              a.createdAt,
-    urgentThresholdSeconds: 600,           
+    type:                   mapTipoEntrega(entity.tipo_entrega),
+    status:                 mapSituacaoToStatus(entity.situacao),
+    createdAt:              entity.createdAt,
+    urgentThresholdSeconds: 600,
     items,
-    generalNote:            a.observacao_geral ?? undefined,
+    generalNote:            entity.observacao_geral ?? undefined,
   };
 }
 
@@ -367,6 +371,21 @@ async function handleCardAction(e: Event): Promise<void> {
   renderBoard();
 }
 
+const PERFIL_LABEL: Record<string, string> = {
+  admin: "Administrador",
+  cozinha: "Cozinha",
+  cliente: "Cliente",
+};
+
+function renderSidebarUser(): void {
+  const user = getUsuarioLogado();
+  if (!user) return;
+  const nameEl = document.querySelector<HTMLElement>(".sidebar__user-name");
+  const roleEl = document.querySelector<HTMLElement>(".sidebar__user-role");
+  if (nameEl) nameEl.textContent = user.username;
+  if (roleEl) roleEl.textContent = PERFIL_LABEL[user.perfil] ?? user.perfil;
+}
+
 function attachNavListeners(): void {
   document.querySelectorAll<HTMLAnchorElement>(".sidebar__nav-item").forEach((item) => {
     item.addEventListener("click", (e) => {
@@ -382,8 +401,8 @@ function attachNavListeners(): void {
   });
 
   document.getElementById("btn-logout")?.addEventListener("click", () => {
-    // TODO: AuthService.logout() + redirect /login
-    console.log("[KDS] Logout");
+    limparSessao();
+    window.location.href = "/src/pages/user/login.html";
   });
 
   document.getElementById("btn-notifications")?.addEventListener("click", () => {
@@ -492,6 +511,7 @@ async function init(): Promise<void> {
   renderBoard();
   updateClock();
   attachNavListeners();
+  renderSidebarUser();
 
   // Tick de 1s para clock + timers
   setInterval(() => {

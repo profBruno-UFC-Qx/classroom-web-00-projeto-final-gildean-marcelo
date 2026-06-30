@@ -46,7 +46,7 @@
       "type": "text"
     },
     "endereco_entrega": {
-      "type": "string"
+      "type": "text"
     },
     "users_permissions_user": {
       "type": "relation",
@@ -59,9 +59,6 @@
       "relation": "oneToMany",
       "target": "api::item-pedido.item-pedido",
       "mappedBy": "pedido"
-    },
-    "endereco_entrega": {
-      "type": "text"
     }
   }
 }

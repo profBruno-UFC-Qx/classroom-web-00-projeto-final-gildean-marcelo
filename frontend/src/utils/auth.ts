@@ -1,7 +1,9 @@
-import type { LoginResponse } from '@/services/UsuarioService'
+import { PerfilUsuario, type LoginResponse } from '@/services/UsuarioService'
 
 const CHAVE_TOKEN = 'strapi_token'
 const CHAVE_USER = 'strapi_user'
+
+const LOGIN_URL = '/src/pages/user/login.html'
 
 
 export function salvarSessao(jwt: string, user: LoginResponse['user']): void {
@@ -47,6 +49,29 @@ export function redirecionarSeLogado(destino = '/index.html'): void {
 }
 
 import { showModal } from './ui'
+
+/**
+ * Guard síncrono para páginas administrativas: exige usuário autenticado
+ * cujo `perfil` esteja em `perfisPermitidos`. Redireciona e retorna false
+ * caso contrário — chame no topo do script da página, antes de qualquer
+ * manipulação de DOM.
+ */
+export function verificarAcessoAdmin(
+  perfisPermitidos: PerfilUsuario[] = [PerfilUsuario.Admin]
+): boolean {
+  if (!isAutenticado()) {
+    window.location.replace(LOGIN_URL)
+    return false
+  }
+
+  const user = getUsuarioLogado()
+  if (!user || !perfisPermitidos.includes(user.perfil)) {
+    window.location.replace('/index.html')
+    return false
+  }
+
+  return true
+}
 
 export async function verificarAcessoRestrito(destinoHome = '/index.html', destinoLogin = '/src/pages/user/login.html'): Promise<boolean> {
   if (isAutenticado()) {

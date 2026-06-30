@@ -13,6 +13,12 @@ import {
 } from '@/services/CategoriaService'
 
 import type { StrapiEntity } from '@/api/StrapiAdapters'
+import { verificarAcessoAdmin, getUsuarioLogado, getToken, limparSessao } from '@/utils/auth'
+import { PerfilUsuario } from '@/services/UsuarioService'
+
+if (!verificarAcessoAdmin([PerfilUsuario.Admin])) {
+  throw new Error('Acesso restrito a administradores.')
+}
 
 // ============================================================
 // Tipos internos da UI — camada de apresentação
@@ -134,22 +140,22 @@ class ApiProductService implements IProductService {
   // ----------------------------------------------------------
   // Upload de imagem para Strapi Media Library
   //
-  // Strapi expõe POST /api/upload (multipart/form-data).
-  // A resposta é um array de objetos; usamos [0].url.
-  //
-  // ⚠️  Se o seu httpClient usa JWT via header Authorization,
-  //     substitua o fetch abaixo por:
-  //       httpClient.post('/api/upload', form)
-  //     para reutilizar o token já configurado.
+  // Strapi expõe POST /api/upload (multipart/form-data) protegido por
+  // JWT Bearer (não por cookie de sessão). Como FormData não pode ser
+  // serializado como JSON, fazemos o fetch diretamente em vez de usar
+  // httpClient, mas reaproveitamos a mesma baseURL e token de sessão.
   // ----------------------------------------------------------
   private async uploadImage(file: File): Promise<string> {
     const form = new FormData()
     form.append('files', file, file.name)
 
-    const res = await fetch('/api/upload', {
-      method:      'POST',
-      body:        form,
-      credentials: 'include', // envia cookie de sessão / JWT cookie
+    const baseURL = import.meta.env.VITE_API_URL ?? 'http://localhost:1337'
+    const token = getToken()
+
+    const res = await fetch(`${baseURL}/api/upload`, {
+      method:  'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      body:    form,
     })
 
     if (!res.ok) {
@@ -159,8 +165,6 @@ class ApiProductService implements IProductService {
     const [uploaded] = (await res.json()) as Array<{ url: string }>
 
     // Strapi retorna caminho relativo ("/uploads/...").
-    // Descomente a linha abaixo se precisar de URL absoluta:
-    // return `${import.meta.env.VITE_API_URL}${uploaded.url}`
     return uploaded.url
   }
 
@@ -348,12 +352,23 @@ class MenuManagementController {
   init(): void {
     this.resolveRefs()
     this.bindStaticEvents()
+    this.renderSidebarUser()
     // Carrega categorias, métricas e produtos em paralelo
     void Promise.all([
       this.loadCategories(),
       this.loadMetrics(),
       this.loadProducts(),
     ])
+  }
+
+  private renderSidebarUser(): void {
+    const user = getUsuarioLogado()
+    if (!user) return
+    const PERFIL_LABEL: Record<string, string> = { admin: 'Administrador', cozinha: 'Cozinha', cliente: 'Cliente' }
+    const nameEl = document.querySelector<HTMLElement>('.sidebar__user-name')
+    const roleEl = document.querySelector<HTMLElement>('.sidebar__user-role')
+    if (nameEl) nameEl.textContent = user.username
+    if (roleEl) roleEl.textContent = PERFIL_LABEL[user.perfil] ?? user.perfil
   }
 
   // ----------------------------------------------------------
@@ -413,7 +428,8 @@ class MenuManagementController {
       console.info('[MenuManagement] Notificações — implemente conforme necessário.')
     })
     this.el('btn-logout').addEventListener('click', () => {
-      console.info('[MenuManagement] Logout — implemente conforme necessário.')
+      limparSessao()
+      window.location.href = '/src/pages/user/login.html'
     })
 
     // Modal: fechar
