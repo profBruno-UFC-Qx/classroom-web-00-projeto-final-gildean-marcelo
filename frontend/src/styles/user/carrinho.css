@@ -1,3 +1,5 @@
+
+
 /* HEADER */
 .header {
     padding: 1.5rem;
@@ -338,7 +340,6 @@
 
 .resumo-card_titulo {
     display: none;
-    /* Oculto no Mobile */
 }
 
 .resumo-card_linhas {
@@ -404,7 +405,7 @@
 
 @media (min-width: 768px) {
 
-    /* Header Desktop */
+    /* Header */
     .header {
         flex-direction: row;
         flex-wrap: wrap;

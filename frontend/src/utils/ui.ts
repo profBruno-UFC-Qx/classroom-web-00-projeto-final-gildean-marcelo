@@ -109,3 +109,76 @@ export function formatarData(isoString: string): string {
     minute: '2-digit'
   }).format(data)
 }
+
+// Modal Global
+export type ModalTipo = 'aviso' | 'erro' | 'info' | 'sucesso' | 'localizacao'
+
+export const ICONES: Record<ModalTipo, string> = {
+  aviso: '<i class="ph-bold ph-warning"></i>',
+  erro:  '<i class="ph-bold ph-x-circle"></i>',
+  info: '<i class="ph-bold ph-info"></i>',
+  sucesso: '<i class="ph-bold ph-check-circle"></i>',
+  localizacao: '<i class="ph-bold ph-map-pin-area"></i>'
+}
+
+export function showModal(
+  titulo: string,
+  mensagem: string,
+  tipo: ModalTipo = 'aviso',
+  opcoes?: { labelOk?: string; labelAcao?: string; onAcao?: () => void }
+): Promise<boolean> {
+  return new Promise(resolve => {
+    let overlay  = document.getElementById('modal-overlay')
+    if (!overlay) {
+      overlay = document.createElement('div')
+      overlay.id = 'modal-overlay'
+      overlay.className = 'modal-overlay'
+      overlay.style.display = 'none'
+      overlay.setAttribute('role', 'dialog')
+      overlay.setAttribute('aria-modal', 'true')
+      overlay.setAttribute('aria-labelledby', 'modal-titulo')
+      
+      overlay.innerHTML = `
+        <div class="modal-box">
+            <div class="modal-icon" id="modal-icon"></div>
+            <h2 class="modal-titulo" id="modal-titulo"></h2>
+            <p class="modal-mensagem" id="modal-mensagem"></p>
+            <div class="modal-acoes" id="modal-acoes"></div>
+        </div>
+      `
+      document.body.appendChild(overlay)
+    }
+
+    const iconEl   = document.getElementById('modal-icon')!
+    const tituloEl = document.getElementById('modal-titulo')!
+    const msgEl    = document.getElementById('modal-mensagem')!
+    const acoesEl  = document.getElementById('modal-acoes')!
+
+    iconEl.className = `modal-icon modal-icon--${tipo}`
+    iconEl.innerHTML = ICONES[tipo]
+    tituloEl.textContent = titulo
+    msgEl.textContent = mensagem
+    acoesEl.innerHTML = ''
+
+    if (opcoes?.labelAcao) {
+      const btnAcao = document.createElement('button')
+      btnAcao.className = 'modal-btn modal-btn--primario'
+      btnAcao.textContent = opcoes.labelAcao
+      btnAcao.onclick = () => {
+        overlay.style.display = 'none'
+        if (opcoes.onAcao) opcoes.onAcao()
+        resolve(true)
+      }
+      acoesEl.appendChild(btnAcao)
+    }
+
+    const btnOk = document.createElement('button')
+    btnOk.className = opcoes?.labelAcao ? 'modal-btn modal-btn--secundario' : 'modal-btn modal-btn--primario'
+    btnOk.textContent = opcoes?.labelOk ?? 'Entendi'
+    btnOk.onclick = () => { overlay.style.display = 'none'; resolve(false) }
+    acoesEl.appendChild(btnOk)
+
+    overlay.style.display = 'flex'
+    acoesEl.querySelector<HTMLButtonElement>('.modal-btn')?.focus()
+  })
+}

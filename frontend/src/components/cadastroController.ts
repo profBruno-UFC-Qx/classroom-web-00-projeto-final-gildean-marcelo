@@ -83,7 +83,7 @@ form?.addEventListener('submit', async (e: SubmitEvent) => {
     const { jwt, user } = await usuarioService.registrar(dto)
 
     salvarSessao(jwt, user)
-    window.location.href = 'index.html'
+    window.location.href = '/index.html'
 
   } catch (err) {
     if (err instanceof HttpError) {

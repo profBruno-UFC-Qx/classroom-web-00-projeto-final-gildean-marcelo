@@ -1,15 +1,14 @@
 import { carrinhoService, type ItemCarrinho } from '@/services/CarrinhoService'
 import { pedidoService, type TipoEntrega, type FormaPagamento } from '@/services/PedidoService'
 import { itemPedidoService } from '@/services/ItemPedidoService'
-import { getUsuarioLogado, setUsuarioLogado, isAutenticado } from '@/utils/auth'
+import { getUsuarioLogado, setUsuarioLogado, verificarAcessoRestrito } from '@/utils/auth'
 import { usuarioService } from '@/services/UsuarioService'
-import { setLoading, showFeedback, formatarMoeda, sanitizeImageUrl } from '@/utils/ui'
+import { setLoading, showFeedback, formatarMoeda, sanitizeImageUrl, showModal } from '@/utils/ui'
 
 const TAXA_ENTREGA = 6.00
 
-
-if (!isAutenticado()) {
-  window.location.replace('login.html')
+if (!(await verificarAcessoRestrito())) {
+  throw new Error('Acesso negado');
 }
 
 const form = document.querySelector<HTMLFormElement>('#form-pedido')
@@ -68,7 +67,7 @@ function openEditEndereco() {
 function saveEndereco() {
   const novoEndereco = inputEnderecoEdit?.value.trim() || ''
   if (novoEndereco === '') {
-    alert('O endereço não pode estar vazio.')
+    showModal('Endereço vazio', 'Por favor, preencha o endereço antes de salvar.', 'aviso')
     return
   }
 
@@ -251,7 +250,20 @@ async function handleSubmit(e: SubmitEvent) {
 
   if (tipoEntrega === 'delivery') {
     if (!inputEnderecoOculto?.value || inputEnderecoOculto.value.trim() === '') {
-      alert('Por favor, adicione um endereço de entrega para o delivery! Clique em "Editar" no campo de endereço.')
+      await showModal(
+        'Endereço de entrega não informado',
+        'Para pedidos com Delivery, é necessário informar um endereço de entrega.',
+        'localizacao',
+        {
+          labelOk: 'Cancelar',
+          labelAcao: 'Adicionar endereço',
+          onAcao: () => {
+            // Abre o modo de edição do endereço automaticamente
+            const btnEditar = document.querySelector<HTMLButtonElement>('.endereco-card_editar-btn')
+            btnEditar?.click()
+          }
+        }
+      )
       return
     }
   }
@@ -289,7 +301,7 @@ async function handleSubmit(e: SubmitEvent) {
   } catch (error: any) {
     console.error('[CARRINHO ERRO]', error)
     const errBody = error?.body ? JSON.stringify(error.body) : (error?.message || JSON.stringify(error))
-    alert('Erro detalhado: ' + errBody)
+    console.error('Erro detalhado:', errBody)
     showFeedback(form, 'Erro ao enviar pedido. Verifique sua conexão e tente novamente.', 'erro')
   } finally {
     setLoading(btnSubmit, false)
