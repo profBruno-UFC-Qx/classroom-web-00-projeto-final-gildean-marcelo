@@ -118,13 +118,13 @@ export class UsuarioService {
       localStorage.setItem('strapi_token', data.jwt)
 
       try {
-        await this.update(data.user.id, {
+        const updatedUser = await this.update(data.user.id, {
           whatsapp: payload.whatsapp,
           cpf:      payload.cpf,
           endereco: payload.endereco ?? null,
-          perfil:   payload.perfil   ?? PerfilUsuario.Cliente,
-          ativo:    payload.ativo    ?? true,
         })
+      
+        data.user = updatedUser
       } finally {
         if (tokenAnterior) {
           localStorage.setItem('strapi_token', tokenAnterior)

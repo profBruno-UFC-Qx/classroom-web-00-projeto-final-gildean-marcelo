@@ -1,7 +1,7 @@
 import { usuarioService } from '@/services/UsuarioService'
 import { pedidoService, SituacaoPedido } from '@/services/PedidoService'
 import { getUsuarioLogado, setUsuarioLogado, verificarAcessoRestrito } from '@/utils/auth'
-import { formatarMoeda, formatarData, showModal } from '@/utils/ui'
+import { formatarMoeda, formatarData, showModal, formatarWhatsApp, apenasDigitos } from '@/utils/ui'
 
 if (!(await verificarAcessoRestrito())) {
   throw new Error('Acesso negado');
@@ -39,6 +39,12 @@ async function init() {
     btnCancelEdit.addEventListener('click', cancelEditMode)
   }
 
+  if (inputTelefone) {
+    inputTelefone.addEventListener('input', () => {
+      inputTelefone.value = formatarWhatsApp(inputTelefone.value)
+    })
+  }
+
   if (btnEditFoto && inputFoto) {
     btnEditFoto.addEventListener('click', () => inputFoto.click())
     inputFoto.addEventListener('change', handleFotoUpload)
@@ -66,7 +72,7 @@ async function carregarDadosUsuario() {
 
   if (inputNome) inputNome.value = user.username || ''
   if (inputEmail) inputEmail.value = user.email || ''
-  if (inputTelefone) inputTelefone.value = user.whatsapp || ''
+  if (inputTelefone) inputTelefone.value = user.whatsapp ? formatarWhatsApp(user.whatsapp) : ''
   if (inputEndereco) inputEndereco.value = user.endereco || ''
   if (avatarImagem && (user as any).foto) {
     avatarImagem.src = (user as any).foto
@@ -186,7 +192,7 @@ async function toggleEditMode() {
     const updateDto: any = {}
     if (inputNome) updateDto.username = inputNome.value
     if (inputEmail) updateDto.email = inputEmail.value
-    if (inputTelefone) updateDto.whatsapp = inputTelefone.value
+    if (inputTelefone) updateDto.whatsapp = apenasDigitos(inputTelefone.value)
     if (inputEndereco) updateDto.endereco = inputEndereco.value
     if (novaFotoBase64) updateDto.foto = novaFotoBase64
     if (inputSenha?.value) {

@@ -91,6 +91,12 @@ export function formatarMoeda(valor: number): string {
 
 export function sanitizeImageUrl(url: string | null): string {
   if (!url) return 'https://placehold.co/400x300/e2e8f0/64748b?text=Sem+Imagem'
+  
+  if (url.startsWith('/uploads/')) {
+    const baseUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:1337'
+    return `${baseUrl}${url}`
+  }
+
   // Fix absolute paths mistakenly saved in DB
   const pathPart = url.split('/frontend')[1]
   if (pathPart) {
