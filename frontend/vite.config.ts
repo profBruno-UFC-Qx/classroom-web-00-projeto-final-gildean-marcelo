@@ -19,7 +19,8 @@ export default defineConfig({
         status:    resolve(__dirname, 'src/pages/user/status.html'),
         perfil:    resolve(__dirname, 'src/pages/user/perfil.html'),
 
-        // App do Admin   
+        // App do Admin
+        dashboard: resolve(__dirname, 'src/pages/admin/dashboard.html'),
         kds: resolve(__dirname, 'src/pages/admin/kds.html'),
         teamManagement: resolve(__dirname, 'src/pages/admin/team-management.html'),
         orders: resolve(__dirname, 'src/pages/admin/orders.html'),

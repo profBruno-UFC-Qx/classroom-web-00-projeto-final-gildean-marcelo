@@ -714,14 +714,6 @@ function renderSidebarUser(): void {
 }
 
 function attachNavListeners(): void {
-  document.querySelectorAll<HTMLAnchorElement>(".sidebar__nav-item").forEach((item) => {
-    item.addEventListener("click", (e) => {
-      e.preventDefault();
-      document.querySelectorAll(".sidebar__nav-item").forEach((el) => { el.classList.remove("sidebar__nav-item--active"); el.removeAttribute("aria-current"); });
-      item.classList.add("sidebar__nav-item--active");
-      item.setAttribute("aria-current", "page");
-    });
-  });
   document.getElementById("btn-logout")?.addEventListener("click", () => {
     limparSessao();
     window.location.href = "/src/pages/user/login.html";

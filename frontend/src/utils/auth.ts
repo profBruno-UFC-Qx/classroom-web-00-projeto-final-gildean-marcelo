@@ -4,6 +4,7 @@ const CHAVE_TOKEN = 'strapi_token'
 const CHAVE_USER = 'strapi_user'
 
 const LOGIN_URL = '/src/pages/user/login.html'
+const ADMIN_DASHBOARD_URL = '/src/pages/admin/dashboard.html'
 
 
 export function salvarSessao(jwt: string, user: LoginResponse['user']): void {
@@ -42,9 +43,17 @@ export function isAutenticado(): boolean {
 }
 
 
-export function redirecionarSeLogado(destino = '/index.html'): void {
+/**
+ * Destino pós-login: admin cai direto no dashboard administrativo,
+ * demais perfis (cliente/cozinha) vão para o app do cliente.
+ */
+export function getDestinoPosLogin(user: LoginResponse['user'] | null): string {
+  return user?.perfil === PerfilUsuario.Admin ? ADMIN_DASHBOARD_URL : '/index.html'
+}
+
+export function redirecionarSeLogado(destino?: string): void {
   if (isAutenticado()) {
-    window.location.replace(destino)
+    window.location.replace(destino ?? getDestinoPosLogin(getUsuarioLogado()))
   }
 }
 

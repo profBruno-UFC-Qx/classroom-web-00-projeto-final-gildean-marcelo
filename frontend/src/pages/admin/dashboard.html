@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Danny's Fresh Market – Team Management</title>
+  <title>Danny's Fresh Market – Admin Dashboard</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="../../styles/style.css">
-  <link rel="stylesheet" href="../../styles/admin/team-management.css">
 
-  <script type="module" src="../../scripts/admin/team-management.ts"></script>
+  <link rel="stylesheet" href="../../styles/style.css">
+  <link rel="stylesheet" href="../../styles/admin/dashboard.css">
+
+  <script type="module" src="../../scripts/admin/dashboard.ts"></script>
 </head>
 <body class="app-body">
 
   <div class="app-shell">
-    
+
     <nav class="sidebar" id="sidebar" aria-label="Menu de navegação">
 
       <div class="sidebar__brand">
@@ -32,11 +32,11 @@
 
       <ul class="sidebar__nav" role="list">
         <li>
-          <a href="dashboard.html" class="sidebar__nav-item" data-page="dashboard">
-            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">dashboard</span>
+          <a href="dashboard.html" class="sidebar__nav-item sidebar__nav-item--active" data-page="dashboard" aria-current="page">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true" style="font-variation-settings:'FILL' 1;">dashboard</span>
             <span class="sidebar__nav-label">Dashboard</span>
           </a>
-        </li>        
+        </li>
         <li>
           <a href="menu-management.html" class="sidebar__nav-item" data-page="menu">
             <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">restaurant_menu</span>
@@ -50,8 +50,8 @@
           </a>
         </li>
         <li>
-          <a href="team-management.html" class="sidebar__nav-item sidebar__nav-item--active" data-page="team" aria-current="page">
-            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true" style="font-variation-settings:'FILL' 1;">group</span>
+          <a href="team-management.html" class="sidebar__nav-item" data-page="team">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">group</span>
             <span class="sidebar__nav-label">Team Management</span>
           </a>
         </li>
@@ -79,9 +79,9 @@
       </div>
 
     </nav>
-    
+
     <div class="main-wrapper">
-      
+
       <header class="topbar">
         <h1 class="topbar__title">Admin Dashboard</h1>
 
@@ -99,62 +99,69 @@
           </button>
         </div>
       </header>
-      
+
       <main class="page-content" id="main-content" aria-label="Conteúdo principal">
         <div class="page-content__inner">
-        
-        <!-- Page Header -->
-        <div class="page-header">
-          <div class="page-header__info">
-            <h2 class="page-header__title">Team Management</h2>
-            <p class="page-header__subtitle">Manage employee access and roles.</p>
-          </div>
-          <div class="page-header__actions">
-            <div class="search-field">
-              <span class="material-symbols-outlined search-field__icon" aria-hidden="true">search</span>
-              <input
-                class="search-field__input"
-                id="search-input"
-                type="text"
-                placeholder="Search employees..."
-                autocomplete="off"
-                aria-label="Buscar funcionários"
-              >
-            </div>
-            <button class="btn btn--ghost" id="btn-filters">
-              <span class="material-symbols-outlined" aria-hidden="true">filter_list</span>
-              Filters
-            </button>
-            <button class="btn btn--primary" id="btn-add-employee">
-              <span class="material-symbols-outlined" aria-hidden="true">add</span>
-              Add Employee
-            </button>
-          </div>
-        </div>
-        <!-- Metrics Grid – populado via TS -->
-        <div class="metrics-grid" id="metrics-grid" aria-label="Estatísticas da equipe"></div>
-        <!-- Table Card -->
-        <div class="table-card">
-          <div class="employee-table">
-            <!-- Cabeçalho -->
-            <div class="employee-table__head" role="row">
-              <div class="employee-table__cell" role="columnheader">Employee</div>
-              <div class="employee-table__cell" role="columnheader">Role</div>
-              <div class="employee-table__cell" role="columnheader">Contact</div>
-              <div class="employee-table__cell" role="columnheader">Status</div>
-              <div class="employee-table__cell employee-table__cell--center" role="columnheader">Actions</div>
-            </div>
-            <!-- Linhas – populadas via TS -->
-            <div class="employee-table__body" id="employee-list" role="rowgroup"></div>
-          </div>
-          <!-- Paginação – populada via TS -->
-          <div class="pagination" id="pagination" aria-label="Paginação da tabela"></div>
-        </div>
 
-      </div>
-    </main>
+          <div class="page-header">
+            <h2 class="page-header__title">Bem-vindo de volta</h2>
+            <p class="page-header__subtitle">Visão geral do Danny's Fresh Market.</p>
+          </div>
+
+          <!-- Métricas -->
+          <div class="metrics-grid" id="metrics-grid" aria-live="polite"></div>
+
+          <!-- Atalhos -->
+          <div class="quick-links-grid">
+            <a class="quick-link-card" href="orders.html">
+              <span class="quick-link-card__icon-wrapper">
+                <span class="material-symbols-outlined quick-link-card__icon" aria-hidden="true">receipt_long</span>
+              </span>
+              <span class="quick-link-card__text">
+                <span class="quick-link-card__title">Histórico de Pedidos</span>
+                <span class="quick-link-card__subtitle">Gerencie pedidos recentes.</span>
+              </span>
+              <span class="material-symbols-outlined quick-link-card__chevron" aria-hidden="true">chevron_right</span>
+            </a>
+
+            <a class="quick-link-card" href="kds.html">
+              <span class="quick-link-card__icon-wrapper">
+                <span class="material-symbols-outlined quick-link-card__icon" aria-hidden="true">kitchen</span>
+              </span>
+              <span class="quick-link-card__text">
+                <span class="quick-link-card__title">KDS Monitor</span>
+                <span class="quick-link-card__subtitle">Acompanhe a cozinha em tempo real.</span>
+              </span>
+              <span class="material-symbols-outlined quick-link-card__chevron" aria-hidden="true">chevron_right</span>
+            </a>
+
+            <a class="quick-link-card" href="menu-management.html">
+              <span class="quick-link-card__icon-wrapper">
+                <span class="material-symbols-outlined quick-link-card__icon" aria-hidden="true">restaurant_menu</span>
+              </span>
+              <span class="quick-link-card__text">
+                <span class="quick-link-card__title">Menu Management</span>
+                <span class="quick-link-card__subtitle">Produtos, categorias e preços.</span>
+              </span>
+              <span class="material-symbols-outlined quick-link-card__chevron" aria-hidden="true">chevron_right</span>
+            </a>
+
+            <a class="quick-link-card" href="team-management.html">
+              <span class="quick-link-card__icon-wrapper">
+                <span class="material-symbols-outlined quick-link-card__icon" aria-hidden="true">group</span>
+              </span>
+              <span class="quick-link-card__text">
+                <span class="quick-link-card__title">Team Management</span>
+                <span class="quick-link-card__subtitle">Funcionários, cargos e acessos.</span>
+              </span>
+              <span class="material-symbols-outlined quick-link-card__chevron" aria-hidden="true">chevron_right</span>
+            </a>
+          </div>
+
+        </div>
+      </main>
+    </div>
   </div>
-</div>
-  
+
 </body>
 </html>
