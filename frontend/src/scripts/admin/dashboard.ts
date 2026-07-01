@@ -8,17 +8,12 @@
 import { pedidoService, SituacaoPedido } from "@/services/PedidoService";
 import { produtoService } from "@/services/ProdutoService";
 import { usuarioService, PerfilUsuario } from "@/services/UsuarioService";
-import { verificarAcessoAdmin, getUsuarioLogado, limparSessao } from "@/utils/auth";
+import { verificarAcessoAdmin } from "@/utils/auth";
+import { initAdminTopbar } from "./shared/layout";
 
 if (!verificarAcessoAdmin([PerfilUsuario.Admin])) {
   throw new Error("Acesso restrito a administradores.");
 }
-
-const PERFIL_LABEL: Record<string, string> = {
-  admin: "Administrador",
-  cozinha: "Cozinha",
-  cliente: "Cliente",
-};
 
 interface DashboardStats {
   pedidosHoje: number;
@@ -81,27 +76,8 @@ async function loadStats(): Promise<DashboardStats> {
   };
 }
 
-function renderSidebarUser(): void {
-  const user = getUsuarioLogado();
-  if (!user) return;
-  const nameEl = document.querySelector<HTMLElement>(".sidebar__user-name");
-  const roleEl = document.querySelector<HTMLElement>(".sidebar__user-role");
-  if (nameEl) nameEl.textContent = user.username;
-  if (roleEl) roleEl.textContent = PERFIL_LABEL[user.perfil] ?? user.perfil;
-}
-
-function attachTopbarListeners(): void {
-  document.getElementById("btn-logout")?.addEventListener("click", () => {
-    limparSessao();
-    window.location.href = "/src/pages/user/login.html";
-  });
-  document.getElementById("btn-notifications")?.addEventListener("click", () => console.log("[Dashboard] Notificações"));
-  document.getElementById("sidebar-user")?.addEventListener("click", () => console.log("[Dashboard] Perfil"));
-}
-
 async function init(): Promise<void> {
-  attachTopbarListeners();
-  renderSidebarUser();
+  initAdminTopbar();
   renderMetricsSkeleton();
 
   try {
