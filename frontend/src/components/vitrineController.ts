@@ -2,6 +2,7 @@ import { categoriaService } from '@/services/CategoriaService'
 import { produtoService, type ProdutoAttributes } from '@/services/ProdutoService'
 import { carrinhoService } from '@/services/CarrinhoService'
 import { formatarMoeda, sanitizeImageUrl } from '@/utils/ui'
+import { setupLogoutButton } from '@/utils/auth'
 import type { StrapiEntity } from '@/api/StrapiAdapters'
 
 const categoriasList = document.querySelector<HTMLUListElement>('.categorias_list')
@@ -15,6 +16,8 @@ let currentCategoriaId: number | null = null
 
 
 async function init() {
+  setupLogoutButton()
+
   if (!categoriasList || !catalogoGrid) {
     console.error('[vitrineController] Contêineres de catálogo/categoria não encontrados no DOM.')
     return

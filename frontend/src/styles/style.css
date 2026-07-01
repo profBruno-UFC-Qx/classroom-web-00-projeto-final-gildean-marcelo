@@ -69,6 +69,22 @@ body {
   animation: modal-fade-in 0.2s ease;
 }
 
+/* ─── Header Actions (BEM) ───────────────────────────────────────────────── */
+.header_actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.header_logout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font-family: inherit;
+  padding: 0;
+}
+
 @keyframes modal-fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
