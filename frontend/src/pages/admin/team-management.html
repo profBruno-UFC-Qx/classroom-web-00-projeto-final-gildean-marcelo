@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danny's Fresh Market – Team Management</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../styles/style.css">
+  <link rel="stylesheet" href="../../styles/admin/team-management.css">
+
+  <script type="module" src="../../scripts/admin/team-management/index.ts"></script>
+</head>
+<body class="app-body">
+
+  <div class="app-shell">
+    
+    <nav class="sidebar" id="sidebar" aria-label="Menu de navegação">
+
+      <div class="sidebar__brand">
+        <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg4kP6VZ1YjoDuDNu1Rkf2Hg6ZGpdkSCl3nt5PZVpVSR3b_l407_Yp6mP8YsG_eULaXGV7eRarGt5dUn_OFsyxMp2_98n94gaGHzQcsvqdnCDiGm1csC2TEbrsyt2-ElIIpzPEPJsVFddctOXQJCPE9q8UV87_4Ma-yCs9vjr9GrhJ71DWE5FwSeqyAE0p3ppknziWX-hOhcvP5yUQAM16FNStkQ9BHXi1EFiOOpxWrKKhw8r4dhiHevvT081qfqrfFWtBAM0lOV8"
+          alt="Danny's Fresh Market"
+          class="sidebar__logo"
+        />
+        <span class="sidebar__brand-name">Danny's Admin</span>
+      </div>
+
+      <ul class="sidebar__nav" role="list">
+        <li>
+          <a href="dashboard.html" class="sidebar__nav-item" data-page="dashboard">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">dashboard</span>
+            <span class="sidebar__nav-label">Dashboard</span>
+          </a>
+        </li>        
+        <li>
+          <a href="menu-management.html" class="sidebar__nav-item" data-page="menu">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">restaurant_menu</span>
+            <span class="sidebar__nav-label">Menu Management</span>
+          </a>
+        </li>
+        <li>
+          <a href="kds.html" class="sidebar__nav-item" data-page="kds">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">kitchen</span>
+            <span class="sidebar__nav-label">KDS Monitor</span>
+          </a>
+        </li>
+        <li>
+          <a href="team-management.html" class="sidebar__nav-item sidebar__nav-item--active" data-page="team" aria-current="page">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true" style="font-variation-settings:'FILL' 1;">group</span>
+            <span class="sidebar__nav-label">Team Management</span>
+          </a>
+        </li>
+        <li>
+          <a href="orders.html" class="sidebar__nav-item" data-page="orders">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">receipt_long</span>
+            <span class="sidebar__nav-label">Pedidos</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar__footer">
+        <button class="sidebar__user" id="sidebar-user" aria-label="Perfil do usuário">
+          <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2tCHSKhri8qtjBJC6PDuuFvH1dLCnkKaUFO4XcgigqziMJ7LbeSqVUpbxdFZy91364REXmlCet--BEDk_1w1CP7as_Qjn-sp9Zb_N_E2D_fazvOaydqY29OwcKDm_gSkbwNdzVkUj8IbMGAEdGFtJ7Wr8jWU99-bDFrPGUwWkZ-2mtllNj6Vk92l6pbnelxULgCjmlzr2rTA_m_GRW9xqcaPE6_2mr_kSPsyvwndIrQxK2jFe6rpIhOxaiRQfPrPqE4Rq7fAbc2o"
+            alt="Admin User"
+            class="sidebar__user-avatar"
+          />
+          <div class="sidebar__user-info">
+            <span class="sidebar__user-name">Admin User</span>
+            <span class="sidebar__user-role">Gerente</span>
+          </div>
+          <span class="material-symbols-outlined sidebar__user-chevron" aria-hidden="true">expand_more</span>
+        </button>
+      </div>
+
+    </nav>
+    
+    <div class="main-wrapper">
+      
+      <header class="topbar">
+        <h1 class="topbar__title">Admin Dashboard</h1>
+
+        <div class="topbar__actions">
+          <button class="topbar__icon-btn" id="btn-notifications" aria-label="Notificações">
+            <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
+            <span class="topbar__notif-dot" aria-hidden="true"></span>
+          </button>
+
+          <div class="topbar__divider" aria-hidden="true"></div>
+
+          <button class="topbar__logout-btn" id="btn-logout">
+            <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+            Sair
+          </button>
+        </div>
+      </header>
+      
+      <main class="page-content" id="main-content" aria-label="Conteúdo principal">
+        <div class="page-content__inner">
+        
+        <!-- Page Header -->
+        <div class="page-header">
+          <div class="page-header__info">
+            <h2 class="page-header__title">Team Management</h2>
+            <p class="page-header__subtitle">Manage employee access and roles.</p>
+          </div>
+          <div class="page-header__actions">
+            <div class="search-field">
+              <span class="material-symbols-outlined search-field__icon" aria-hidden="true">search</span>
+              <input
+                class="search-field__input"
+                id="search-input"
+                type="text"
+                placeholder="Search employees..."
+                autocomplete="off"
+                aria-label="Buscar funcionários"
+              >
+            </div>
+            <button class="btn btn--ghost" id="btn-filters">
+              <span class="material-symbols-outlined" aria-hidden="true">filter_list</span>
+              Filters
+            </button>
+            <button class="btn btn--primary" id="btn-add-employee">
+              <span class="material-symbols-outlined" aria-hidden="true">add</span>
+              Add Employee
+            </button>
+          </div>
+        </div>
+        <!-- Metrics Grid – populado via TS -->
+        <div class="metrics-grid" id="metrics-grid" aria-label="Estatísticas da equipe"></div>
+        <!-- Table Card -->
+        <div class="table-card">
+          <div class="employee-table">
+            <!-- Cabeçalho -->
+            <div class="employee-table__head" role="row">
+              <div class="employee-table__cell" role="columnheader">Employee</div>
+              <div class="employee-table__cell" role="columnheader">Role</div>
+              <div class="employee-table__cell" role="columnheader">Contact</div>
+              <div class="employee-table__cell" role="columnheader">Status</div>
+              <div class="employee-table__cell employee-table__cell--center" role="columnheader">Actions</div>
+            </div>
+            <!-- Linhas – populadas via TS -->
+            <div class="employee-table__body" id="employee-list" role="rowgroup"></div>
+          </div>
+          <!-- Paginação – populada via TS -->
+          <div class="pagination" id="pagination" aria-label="Paginação da tabela"></div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+  
+</body>
+</html>

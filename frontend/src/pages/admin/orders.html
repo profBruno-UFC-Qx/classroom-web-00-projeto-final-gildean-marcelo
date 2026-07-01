@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Histórico de Pedidos — Danny's Admin</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+  
+  <link rel="stylesheet" href="../../styles/style.css" />
+  <link rel="stylesheet" href="../../styles/admin/orders.css" />
+
+  <script type="module" src="../../scripts/admin/orders/index.ts"></script>
+</head>
+<body class="app-body">
+
+  <div class="app-shell">
+
+    <!-- ── Sidebar ──────────────────────────────────────────────────────── -->
+    <nav class="sidebar" id="sidebar" aria-label="Menu de navegação">
+
+      <div class="sidebar__brand">
+        <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg4kP6VZ1YjoDuDNu1Rkf2Hg6ZGpdkSCl3nt5PZVpVSR3b_l407_Yp6mP8YsG_eULaXGV7eRarGt5dUn_OFsyxMp2_98n94gaGHzQcsvqdnCDiGm1csC2TEbrsyt2-ElIIpzPEPJsVFddctOXQJCPE9q8UV87_4Ma-yCs9vjr9GrhJ71DWE5FwSeqyAE0p3ppknziWX-hOhcvP5yUQAM16FNStkQ9BHXi1EFiOOpxWrKKhw8r4dhiHevvT081qfqrfFWtBAM0lOV8"
+          alt="Danny's Fresh Market"
+          class="sidebar__logo"
+        />
+        <span class="sidebar__brand-name">Danny's Admin</span>
+      </div>
+
+      <ul class="sidebar__nav" role="list">
+        <li>
+          <a href="dashboard.html" class="sidebar__nav-item" data-page="dashboard">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">dashboard</span>
+            <span class="sidebar__nav-label">Dashboard</span>
+          </a>
+        </li>        
+        <li>
+          <a href="menu-management.html" class="sidebar__nav-item" data-page="menu">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">restaurant_menu</span>
+            <span class="sidebar__nav-label">Menu Management</span>
+          </a>
+        </li>
+        <li>
+          <a href="kds.html" class="sidebar__nav-item" data-page="kds">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">kitchen</span>
+            <span class="sidebar__nav-label">KDS Monitor</span>
+          </a>
+        </li>
+        <li>
+          <a href="team-management.html" class="sidebar__nav-item" data-page="team">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">group</span>
+            <span class="sidebar__nav-label">Team Management</span>
+          </a>
+        </li>
+        <li>
+          <a href="orders.html" class="sidebar__nav-item sidebar__nav-item--active" data-page="orders" aria-current="page">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">receipt_long</span>
+            <span class="sidebar__nav-label">Pedidos</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar__footer">
+        <button class="sidebar__user" id="sidebar-user" aria-label="Perfil do usuário">
+          <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2tCHSKhri8qtjBJC6PDuuFvH1dLCnkKaUFO4XcgigqziMJ7LbeSqVUpbxdFZy91364REXmlCet--BEDk_1w1CP7as_Qjn-sp9Zb_N_E2D_fazvOaydqY29OwcKDm_gSkbwNdzVkUj8IbMGAEdGFtJ7Wr8jWU99-bDFrPGUwWkZ-2mtllNj6Vk92l6pbnelxULgCjmlzr2rTA_m_GRW9xqcaPE6_2mr_kSPsyvwndIrQxK2jFe6rpIhOxaiRQfPrPqE4Rq7fAbc2o"
+            alt="Admin User"
+            class="sidebar__user-avatar"
+          />
+          <div class="sidebar__user-info">
+            <span class="sidebar__user-name">Admin User</span>
+            <span class="sidebar__user-role">Gerente</span>
+          </div>
+          <span class="material-symbols-outlined sidebar__user-chevron" aria-hidden="true">expand_more</span>
+        </button>
+      </div>
+
+    </nav>
+
+    <!-- ── Main Wrapper ──────────────────────────────────────────────────── -->
+    <div class="main-wrapper">
+
+      <!-- TopBar -->
+      <header class="topbar">
+        <h1 class="topbar__title">Admin Dashboard</h1>
+        <div class="topbar__actions">
+          <button class="topbar__icon-btn" id="btn-notifications" aria-label="Notificações">
+            <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
+            <span class="topbar__notif-dot" aria-hidden="true"></span>
+          </button>
+          <div class="topbar__divider" aria-hidden="true"></div>
+          <button class="topbar__logout-btn" id="btn-logout">
+            <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+            Sair
+          </button>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="page-content" id="main-content">
+
+        <!-- Page Header -->
+        <div class="page-header">
+          <div>
+            <h2 class="page-header__title">Histórico de Pedidos</h2>
+            <p class="page-header__subtitle">Gerencie e acompanhe todos os pedidos recentes</p>
+          </div>
+        </div>
+
+        <!-- Toolbar: Search + Filters -->
+        <div class="toolbar">
+          <div class="toolbar__search" id="search-wrapper">
+            <span class="material-symbols-outlined toolbar__search-icon" aria-hidden="true">search</span>
+            <input
+              class="toolbar__search-input"
+              id="search-input"
+              type="search"
+              placeholder="Buscar por ID ou Nome..."
+              aria-label="Buscar pedidos por ID ou nome do cliente"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="toolbar__filters">
+            <!-- Date filter -->
+            <div class="filter-wrapper" id="date-filter-wrapper">
+              <button class="filter-btn" id="btn-date-filter" aria-haspopup="listbox" aria-expanded="false">
+                <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
+                <span class="filter-btn__label" id="date-filter-label">Hoje</span>
+                <span class="material-symbols-outlined filter-btn__chevron" aria-hidden="true">expand_more</span>
+              </button>
+              <ul class="filter-dropdown" id="date-dropdown" role="listbox" aria-label="Filtrar por data" hidden>
+                <li class="filter-dropdown__item filter-dropdown__item--active" role="option" data-value="today" aria-selected="true">Hoje</li>
+                <li class="filter-dropdown__item" role="option" data-value="week" aria-selected="false">Esta semana</li>
+                <li class="filter-dropdown__item" role="option" data-value="month" aria-selected="false">Este mês</li>
+              </ul>
+            </div>
+
+            <!-- Status filter -->
+            <div class="filter-wrapper" id="status-filter-wrapper">
+              <button class="filter-btn" id="btn-status-filter" aria-haspopup="listbox" aria-expanded="false">
+                <span class="material-symbols-outlined" aria-hidden="true">filter_list</span>
+                <span class="filter-btn__label" id="status-filter-label">Todos os Status</span>
+                <span class="material-symbols-outlined filter-btn__chevron" aria-hidden="true">expand_more</span>
+              </button>
+              <ul class="filter-dropdown" id="status-dropdown" role="listbox" aria-label="Filtrar por status" hidden>
+                <li class="filter-dropdown__item filter-dropdown__item--active" role="option" data-value="all"       aria-selected="true">Todos</li>
+                <li class="filter-dropdown__item"                               role="option" data-value="new"       aria-selected="false">Novo</li>
+                <li class="filter-dropdown__item"                               role="option" data-value="preparing" aria-selected="false">Em Preparo</li>
+                <li class="filter-dropdown__item"                               role="option" data-value="completed" aria-selected="false">Concluído</li>
+                <li class="filter-dropdown__item"                               role="option" data-value="cancelled" aria-selected="false">Cancelado</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Orders Table Card -->
+        <div class="orders-card">
+
+          <!-- Loading overlay -->
+          <div class="orders-loading" id="orders-loading" aria-live="polite" hidden>
+            <span class="material-symbols-outlined orders-loading__icon" aria-hidden="true">sync</span>
+            Carregando pedidos…
+          </div>
+
+          <!-- Table -->
+          <div class="table-wrapper" id="table-wrapper">
+            <table class="orders-table" aria-label="Histórico de pedidos">
+              <thead class="orders-table__head">
+                <tr>
+                  <th scope="col" class="orders-table__th">Pedido</th>
+                  <th scope="col" class="orders-table__th">Data/Hora</th>
+                  <th scope="col" class="orders-table__th">Cliente</th>
+                  <th scope="col" class="orders-table__th">Tipo</th>
+                  <th scope="col" class="orders-table__th">Pagamento</th>
+                  <th scope="col" class="orders-table__th">Total</th>
+                  <th scope="col" class="orders-table__th">Status</th>
+                  <th scope="col" class="orders-table__th orders-table__th--center">Ação</th>
+                </tr>
+              </thead>
+              <!-- Populated by orders.ts -->
+              <tbody class="orders-table__body" id="orders-tbody"></tbody>
+            </table>
+          </div>
+
+          <!-- Empty state -->
+          <div class="orders-empty" id="orders-empty" hidden>
+            <span class="material-symbols-outlined orders-empty__icon" aria-hidden="true">search_off</span>
+            <p class="orders-empty__title">Nenhum pedido encontrado</p>
+            <p class="orders-empty__subtitle">Tente ajustar os filtros ou o termo de busca</p>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination" id="pagination" aria-label="Navegação de páginas">
+            <span class="pagination__info" id="pagination-info"></span>
+            <div class="pagination__controls" id="pagination-controls"></div>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+
+  <dialog
+    class="order-modal"
+    id="order-detail-modal"
+    aria-labelledby="modal-title"
+    aria-modal="true"
+  >
+    <div class="order-modal__container">
+
+      <!-- Header -->
+      <header class="order-modal__header">
+        <h3 class="order-modal__title" id="modal-title">Detalhes do Pedido</h3>
+        <button
+          class="order-modal__close"
+          id="btn-modal-close"
+          aria-label="Fechar detalhes do pedido"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        </button>
+      </header>
+
+      <!-- Body — populated by orders.ts -->
+      <div class="order-modal__body" id="modal-body" aria-live="polite">
+        <!-- Skeleton shown while loading -->
+        <div class="order-modal__skeleton" id="modal-skeleton" aria-hidden="true">
+          <div class="skeleton-line skeleton-line--short"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line skeleton-line--short"></div>
+        </div>
+      </div>
+
+      <!-- Footer Actions -->
+      <footer class="order-modal__footer" id="modal-footer">
+        <button class="order-modal__btn-reprint" id="btn-reprint" aria-label="Reimprimir comanda">
+          <span class="material-symbols-outlined" aria-hidden="true">print</span>
+          Reimprimir Comanda
+        </button>
+        <button class="order-modal__btn-cancel-order" id="btn-cancel-order">
+          Estornar / Cancelar Pedido
+        </button>
+      </footer>
+
+    </div>
+  </dialog>
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 import { usuarioService } from '@/services/UsuarioService'
-import { salvarSessao, redirecionarSeLogado } from '@/utils/auth'
+import { salvarSessao, redirecionarSeLogado, getDestinoPosLogin } from '@/utils/auth'
 import { toggleSenha, setLoading, showFeedback } from '@/utils/ui'
 import { HttpError } from '@/api/HttpClient'
 
@@ -42,7 +42,7 @@ form?.addEventListener('submit', async (e: SubmitEvent) => {
   try {
     const { jwt, user } = await usuarioService.login(email, senha)
     salvarSessao(jwt, user)
-    window.location.href = '/index.html'
+    window.location.href = getDestinoPosLogin(user)
 
   } catch (err) {
     if (err instanceof HttpError) {

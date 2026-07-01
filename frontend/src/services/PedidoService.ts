@@ -32,8 +32,10 @@ export interface PedidoAttributes {
     total: number
     observacao_geral: string | null
     endereco_entrega: string | null
-    usuario: { data: StrapiEntity<UsuarioAttributes> | null }
-    itens: { data: StrapiEntity<ItemPedidoAttributes>[] }
+    // Strapi v5: relações populadas vêm flat (sem wrapper "data").
+    // Nomes de campo conforme o Content-Type "pedido" no Strapi.
+    users_permissions_user: StrapiEntity<UsuarioAttributes> | null
+    item_pedidos: StrapiEntity<ItemPedidoAttributes>[]
     createdAt: string
     updatedAt: string
 }
