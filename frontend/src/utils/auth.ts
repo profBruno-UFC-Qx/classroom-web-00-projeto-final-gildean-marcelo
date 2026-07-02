@@ -108,15 +108,26 @@ export async function verificarAcessoRestrito(destinoHome = '/index.html', desti
 
 export function setupLogoutButton(): void {
   const btnLogout = document.getElementById('btn-logout')
+  const btnLogin = document.getElementById('btn-login')
+
+  const isAuth = isAutenticado()
+
   if (btnLogout) {
-    if (!isAutenticado()) {
+    if (!isAuth) {
       btnLogout.style.display = 'none'
+    } else {
+      btnLogout.addEventListener('click', (e) => {
+        e.preventDefault()
+        limparSessao()
+        window.location.replace('/index.html')
+      })
     }
-    btnLogout.addEventListener('click', (e) => {
-      e.preventDefault()
-      limparSessao()
-      window.location.replace('/index.html')
-    })
+  }
+
+  if (btnLogin) {
+    if (isAuth) {
+      btnLogin.style.display = 'none'
+    }
   }
 }
 

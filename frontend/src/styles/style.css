@@ -76,13 +76,36 @@ body {
   align-items: center;
 }
 
-.header_logout-btn {
+.header_logout-btn,
+.header_login-btn {
   background: none;
   border: none;
   cursor: pointer;
   color: inherit;
   font-family: inherit;
   padding: 0;
+}
+
+.header_btn-label {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-left: 0.5rem;
+}
+
+.header_cart-btn {
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.header_cart-btn:hover {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.header_logout-btn:hover {
+  background-color: #dc2626;
+  color: #fff;
 }
 
 @keyframes modal-fade-in {

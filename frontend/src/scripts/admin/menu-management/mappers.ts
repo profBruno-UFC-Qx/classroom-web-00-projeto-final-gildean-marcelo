@@ -3,6 +3,8 @@ import type { CategoriaAttributes } from '@/services/CategoriaService'
 import type { StrapiEntity } from '@/api/StrapiAdapters'
 import type { Category, Product, ProductStatus } from './types'
 
+import { sanitizeImageUrl } from '@/utils/ui'
+
 // Strapi v5: StrapiEntity<T> = T & { id, documentId } — sem wrapper "attributes".
 // Os campos do Content Type ficam direto na entidade.
 export function mapProduto(entity: StrapiEntity<ProdutoAttributes>): Product {
@@ -16,7 +18,7 @@ export function mapProduto(entity: StrapiEntity<ProdutoAttributes>): Product {
     categoryId:  cat?.id ?? null,
     price:       entity.preco,
     status:      entity.situacao === StatusProduto.Ativo ? 'active' : 'paused',
-    image:       entity.imagem_url ?? null,
+    image:       sanitizeImageUrl(entity.imagem_url),
   }
 }
 
