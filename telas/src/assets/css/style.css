@@ -1,0 +1,23 @@
+@import url('reset.css');
+/* @import url('login.css'); */
+/* @import url('gestao-pedidos.css'); */
+/* @import url('cardapio.css'); */
+
+:root {
+  --primary-color: #2d5a27;
+  --secondary-color: #f8f9f8;
+  --tertiary-color: #ffb800;
+  --neutral-color: #1a1c19;
+
+  --font-main: "Inter", sans-serif;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-bold: 700;
+}
+
+body {
+  font-family: var(--font-main);
+  font-optical-sizing: auto;
+  font-style: normal;
+  background-color: #fafaf4;
+}

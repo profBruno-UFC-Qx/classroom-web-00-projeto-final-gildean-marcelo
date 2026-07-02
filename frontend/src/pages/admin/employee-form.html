@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danny's Fresh Market – Cadastro de Funcionário</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../styles/style.css">
+  <link rel="stylesheet" href="../../styles/admin/employee-form.css">
+
+  <script type="module" src="../../scripts/admin/employee-form/index.ts"></script>
+</head>
+<body class="app-body">
+
+  <div class="app-shell">
+    
+    <nav class="sidebar" id="sidebar" aria-label="Menu de navegação">
+
+      <div class="sidebar__brand">
+        <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCg4kP6VZ1YjoDuDNu1Rkf2Hg6ZGpdkSCl3nt5PZVpVSR3b_l407_Yp6mP8YsG_eULaXGV7eRarGt5dUn_OFsyxMp2_98n94gaGHzQcsvqdnCDiGm1csC2TEbrsyt2-ElIIpzPEPJsVFddctOXQJCPE9q8UV87_4Ma-yCs9vjr9GrhJ71DWE5FwSeqyAE0p3ppknziWX-hOhcvP5yUQAM16FNStkQ9BHXi1EFiOOpxWrKKhw8r4dhiHevvT081qfqrfFWtBAM0lOV8"
+          alt="Danny's Fresh Market"
+          class="sidebar__logo"
+        />
+        <span class="sidebar__brand-name">Danny's Admin</span>
+      </div>
+
+      <ul class="sidebar__nav" role="list">
+        <li>
+          <a href="dashboard.html" class="sidebar__nav-item" data-page="dashboard">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">dashboard</span>
+            <span class="sidebar__nav-label">Dashboard</span>
+          </a>
+        </li>        
+        <li>
+          <a href="menu-management.html" class="sidebar__nav-item" data-page="menu">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">restaurant_menu</span>
+            <span class="sidebar__nav-label">Menu Management</span>
+          </a>
+        </li>
+        <li>
+          <a href="kds.html" class="sidebar__nav-item" data-page="kds">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">kitchen</span>
+            <span class="sidebar__nav-label">KDS Monitor</span>
+          </a>
+        </li>
+        <li>
+          <a href="team-management.html" class="sidebar__nav-item sidebar__nav-item--active" data-page="team" aria-current="page">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true" style="font-variation-settings:'FILL' 1;">group</span>
+            <span class="sidebar__nav-label">Team Management</span>
+          </a>
+        </li>
+        <li>
+          <a href="orders.html" class="sidebar__nav-item" data-page="orders">
+            <span class="material-symbols-outlined sidebar__nav-icon" aria-hidden="true">receipt_long</span>
+            <span class="sidebar__nav-label">Pedidos</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar__footer">
+        <button class="sidebar__user" id="sidebar-user" aria-label="Perfil do usuário">
+          <img
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2tCHSKhri8qtjBJC6PDuuFvH1dLCnkKaUFO4XcgigqziMJ7LbeSqVUpbxdFZy91364REXmlCet--BEDk_1w1CP7as_Qjn-sp9Zb_N_E2D_fazvOaydqY29OwcKDm_gSkbwNdzVkUj8IbMGAEdGFtJ7Wr8jWU99-bDFrPGUwWkZ-2mtllNj6Vk92l6pbnelxULgCjmlzr2rTA_m_GRW9xqcaPE6_2mr_kSPsyvwndIrQxK2jFe6rpIhOxaiRQfPrPqE4Rq7fAbc2o"
+            alt="Admin User"
+            class="sidebar__user-avatar"
+          />
+          <div class="sidebar__user-info">
+            <span class="sidebar__user-name">Admin User</span>
+            <span class="sidebar__user-role">Gerente</span>
+          </div>
+          <span class="material-symbols-outlined sidebar__user-chevron" aria-hidden="true">expand_more</span>
+        </button>
+      </div>
+
+    </nav>
+    
+    <div class="main-wrapper">
+      
+      <header class="topbar">
+        <h1 class="topbar__title">Admin Dashboard</h1>
+
+        <div class="topbar__actions">
+          <button class="topbar__icon-btn" id="btn-notifications" aria-label="Notificações">
+            <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
+            <span class="topbar__notif-dot" aria-hidden="true"></span>
+          </button>
+
+          <div class="topbar__divider" aria-hidden="true"></div>
+
+          <button class="topbar__logout-btn" id="btn-logout">
+            <span class="material-symbols-outlined" aria-hidden="true">logout</span>
+            Sair
+          </button>
+        </div>
+      </header>
+      
+      <main class="page-content" id="main-content" aria-label="Conteúdo principal">
+        <div class="page-content__inner">
+
+        <!-- Navegação de volta -->
+        <a class="back-link" href="team-management.html" id="link-back">
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+          Voltar para a lista
+        </a>
+        <!-- Cabeçalho da página -->
+        <div class="page-header">
+          <h2 class="page-title">Cadastro de Funcionário</h2>
+          <div class="page-header__actions">
+            <button class="btn btn--ghost" id="btn-cancel" type="button">Cancelar</button>
+            <button class="btn btn--save" id="btn-save" type="button">
+              <span class="material-symbols-outlined" aria-hidden="true">save</span>
+              Salvar Funcionário
+            </button>
+          </div>
+        </div>
+        <!-- Formulário -->
+        <form class="form-card" id="employee-form" novalidate>
+          <!-- ──── Seção 1: Dados Pessoais ──── -->
+          <section class="form-section">
+            <h3 class="form-section__title">
+              <span class="material-symbols-outlined form-section__icon" aria-hidden="true">person</span>
+              Dados Pessoais
+            </h3>
+            <div class="form-grid">
+              <!-- Nome Completo (largura total) -->
+              <div class="field field--full">
+                <label class="field__label" for="name">Nome Completo</label>
+                <div class="field__input-wrap" id="wrap-name">
+                  <input
+                    class="field__input"
+                    id="name"
+                    name="name"
+                    type="text"
+                    placeholder="Ex: João da Silva"
+                    autocomplete="name"
+                    aria-describedby="error-name"
+                  >
+                </div>
+                <span class="field__error" id="error-name" role="alert"></span>
+              </div>
+              <!-- E-mail (obrigatório pelo Users & Permissions do Strapi) -->
+              <div class="field field--full">
+                <label class="field__label" for="email">E-mail</label>
+                <div class="field__input-wrap" id="wrap-email">
+                  <input
+                    class="field__input"
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="Ex: joao.silva@dannys.com"
+                    autocomplete="email"
+                    aria-describedby="error-email"
+                  >
+                </div>
+                <span class="field__error" id="error-email" role="alert"></span>
+              </div>
+              <!-- WhatsApp / Telefone -->
+              <div class="field">
+                <label class="field__label" for="phone">WhatsApp / Telefone</label>
+                <div class="field__input-wrap" id="wrap-phone">
+                  <input
+                    class="field__input"
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="(11) 90000-0000"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    aria-describedby="error-phone"
+                  >
+                </div>
+                <span class="field__error" id="error-phone" role="alert"></span>
+              </div>
+              <!-- CPF -->
+              <div class="field">
+                <label class="field__label" for="cpf">CPF</label>
+                <div class="field__input-wrap" id="wrap-cpf">
+                  <input
+                    class="field__input"
+                    id="cpf"
+                    name="cpf"
+                    type="text"
+                    placeholder="000.000.000-00"
+                    inputmode="numeric"
+                    aria-describedby="error-cpf"
+                  >
+                </div>
+                <span class="field__error" id="error-cpf" role="alert"></span>
+              </div>
+              <!-- Endereço (largura total) -->
+              <div class="field field--full">
+                <label class="field__label" for="address">Endereço</label>
+                <div class="field__input-wrap">
+                  <input
+                    class="field__input"
+                    id="address"
+                    name="address"
+                    type="text"
+                    placeholder="Ex: Rua das Flores, 123 - Centro"
+                    autocomplete="street-address"
+                  >
+                </div>
+              </div>
+            </div>
+          </section>
+          <!-- ──── Seção 2: Cargo e Acesso ──── -->
+          <section class="form-section form-section--divided">
+            <h3 class="form-section__title">
+              <span class="material-symbols-outlined form-section__icon" aria-hidden="true">badge</span>
+              Cargo e Acesso
+            </h3>
+            <div class="form-grid">
+              <!-- Função / Cargo -->
+              <div class="field">
+                <label class="field__label" for="role">Função / Cargo</label>
+                <div class="field__input-wrap field__input-wrap--select" id="wrap-role">
+                  <select
+                    class="field__select"
+                    id="role"
+                    name="role"
+                    aria-describedby="error-role"
+                  >
+                    <option value="" disabled selected>Selecione a função...</option>
+                    <!-- Populado dinamicamente pelo TypeScript -->
+                  </select>
+                  <span class="material-symbols-outlined field__select-icon" aria-hidden="true">expand_more</span>
+                </div>
+                <span class="field__error" id="error-role" role="alert"></span>
+              </div>
+              <!-- Senha de Acesso -->
+              <div class="field">
+                <label class="field__label" for="password">
+                  Senha de Acesso
+                  <span class="field__label-optional">(Opcional)</span>
+                </label>
+                <div class="field__input-wrap field__input-wrap--password">
+                  <input
+                    class="field__input"
+                    id="password"
+                    name="password"
+                    type="password"
+                    placeholder="Defina uma senha provisória..."
+                    autocomplete="new-password"
+                  >
+                  <button
+                    class="field__password-toggle"
+                    id="btn-toggle-password"
+                    type="button"
+                    aria-label="Mostrar senha"
+                  >
+                    <span class="material-symbols-outlined" id="icon-password-toggle">visibility</span>
+                  </button>
+                </div>
+                <p class="field__hint">Se não preenchido, o funcionário criará a senha no primeiro acesso.</p>
+              </div>
+            </div>
+          </section>
+          <!-- ──── Seção 3: Permissões e Status ──── -->
+          <section class="form-section form-section--divided">
+            <h3 class="form-section__title">
+              <span class="material-symbols-outlined form-section__icon" aria-hidden="true">verified_user</span>
+              Permissões e Status
+            </h3>
+            <div class="status-card">
+              <div class="status-card__info">
+                <p class="status-card__title">Status da Conta</p>
+                <p class="status-card__desc">Contas ativas podem acessar o sistema e receber pedidos.</p>
+              </div>
+              <!-- Toggle Switch (estado visual 100% via CSS, leitura via TS) -->
+              <label class="toggle" for="toggle-active">
+                <input
+                  class="toggle__input"
+                  id="toggle-active"
+                  name="isActive"
+                  type="checkbox"
+                  checked
+                  aria-label="Status da conta"
+                >
+                <span class="toggle__track" aria-hidden="true"></span>
+                <span class="toggle__label" id="toggle-label">Ativo</span>
+              </label>
+            </div>
+          </section>
+        </form>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+</body>
+</html>

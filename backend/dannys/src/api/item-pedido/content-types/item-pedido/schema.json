@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "item_pedidos",
+  "info": {
+    "singularName": "item-pedido",
+    "pluralName": "item-pedidos",
+    "displayName": "ItemPedido"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "quantidade": {
+      "type": "integer",
+      "required": true
+    },
+    "preco_unitario_cobrado": {
+      "type": "decimal",
+      "required": true
+    },
+    "pedido": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pedido.pedido",
+      "inversedBy": "item_pedidos"
+    },
+    "produto": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::produto.produto",
+      "inversedBy": "item_pedidos"
+    },
+    "observacao": {
+      "type": "string"
+    }
+  }
+}

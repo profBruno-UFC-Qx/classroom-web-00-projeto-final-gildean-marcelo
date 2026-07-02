@@ -1,0 +1,64 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pedidos",
+  "info": {
+    "singularName": "pedido",
+    "pluralName": "pedidos",
+    "displayName": "Pedido"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "tipo_entrega": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "delivery",
+        "retirada"
+      ]
+    },
+    "situacao": {
+      "type": "enumeration",
+      "default": "recebido",
+      "enum": [
+        "recebido",
+        "preparando",
+        "pronto",
+        "entregue",
+        "cancelado"
+      ]
+    },
+    "forma_pagamento": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "pix",
+        "cartao_na_entrega"
+      ]
+    },
+    "total": {
+      "type": "decimal",
+      "required": true
+    },
+    "observacao_geral": {
+      "type": "text"
+    },
+    "endereco_entrega": {
+      "type": "text"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "pedidos"
+    },
+    "item_pedidos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::item-pedido.item-pedido",
+      "mappedBy": "pedido"
+    }
+  }
+}

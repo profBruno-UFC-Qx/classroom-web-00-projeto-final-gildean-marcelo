@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danny's - Home</title>
+
+    <link rel="stylesheet" href="src/styles/reset.css">
+    <link rel="stylesheet" href="src/styles/style.css">
+    <link rel="stylesheet" href="src/styles/user/vitrine.css">
+
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header_top">
+            <!-- Navegação Desktop -->
+            <img src="src/assets/images/logo_simples.png" alt="Danny's Logo" class="header_logo">
+            <nav class="header_nav">
+                <a href="#" class="header_nav-link header_nav-link--ativo">Home</a>
+                <a href="src/pages/user/status.html" class="header_nav-link">Pedidos</a>
+                <a href="src/pages/user/perfil.html" class="header_nav-link">Perfil</a>
+            </nav>
+
+            <div class="header_actions">
+                <a href="src/pages/user/carrinho.html" class="header_cart-btn" aria-label="Carrinho de compras">
+                    <i class="ph ph-shopping-cart"></i>
+                </a>
+                <a href="src/pages/user/login.html" id="btn-login" class="header_cart-btn header_login-btn" aria-label="Entrar">
+                    <i class="ph ph-sign-in"></i> <span class="header_btn-label">Entrar</span>
+                </a>
+                <button id="btn-logout" class="header_cart-btn header_logout-btn" aria-label="Sair">
+                    <i class="ph ph-sign-out"></i> <span class="header_btn-label">Sair</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <main class="main-content">
+        <section class="header_saudacao">
+            <h1 class="header_titulo">Bem-vindo ao Danny's!</h1>
+            <p class="header_subtitulo">O que vamos pedir hoje?</p>
+        </section>
+
+        <nav class="categorias">
+            <ul class="categorias_list">
+            </ul>
+        </nav>
+
+
+        <section class="destaque">
+            <h2 class="section-titulo">Destaque do Dia</h2>
+            <article class="destaque-card">
+            </article>
+        </section>
+
+
+        <section class="catalogo">
+            <div class="catalogo_header">
+                <h2 class="section-titulo">Clássicos Danny's</h2>
+            </div>
+
+            <div class="catalogo_grid">
+            </div>
+        </section>
+    </main>
+
+    <!-- Navegação Inferior -->
+    <footer class="butao-nav">
+        <nav class="butao-nav_menu">
+            <a href="#" class="butao-nav_item butao-nav_item--active">
+                <i class="ph-fill ph-house"></i>
+                <span class="butao-nav_label">Home</span>
+            </a>
+            <a href="src/pages/user/status.html" class="butao-nav_item">
+                <i class="ph ph-receipt"></i>
+                <span class="butao-nav_label">Pedidos</span>
+            </a>
+            <a href="src/pages/user/perfil.html" class="butao-nav_item">
+                <i class="ph ph-user"></i>
+                <span class="butao-nav_label">Perfil</span>
+            </a>
+        </nav>
+    </footer>
+
+    <script type="module" src="/src/components/vitrineController.ts"></script>
+</body>
+
+</html>
