@@ -97,14 +97,18 @@ async function init() {
     mostrarEmptyState()
     return
   }
-
-  try {
-    const pedido = await pedidoService.getWithRelations(pedidoId)
-    renderizarPedido(pedido)
-  } catch (error) {
-    console.error('Erro ao buscar o pedido:', error)
-    mostrarEmptyState()
+  const load = async () => {
+    try {
+      const pedido = await pedidoService.getWithRelations(pedidoId)
+      renderizarPedido(pedido)
+    } catch (error) {
+      console.error('Erro ao buscar o pedido:', error)
+      mostrarEmptyState()
+    }
   }
+
+  await load()
+  setInterval(load, 10000)
 }
 
 function mostrarEmptyState() {
@@ -192,8 +196,8 @@ function renderizarPedido(pedido: any) {
   }
 
   if (btnCancelar) {
-    // Esconde o botão se o pedido já estiver cancelado ou entregue
-    if (pedido.situacao === SituacaoPedido.Cancelado || pedido.situacao === SituacaoPedido.Entregue) {
+    // Esconde o botão se o pedido já estiver em preparo ou além
+    if (pedido.situacao !== SituacaoPedido.Recebido) {
       btnCancelar.style.display = 'none'
     } else {
       btnCancelar.onclick = async () => {
